@@ -19,18 +19,20 @@
 
 module spi_main(clk, SCK, MOSI, MISO, SSEL, LED, dout, din, step, dir);
 parameter W=10;
-parameter F=11;
-parameter T=4;
+parameter F=11;//velocity width
+parameter T=4;//time width
+parameter I=16;//pin input
+parameter O=14;//pin output
 input clk;
 
 input SCK, SSEL, MOSI;
 output MISO;
 output LED;
-input [15:0] din;
+input [I-1:0] din;
 
 reg Spolarity;
 
-reg[13:0] real_dout; output [13:0] dout = do_tristate ? 14'bZ : real_dout; 
+reg[O-1:0] real_dout; output [O-1:0] dout = do_tristate ? 14'bZ : real_dout; 
 wire[3:0] real_step; output [3:0] step = do_tristate ? 4'bZ : real_step ^ {4{Spolarity}};
 wire[3:0] real_dir; output [3:0] dir = do_tristate ? 4'bZ : real_dir;
 
@@ -121,7 +123,7 @@ always @(posedge clk) begin
 		else if(spibytecnt == 5'b00001) begin	// 1
 			data_outbuf <= pos0[15:8];
 			if(byte_received)
-				vel0 <= {data_recvd,data_inbuf};	//vel0
+				vel0 <= {data_recvd[F-8:0],data_inbuf};	//vel0
 		end
 		else if(spibytecnt == 5'b00010) begin	// 2
 			data_outbuf <= pos0[W+F-1:16];
@@ -131,7 +133,7 @@ always @(posedge clk) begin
 		else if(spibytecnt == 5'b00011) begin	// 3
 			data_outbuf <= 8'b0;
 			if(byte_received)
-				vel1 <= {data_recvd,data_inbuf};	//vel1
+				vel1 <= {data_recvd[F-8:0],data_inbuf};	//vel1
 		end
 		//------------------------------------------------- word 1
 		else if(spibytecnt == 5'b00100) begin	// 4
@@ -142,7 +144,7 @@ always @(posedge clk) begin
 		else if(spibytecnt == 5'b00101) begin	// 5
 			data_outbuf <= pos1[15:8];
 			if(byte_received)
-				vel2 <= {data_recvd,data_inbuf};	//vel2
+				vel2 <= {data_recvd[F-8:0],data_inbuf};	//vel2
 		end
 		else if(spibytecnt == 5'b00110) begin	// 6
 			data_outbuf <= pos1[W+F-1:16];
@@ -152,7 +154,7 @@ always @(posedge clk) begin
 		else if(spibytecnt == 5'b00111) begin	// 7
 			data_outbuf <= 8'b0;
 			if(byte_received)
-				vel3 <= {data_recvd,data_inbuf};	//vel3
+				vel3 <= {data_recvd[F-8:0],data_inbuf};	//vel3
 		end
 		//------------------------------------------------- word 2
 		else if(spibytecnt == 5'b01000)  begin	// 8
@@ -163,7 +165,7 @@ always @(posedge clk) begin
 		else if(spibytecnt == 5'b01001) begin	// 9
 			data_outbuf <= pos2[15:8];
 			if(byte_received) begin
-				real_dout <= {data_recvd[5:0],data_inbuf};	//real_dout
+				real_dout <= {data_recvd[O-9:0],data_inbuf};	//real_dout
 			end
 		end
 		
@@ -176,7 +178,7 @@ always @(posedge clk) begin
 			data_outbuf <= 8'b0;
 			if(byte_received) begin
 				tap <= data_recvd[7:6];
-        steptime <= data_recvd[T-1:0];
+				steptime <= data_recvd[T-1:0];
 				Spolarity <= data_inbuf[7];
 				dirtime <= data_inbuf[T-1:0];
 			end
@@ -189,7 +191,7 @@ always @(posedge clk) begin
 		else if(spibytecnt == 5'b01111) data_outbuf <= 8'b0;
 		//------------------------------------------------- word 4
 		else if(spibytecnt == 5'b10000) data_outbuf <= din[7:0];
-		else if(spibytecnt == 5'b10001) data_outbuf <= din[15:8];
+		else if(spibytecnt == 5'b10001) data_outbuf <= din[I-1:8];
 		else if(spibytecnt == 5'b10010) data_outbuf <= 8'b0;
 		else if(spibytecnt == 5'b10011) data_outbuf <= 8'b0;
 		else data_outbuf <= spibytecnt;
