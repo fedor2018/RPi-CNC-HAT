@@ -1,0 +1,5 @@
+/spi_cpld_firmware/db
+/spi_cpld_firmware/output_files
+/spi_cpld_firmware/incremental_db
+*.bak
+*.qws

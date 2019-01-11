@@ -1,4 +1,4 @@
-tap//    This is a component of pluto_step_spi, a stepper driver for linuxcnc over SPI.
+//    This is a component of pluto_step_spi, a stepper driver for linuxcnc over SPI.
 //    based on the main.v from Jeff Epler <jepler@unpythonic.net>
 //    Copyright 2013 by Matsche <matsche@play-pla.net>
 //
