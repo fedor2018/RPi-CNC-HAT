@@ -3,3 +3,7 @@
 /spi_cpld_firmware/incremental_db
 *.bak
 *.qws
+*.sft
+*.xrf
+*.sdo
+*.vho
