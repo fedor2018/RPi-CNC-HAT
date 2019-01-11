@@ -16,13 +16,22 @@
 //    along with this program; if not, write to the Free Software
 //    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //**********************************************************************
+//`define OD
+// Open-Drain buffer
+`ifdef OD
+module OC_Buff(in, out);
+input in;
+output out;
+assign out = in ? 1'bz : 1'b0;
+endmodule
+`endif
 
 module spi_main(clk, SCK, MOSI, MISO, SSEL, LED, dout, din, step, dir);
 parameter W=10;
 parameter F=11;//velocity width
 parameter T=4;//time width
-parameter I=16;//pin input
-parameter O=14;//pin output
+parameter I=13;//pins input
+parameter O=10;//pins output
 input clk;
 
 input SCK, SSEL, MOSI;
@@ -32,10 +41,14 @@ input [I-1:0] din;
 
 reg Spolarity;
 
-reg[O-1:0] real_dout; output [O-1:0] dout = do_tristate ? 14'bZ : real_dout; 
+reg[O-1:0] real_dout; output [O-1:0] dout = do_tristate ? {O-1{1'bZ}} : real_dout; 
 wire[3:0] real_step; output [3:0] step = do_tristate ? 4'bZ : real_step ^ {4{Spolarity}};
 wire[3:0] real_dir; output [3:0] dir = do_tristate ? 4'bZ : real_dir;
-
+`ifdef OD
+OC_Buff ocout[O-1:0](real_dout, dout);
+OC_Buff ocstep[3:0](real_step ^ {4{Spolarity}}, step);
+OC_Buff ocdir[3:0](real_dir, dir);
+`endif
 
 wire [W+F-1:0] pos0, pos1, pos2, pos3;
 reg  [F:0]     vel0, vel1, vel2, vel3;
