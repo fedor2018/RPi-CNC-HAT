@@ -6,11 +6,11 @@ wd_cnt=clk/2048   51us/19.5kHz
 ===================
 PINOUT
 IN: 
-- opto 5
+- opto 5 (x,y,z,rin)
 - resistors 8
 
 OUT:
-- high 10 (step*4, dir*4)
+- high 10 (step*4, dir*4, pout)
 - low 8
 
 LED -1
@@ -32,7 +32,7 @@ LED -1
                Spolarity
 11 0           steptime[3:0]
                tap[1:0]
-12 pos3[7:0]   pin[7:0]
+12 pos3[7:0]   in_pwm[7:0]
 13 pos3[15:8]
 14 pos3[20:16]
 15 0

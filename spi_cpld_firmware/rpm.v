@@ -1,16 +1,25 @@
+/*
+in - метка таходатчика
+*/
 module rpm(in, clk, out);
 input in,clk;
 output [15:0] out;
 reg[15:0] out;
+reg [15:0] cnt;
 
-reg [2:0] SCKr;
-always @(posedge clk) SCKr <= {SCKr[1:0], in};
-wire SCK_risingedge = (SCKr[2:1]==2'b01);  // now we can detect SCK rising edges
-//wire SCK_fallingedge = (SCKr[2:1]==2'b10);  // and falling edges
+reg prev_signal;
+always @(posedge clk)
+ prev_signal <= in;
+
+wire front_edge;
+assign front_edge = ~prev_signal & in;
 
 always @(posedge clk) begin
-	if(SCK_risingedge) begin
-		out<=16'd0;
+	if(front_edge) begin
+		out<=cnt;
+		cnt<=16'd0;
+	end else begin
+		cnt<=cnt+~&cnt;//(&cnt)?cnt:cnt+1'b1;
 	end
 end
 

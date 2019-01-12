@@ -1,7 +1,7 @@
 
 module pwm(in,clk,out);
 input[7:0] in;
-input clk;
+input clk;//40Mhz/2048
 
 output out;
 

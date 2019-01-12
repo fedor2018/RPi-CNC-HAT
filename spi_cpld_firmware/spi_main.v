@@ -26,7 +26,7 @@ assign out = in ? 1'bz : 1'b0;
 endmodule
 `endif
 
-module spi_main(clk, SCK, MOSI, MISO, SSEL, LED, dout, din, step, dir, pout);
+module spi_main(clk, SCK, MOSI, MISO, SSEL, LED, dout, din, step, dir, pout, rin);
 parameter W=10;
 parameter F=11;//velocity width
 parameter T=4;//time width
@@ -39,6 +39,7 @@ input SCK, SSEL, MOSI;
 output MISO;
 output LED;
 input [I-1:0] din;
+input rin;//rpm in
 
 reg Spolarity;
 
@@ -62,15 +63,16 @@ wire [15:0] rpm;
 
 reg [10:0] div2048;
 wire stepcnt = ~|(div2048[5:0]);
+wire in_clk=&div2048;
 
 always @(posedge clk) begin
     div2048 <= div2048 + 1'd1;
 end
 
 wire do_enable_wdt, do_tristate;
-wdt w(clk, do_enable_wdt, &div2048, do_tristate);
-pwm p(in_pwm, &div2048, real_pout);
-rpm r(, clk, rpm);
+wdt w(clk, do_enable_wdt, in_clk, do_tristate);
+pwm p(in_pwm, in_clk, real_pout);
+rpm r(rin, &div2048[8:0], rpm);
 stepgen #(W,F,T) s0(clk, stepcnt, pos0, vel0, dirtime, steptime, real_step[0], real_dir[0], tap);
 stepgen #(W,F,T) s1(clk, stepcnt, pos1, vel1, dirtime, steptime, real_step[1], real_dir[1], tap);
 stepgen #(W,F,T) s2(clk, stepcnt, pos2, vel2, dirtime, steptime, real_step[2], real_dir[2], tap);
