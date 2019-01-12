@@ -32,6 +32,7 @@ parameter F=11;//velocity width
 parameter T=4;//time width
 parameter I=13;//pins input
 parameter O=9;//pins output
+parameter INV_PWM=1;//invert pwm
 input clk;
 
 input SCK, SSEL, MOSI;
@@ -44,7 +45,7 @@ reg Spolarity;
 reg[O-1:0] real_dout; output [O-1:0] dout = do_tristate ? {O{1'bZ}} : real_dout; 
 wire[3:0] real_step; output [3:0] step = do_tristate ? 4'bZ : real_step ^ {4{Spolarity}};
 wire[3:0] real_dir; output [3:0] dir = do_tristate ? 4'bZ : real_dir;
-wire real_pout; output pout = do_tristate ? 1'bZ : real_pout;
+wire real_pout; output pout = do_tristate ? 1'bZ : (INV_PWM)?~real_pout:real_pout;
 
 `ifdef OD
 OC_Buff ocout[O-1:0](real_dout, dout);
@@ -56,7 +57,8 @@ wire [W+F-1:0] pos0, pos1, pos2, pos3;
 reg  [F:0]     vel0, vel1, vel2, vel3;
 reg [T-1:0] dirtime, steptime;
 reg [1:0] tap;
-reg [7:0] pin = 8'd0;
+reg [7:0] in_pwm = 8'd0;
+wire [15:0] rpm;
 
 reg [10:0] div2048;
 wire stepcnt = ~|(div2048[5:0]);
@@ -67,7 +69,8 @@ end
 
 wire do_enable_wdt, do_tristate;
 wdt w(clk, do_enable_wdt, &div2048, do_tristate);
-pwm p(pin, &div2048, real_pout, 1);
+pwm p(in_pwm, &div2048, real_pout);
+rpm r(, clk, rpm);
 stepgen #(W,F,T) s0(clk, stepcnt, pos0, vel0, dirtime, steptime, real_step[0], real_dir[0], tap);
 stepgen #(W,F,T) s1(clk, stepcnt, pos1, vel1, dirtime, steptime, real_step[1], real_dir[1], tap);
 stepgen #(W,F,T) s2(clk, stepcnt, pos2, vel2, dirtime, steptime, real_step[2], real_dir[2], tap);
@@ -204,18 +207,18 @@ always @(posedge clk) begin
 		else if(spibytecnt == 5'b01100) begin // 12
 			data_outbuf <= pos3[7:0];
 			if(byte_received) begin
-				pin <= data_recvd;
+				in_pwm <= data_recvd;
 			end
 		end
-		else if(spibytecnt == 5'b01101) data_outbuf <= pos3[15:8];
-		else if(spibytecnt == 5'b01110) data_outbuf <= pos3[W+F-1:16];
-		else if(spibytecnt == 5'b01111) data_outbuf <= 8'b0;
+		else if(spibytecnt == 5'b01101) data_outbuf <= pos3[15:8];//13
+		else if(spibytecnt == 5'b01110) data_outbuf <= pos3[W+F-1:16];//14
+		else if(spibytecnt == 5'b01111) data_outbuf <= 8'b0;//15
 		//------------------------------------------------- word 4
-		else if(spibytecnt == 5'b10000) data_outbuf <= din[7:0];
-		else if(spibytecnt == 5'b10001) data_outbuf <= din[I-1:8];
-		else if(spibytecnt == 5'b10010) data_outbuf <= 8'b0;
-		else if(spibytecnt == 5'b10011) data_outbuf <= 8'b0;
-		else data_outbuf <= spibytecnt;
+		else if(spibytecnt == 5'b10000) data_outbuf <= din[7:0];//15
+		else if(spibytecnt == 5'b10001) data_outbuf <= din[I-1:8];//17
+		else if(spibytecnt == 5'b10010) data_outbuf <= rpm[7:0];//8'b0;//18
+		else if(spibytecnt == 5'b10011) data_outbuf <= rpm[15:8];//8'b0;//19
+		else data_outbuf <= spibytecnt;//20
 	end
 end
 assign LED = do_tristate ? 1'bZ : (real_step[0] ^ real_dir[0]);

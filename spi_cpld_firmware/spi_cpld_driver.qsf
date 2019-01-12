@@ -42,9 +42,6 @@ set_global_assignment -name TOP_LEVEL_ENTITY spi_main
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION "13.0 SP1"
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "11:33:52  DECEMBER 20, 2018"
 set_global_assignment -name LAST_QUARTUS_VERSION "13.0 SP1"
-set_global_assignment -name VERILOG_FILE wdt.v
-set_global_assignment -name VERILOG_FILE stepgen.v
-set_global_assignment -name VERILOG_FILE spi_main.v
 set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
 set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
 set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
@@ -60,7 +57,6 @@ set_global_assignment -name ENABLE_REDUCED_MEMORY_MODE OFF
 set_global_assignment -name AUTO_RESTART_CONFIGURATION OFF
 set_global_assignment -name USE_CONFIGURATION_DEVICE ON
 set_global_assignment -name RESERVE_ALL_UNUSED_PINS "AS INPUT TRI-STATED"
-set_global_assignment -name TEXT_FILE README.txt
 set_global_assignment -name STRATIX_DEVICE_IO_STANDARD "3.3-V LVTTL"
 set_location_assignment PIN_78 -to LED
 set_location_assignment PIN_3 -to MISO
@@ -109,7 +105,15 @@ set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to din[3]
 set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to din[2]
 set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to din[1]
 set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to din[0]
-set_global_assignment -name VERILOG_FILE pwm.v
 set_global_assignment -name LL_ROOT_REGION ON -section_id "Root Region"
 set_global_assignment -name LL_MEMBER_STATE LOCKED -section_id "Root Region"
 set_location_assignment PIN_43 -to pout
+set_global_assignment -name SDC_FILE spi_cpld_driver.out.sdc
+set_global_assignment -name VERILOG_FILE cnt.v
+set_global_assignment -name VERILOG_FILE wdt.v
+set_global_assignment -name VERILOG_FILE stepgen.v
+set_global_assignment -name VERILOG_FILE spi_main.v
+set_global_assignment -name TEXT_FILE README.txt
+set_global_assignment -name VERILOG_FILE pwm.v
+set_global_assignment -name SDC_FILE spi_cpld_driver.sdc
+set_global_assignment -name VERILOG_FILE rpm.v

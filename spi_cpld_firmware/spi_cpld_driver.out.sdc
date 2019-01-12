@@ -19,7 +19,7 @@
 ## PROGRAM "Quartus II"
 ## VERSION "Version 13.0.1 Build 232 06/12/2013 Service Pack 1 SJ Full Version"
 
-## DATE    "Sat Jan 12 14:44:55 2019"
+## DATE    "Sat Jan 12 14:58:39 2019"
 
 ##
 ## DEVICE  "EPM570T100C5"
@@ -38,8 +38,8 @@ set_time_format -unit ns -decimal_places 3
 # Create Clock
 #**************************************************************
 
-create_clock -name {clk} -period 250.000 -waveform { 0.000 0.500 } [get_ports { clk }]
-create_clock -name {div2048[0]} -period 250.000 -waveform { 0.000 0.500 } [get_registers {div2048[0]}]
+create_clock -name {clk} -period 25.000 -waveform { 0.000 12.500 } [get_ports {clk}]
+create_clock -name {CLK} -period 80.000 -waveform { 0.000 40.000 } 
 
 
 #**************************************************************
