@@ -1,77 +1,5 @@
 EESchema Schematic File Version 2
-LIBS:conn
-LIBS:contrib
-LIBS:device
-LIBS:digital-audio
-LIBS:diode
-LIBS:ESD_Protection
-LIBS:ftdi
-LIBS:gennum
-LIBS:graphic_symbols
-LIBS:leds
-LIBS:LEM
-LIBS:linear
-LIBS:logic_programmable
-LIBS:maxim
-LIBS:mechanical
-LIBS:microcontrollers
-LIBS:modules
-LIBS:motorola
-LIBS:nxp_armmcu
-LIBS:onsemi
-LIBS:opto
-LIBS:Oscillators
 LIBS:power
-LIBS:Power_Management
-LIBS:powerint
-LIBS:pspice
-LIBS:references
-LIBS:regul
-LIBS:relays
-LIBS:rfcom
-LIBS:RFSolutions
-LIBS:sensors
-LIBS:silabs
-LIBS:siliconi
-LIBS:stm8
-LIBS:stm32
-LIBS:supertex
-LIBS:switches
-LIBS:texas
-LIBS:transf
-LIBS:transistors
-LIBS:triac_thyristor
-LIBS:ttl_ieee
-LIBS:valves
-LIBS:video
-LIBS:SparkFun-Aesthetics
-LIBS:SparkFun-Batteries
-LIBS:SparkFun-Boards
-LIBS:SparkFun-Capacitors
-LIBS:SparkFun-Clocks
-LIBS:SparkFun-Coils
-LIBS:SparkFun-Connectors
-LIBS:SparkFun-DiscreteSemi
-LIBS:SparkFun-Displays
-LIBS:SparkFun-Electromechanical
-LIBS:SparkFun-Fuses
-LIBS:SparkFun-GPS
-LIBS:SparkFun-Hardware
-LIBS:SparkFun-IC-Amplifiers
-LIBS:SparkFun-IC-Comms
-LIBS:SparkFun-IC-Conversion
-LIBS:SparkFun-IC-Logic
-LIBS:SparkFun-IC-Memory
-LIBS:SparkFun-IC-Microcontroller
-LIBS:SparkFun-IC-Power
-LIBS:SparkFun-IC-Special-Function
-LIBS:SparkFun-Jumpers
-LIBS:SparkFun-LED
-LIBS:SparkFun-PowerSymbols
-LIBS:SparkFun-Resistors
-LIBS:SparkFun-RF
-LIBS:SparkFun-Sensors
-LIBS:SparkFun-Switches
 LIBS:rpi_cpld-cache
 EELAYER 25 0
 EELAYER END
@@ -563,8 +491,8 @@ $Comp
 L BC817 Q6
 U 1 1 5C17F34B
 P 12135 7335
-F 0 "Q6" H 12335 7410 50  0000 L CNN
-F 1 "BC817" H 12335 7335 50  0000 L CNN
+F 0 "Q6" H 11925 7255 50  0000 L CNN
+F 1 "BC817" H 11865 7135 50  0000 L CNN
 F 2 "TO_SOT_Packages_SMD:SOT-23" H 12335 7260 50  0001 L CIN
 F 3 "" H 12135 7335 50  0001 L CNN
 	1    12135 7335
@@ -574,8 +502,8 @@ $Comp
 L BC817 Q5
 U 1 1 5C17F73E
 P 11735 7435
-F 0 "Q5" H 11935 7510 50  0000 L CNN
-F 1 "BC817" H 11935 7435 50  0000 L CNN
+F 0 "Q5" H 12280 7485 50  0000 L CNN
+F 1 "BC817" H 12260 7385 50  0000 L CNN
 F 2 "TO_SOT_Packages_SMD:SOT-23" H 11935 7360 50  0001 L CIN
 F 3 "" H 11735 7435 50  0001 L CNN
 	1    11735 7435
@@ -585,8 +513,8 @@ $Comp
 L BC817 Q4
 U 1 1 5C17F84C
 P 11335 7535
-F 0 "Q4" H 11535 7610 50  0000 L CNN
-F 1 "BC817" H 11535 7535 50  0000 L CNN
+F 0 "Q4" H 11745 7610 50  0000 L CNN
+F 1 "BC817" H 11745 7515 50  0000 L CNN
 F 2 "TO_SOT_Packages_SMD:SOT-23" H 11535 7460 50  0001 L CIN
 F 3 "" H 11335 7535 50  0001 L CNN
 	1    11335 7535
@@ -596,8 +524,8 @@ $Comp
 L BC817 Q3
 U 1 1 5C17F9D8
 P 10935 7635
-F 0 "Q3" H 11135 7710 50  0000 L CNN
-F 1 "BC817" H 11135 7635 50  0000 L CNN
+F 0 "Q3" H 11275 7715 50  0000 L CNN
+F 1 "BC817" H 11270 7630 50  0000 L CNN
 F 2 "TO_SOT_Packages_SMD:SOT-23" H 11135 7560 50  0001 L CIN
 F 3 "" H 10935 7635 50  0001 L CNN
 	1    10935 7635
@@ -1136,8 +1064,8 @@ $Comp
 L BC817 Q9
 U 1 1 5C1CF9FB
 P 7345 7640
-F 0 "Q9" H 7545 7715 50  0000 L CNN
-F 1 "BC817" H 7545 7640 50  0000 L CNN
+F 0 "Q9" H 7660 7740 50  0000 L CNN
+F 1 "BC817" H 7650 7635 50  0000 L CNN
 F 2 "TO_SOT_Packages_SMD:SOT-23" H 7545 7565 50  0001 L CIN
 F 3 "" H 7345 7640 50  0001 L CNN
 	1    7345 7640
@@ -1247,8 +1175,8 @@ $Comp
 L BC817 Q10
 U 1 1 5C1CF9F5
 P 7745 7540
-F 0 "Q10" H 7945 7615 50  0000 L CNN
-F 1 "BC817" H 7945 7540 50  0000 L CNN
+F 0 "Q10" H 8150 7615 50  0000 L CNN
+F 1 "BC817" H 8150 7525 50  0000 L CNN
 F 2 "TO_SOT_Packages_SMD:SOT-23" H 7945 7465 50  0001 L CIN
 F 3 "" H 7745 7540 50  0001 L CNN
 	1    7745 7540
@@ -1281,7 +1209,7 @@ L TEST TP1
 U 1 1 5C194D56
 P 8630 2520
 F 0 "TP1" V 8630 2820 50  0000 C BNN
-F 1 "CLK ext" V 8515 2785 50  0000 C CNN
+F 1 "CLK ext" V 8605 3075 50  0000 C CNN
 F 2 "TestPoint:TestPoint_Loop_D1.80mm_Drill1.0mm_Beaded" H 8630 2520 50  0001 C CNN
 F 3 "" H 8630 2520 50  0001 C CNN
 	1    8630 2520
@@ -1581,19 +1509,31 @@ F 4 " " H 5055 8830 60  0000 C CNN "Поле4"
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	2350 1200 3490 1200
+	2350 1200 2725 1200
+Wire Wire Line
+	2725 1200 3095 1200
+Wire Wire Line
+	3095 1200 3490 1200
 Connection ~ 2725 1200
 Wire Wire Line
 	3490 1200 3490 1205
 Connection ~ 3095 1200
 Wire Wire Line
-	3490 1205 3905 1205
+	3490 1205 3825 1205
+Wire Wire Line
+	3825 1205 3905 1205
 Wire Wire Line
 	3825 1205 3825 1200
 Wire Wire Line
-	3395 900  3920 900 
+	3395 900  3490 900 
 Wire Wire Line
-	2350 900  2795 900 
+	3490 900  3825 900 
+Wire Wire Line
+	3825 900  3920 900 
+Wire Wire Line
+	2350 900  2725 900 
+Wire Wire Line
+	2725 900  2795 900 
 Connection ~ 2725 900 
 Connection ~ 3490 900 
 Connection ~ 3825 900 
@@ -1603,7 +1543,13 @@ Wire Wire Line
 Wire Wire Line
 	4270 3985 4135 3985
 Wire Wire Line
-	4270 2585 4270 4440
+	4270 2585 4270 3285
+Wire Wire Line
+	4270 3285 4270 3785
+Wire Wire Line
+	4270 3785 4270 3985
+Wire Wire Line
+	4270 3985 4270 4440
 Wire Wire Line
 	4270 3285 4135 3285
 Connection ~ 4270 3285
@@ -1613,19 +1559,43 @@ Wire Wire Line
 	2145 2785 2235 2785
 Connection ~ 2145 3585
 Wire Wire Line
-	2145 2785 2145 4440
+	2145 2785 2145 3585
 Wire Wire Line
-	2145 4440 4270 4440
+	2145 3585 2145 4285
+Wire Wire Line
+	2145 4285 2145 4440
+Wire Wire Line
+	2145 4440 3050 4440
+Wire Wire Line
+	3050 4440 4270 4440
 Connection ~ 2145 4285
 Connection ~ 4270 3985
 Connection ~ 3050 4440
 Connection ~ 3490 1200
 Wire Wire Line
-	5670 775  6925 775 
+	5670 775  5910 775 
+Wire Wire Line
+	5910 775  6180 775 
+Wire Wire Line
+	6180 775  6430 775 
+Wire Wire Line
+	6430 775  6680 775 
+Wire Wire Line
+	6680 775  6925 775 
 Connection ~ 6180 775 
 Connection ~ 6430 775 
 Wire Wire Line
-	5670 1075 6925 1075
+	5670 1075 5910 1075
+Wire Wire Line
+	5910 1075 6180 1075
+Wire Wire Line
+	6180 1075 6305 1075
+Wire Wire Line
+	6305 1075 6430 1075
+Wire Wire Line
+	6430 1075 6680 1075
+Wire Wire Line
+	6680 1075 6925 1075
 Connection ~ 6180 1075
 Connection ~ 6430 1075
 Connection ~ 5910 775 
@@ -1643,15 +1613,34 @@ Wire Wire Line
 Wire Wire Line
 	5930 5520 6430 5520
 Wire Wire Line
-	5435 5970 5930 5970
+	5435 5970 5585 5970
+Wire Wire Line
+	5585 5970 5685 5970
+Wire Wire Line
+	5685 5970 5930 5970
 Connection ~ 5685 5970
 Connection ~ 5585 5970
 Wire Wire Line
-	7030 5920 7930 5920
+	7030 5920 7130 5920
+Wire Wire Line
+	7130 5920 7230 5920
+Wire Wire Line
+	7230 5920 7330 5920
+Wire Wire Line
+	7375 5920 7430 5920
+Wire Wire Line
+	7430 5920 7530 5920
+Wire Wire Line
+	7530 5920 7630 5920
+Wire Wire Line
+	7630 5920 7730 5920
+Wire Wire Line
+	7730 5920 7830 5920
+Wire Wire Line
+	7830 5920 7930 5920
 Connection ~ 7130 5920
 Connection ~ 7230 5920
 Connection ~ 7330 5920
-Connection ~ 7375 5920
 Connection ~ 7430 5920
 Connection ~ 7530 5920
 Connection ~ 7630 5920
@@ -1660,7 +1649,9 @@ Connection ~ 7830 5920
 Wire Wire Line
 	2680 7310 2680 6965
 Wire Wire Line
-	2680 6965 3890 6965
+	2680 6965 3115 6965
+Wire Wire Line
+	3115 6965 3890 6965
 Wire Wire Line
 	2680 7410 2830 7410
 Wire Wire Line
@@ -1684,7 +1675,9 @@ Wire Wire Line
 Wire Wire Line
 	3030 8205 3880 8205
 Wire Wire Line
-	3120 6965 3120 7795
+	3120 6965 3120 7375
+Wire Wire Line
+	3120 7375 3120 7795
 Wire Wire Line
 	3120 6965 3115 6965
 Connection ~ 3115 6965
@@ -1693,7 +1686,13 @@ Wire Wire Line
 Wire Wire Line
 	4490 7165 4705 7165
 Wire Wire Line
-	4705 7165 4705 8830
+	4705 7165 4705 7575
+Wire Wire Line
+	4705 7575 4705 7995
+Wire Wire Line
+	4705 7995 4705 8405
+Wire Wire Line
+	4705 8405 4705 8830
 Wire Wire Line
 	4705 8405 4480 8405
 Wire Wire Line
@@ -1717,9 +1716,21 @@ Wire Wire Line
 Wire Wire Line
 	9935 7935 9935 8300
 Wire Wire Line
-	9935 8300 11935 8300
+	9935 8300 10335 8300
 Wire Wire Line
-	11935 8300 11935 7435
+	10335 8300 10735 8300
+Wire Wire Line
+	10735 8300 10945 8300
+Wire Wire Line
+	10945 8300 11135 8300
+Wire Wire Line
+	11135 8300 11535 8300
+Wire Wire Line
+	11535 8300 11935 8300
+Wire Wire Line
+	11935 8300 11935 8040
+Wire Wire Line
+	11935 8040 11935 7435
 Wire Wire Line
 	10335 7835 10335 8300
 Connection ~ 10335 8300
@@ -1732,7 +1743,6 @@ Connection ~ 11135 8300
 Wire Wire Line
 	11535 7535 11535 8300
 Connection ~ 11535 8300
-Connection ~ 10945 8300
 Wire Wire Line
 	10135 7135 10135 7635
 Wire Wire Line
@@ -1774,7 +1784,9 @@ Connection ~ 4705 8405
 Connection ~ 6305 1075
 Connection ~ 3825 1205
 Wire Wire Line
-	6175 5975 7030 5975
+	6175 5975 6680 5975
+Wire Wire Line
+	6680 5975 7030 5975
 Wire Wire Line
 	7030 5975 7030 5920
 Connection ~ 7030 5920
@@ -1783,7 +1795,9 @@ Connection ~ 6680 5975
 Wire Wire Line
 	4305 1205 4305 1260
 Wire Wire Line
-	4305 1260 5120 1260
+	4305 1260 4665 1260
+Wire Wire Line
+	4665 1260 5120 1260
 Wire Wire Line
 	5120 1260 5120 1100
 Connection ~ 4665 1260
@@ -1793,7 +1807,23 @@ Connection ~ 3120 7375
 Wire Wire Line
 	5930 5570 5930 5520
 Wire Wire Line
-	7030 1275 7930 1275
+	7030 1275 7130 1275
+Wire Wire Line
+	7130 1275 7230 1275
+Wire Wire Line
+	7230 1275 7330 1275
+Wire Wire Line
+	7330 1275 7430 1275
+Wire Wire Line
+	7430 1275 7530 1275
+Wire Wire Line
+	7530 1275 7630 1275
+Wire Wire Line
+	7630 1275 7730 1275
+Wire Wire Line
+	7730 1275 7830 1275
+Wire Wire Line
+	7830 1275 7930 1275
 Wire Wire Line
 	7930 1275 7930 1320
 Wire Wire Line
@@ -1828,7 +1858,9 @@ Connection ~ 4270 3785
 Wire Wire Line
 	4270 2485 4135 2485
 Wire Wire Line
-	4270 2355 4270 2485
+	4270 2355 4270 2385
+Wire Wire Line
+	4270 2385 4270 2485
 Wire Wire Line
 	4135 2385 4270 2385
 Connection ~ 4270 2385
@@ -1867,7 +1899,15 @@ Wire Wire Line
 Wire Wire Line
 	6345 7940 6345 8305
 Wire Wire Line
-	6345 8305 7945 8305
+	6345 8305 6745 8305
+Wire Wire Line
+	6745 8305 7145 8305
+Wire Wire Line
+	7145 8305 7355 8305
+Wire Wire Line
+	7355 8305 7545 8305
+Wire Wire Line
+	7545 8305 7945 8305
 Wire Wire Line
 	6745 7840 6745 8305
 Connection ~ 6745 8305
@@ -1927,7 +1967,15 @@ Wire Wire Line
 Wire Wire Line
 	5255 6965 5290 6965
 Wire Wire Line
-	5290 6940 5290 8630
+	5290 6940 5290 6965
+Wire Wire Line
+	5290 6965 5290 7375
+Wire Wire Line
+	5290 7375 5290 7795
+Wire Wire Line
+	5290 7795 5290 8205
+Wire Wire Line
+	5290 8205 5290 8630
 Wire Wire Line
 	5290 8630 5255 8630
 Wire Wire Line
@@ -1951,4 +1999,6 @@ F 3 "" H 5290 6940 50  0001 C CNN
 	1    5290 6940
 	-1   0    0    -1  
 $EndComp
+Wire Wire Line
+	7330 5920 7375 5920
 $EndSCHEMATC

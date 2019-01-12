@@ -31,7 +31,7 @@ parameter W=10;
 parameter F=11;//velocity width
 parameter T=4;//time width
 parameter I=13;//pins input
-parameter O=10;//pins output
+parameter O=9;//pins output
 input clk;
 
 input SCK, SSEL, MOSI;
@@ -67,7 +67,7 @@ end
 
 wire do_enable_wdt, do_tristate;
 wdt w(clk, do_enable_wdt, &div2048, do_tristate);
-pwm p(pin, &div2048, real_pout);
+pwm p(pin, &div2048, real_pout, 1);
 stepgen #(W,F,T) s0(clk, stepcnt, pos0, vel0, dirtime, steptime, real_step[0], real_dir[0], tap);
 stepgen #(W,F,T) s1(clk, stepcnt, pos1, vel1, dirtime, steptime, real_step[1], real_dir[1], tap);
 stepgen #(W,F,T) s2(clk, stepcnt, pos2, vel2, dirtime, steptime, real_step[2], real_dir[2], tap);

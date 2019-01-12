@@ -41,7 +41,7 @@ set_global_assignment -name DEVICE EPM570T100C5
 set_global_assignment -name TOP_LEVEL_ENTITY spi_main
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION "13.0 SP1"
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "11:33:52  DECEMBER 20, 2018"
-set_global_assignment -name LAST_QUARTUS_VERSION "13.0 SP1"
+set_global_assignment -name LAST_QUARTUS_VERSION "9.1 SP1"
 set_global_assignment -name VERILOG_FILE wdt.v
 set_global_assignment -name VERILOG_FILE stepgen.v
 set_global_assignment -name VERILOG_FILE spi_main.v
@@ -89,16 +89,15 @@ set_location_assignment PIN_73 -to step[0]
 set_location_assignment PIN_75 -to step[1]
 set_location_assignment PIN_77 -to step[2]
 set_location_assignment PIN_41 -to step[3]
-set_location_assignment PIN_42 -to dout[0]
-set_location_assignment PIN_43 -to dout[1]
-set_location_assignment PIN_92 -to dout[2]
-set_location_assignment PIN_91 -to dout[3]
-set_location_assignment PIN_96 -to dout[4]
-set_location_assignment PIN_95 -to dout[5]
-set_location_assignment PIN_98 -to dout[6]
-set_location_assignment PIN_97 -to dout[7]
-set_location_assignment PIN_100 -to dout[8]
-set_location_assignment PIN_99 -to dout[9]
+set_location_assignment PIN_92 -to dout[0]
+set_location_assignment PIN_91 -to dout[1]
+set_location_assignment PIN_96 -to dout[2]
+set_location_assignment PIN_95 -to dout[3]
+set_location_assignment PIN_98 -to dout[4]
+set_location_assignment PIN_97 -to dout[5]
+set_location_assignment PIN_100 -to dout[6]
+set_location_assignment PIN_99 -to dout[7]
+set_location_assignment PIN_42 -to dout[8]
 set_global_assignment -name RESERVE_ALL_UNUSED_PINS_NO_OUTPUT_GND "AS INPUT TRI-STATED"
 set_instance_assignment -name IO_STANDARD "3.3V SCHMITT TRIGGER INPUT" -to din[0]
 set_instance_assignment -name IO_STANDARD "3.3V SCHMITT TRIGGER INPUT" -to din[1]
@@ -111,3 +110,7 @@ set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to din[2]
 set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to din[1]
 set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to din[0]
 set_global_assignment -name VERILOG_FILE pwm.v
+set_global_assignment -name MISC_FILE "D:/PROJECT/RPi-CNC-HAT/spi_cpld_firmware/spi_cpld_driver.dpf"
+set_global_assignment -name LL_ROOT_REGION ON -section_id "Root Region"
+set_global_assignment -name LL_MEMBER_STATE LOCKED -section_id "Root Region"
+set_location_assignment PIN_43 -to pout
