@@ -110,3 +110,4 @@ set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to din[3]
 set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to din[2]
 set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to din[1]
 set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to din[0]
+set_global_assignment -name VERILOG_FILE pwm.v
