@@ -2,7 +2,8 @@ clk=40MHz
 spi_clk=clk/2
 stepcnt=clk/32		0.8us
 wd_cnt=clk/2048   51us/19.5kHz
-
+#define RPM_V(r) (uint16)((RPM_FREQ*60)/r)//
+===================
 PINOUT
 IN: 
 - opto 5
@@ -42,7 +43,6 @@ LED -1
 20 spibytecnt[4:0]
 
 ===================
-
 dtparam=spi=on
 dtoverlay=spi1-3cs  #3 chip select
 on /boot/config.txt file. 
