@@ -1,5 +1,7 @@
 clk=40MHz
 spi_clk=clk/2
+stepcnt=clk/32		0.8us
+wd_cnt=clk/2048   51us/19.5kHz
 
 PINOUT
 IN: 
@@ -12,7 +14,7 @@ OUT:
 
 LED -1
 ===================
-#|   out    |    in
+#|   out      |    in
 -------------------------
 0  pos0[7:0]   vel0[7:0]
 1  pos0[15:8]  vel0[11:8]
@@ -29,7 +31,7 @@ LED -1
                Spolarity
 11 0           steptime[3:0]
                tap[1:0]
-12 pos3[7:0]
+12 pos3[7:0]   pin[7:0]
 13 pos3[15:8]
 14 pos3[20:16]
 15 0

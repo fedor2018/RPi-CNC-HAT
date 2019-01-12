@@ -26,7 +26,7 @@ assign out = in ? 1'bz : 1'b0;
 endmodule
 `endif
 
-module spi_main(clk, SCK, MOSI, MISO, SSEL, LED, dout, din, step, dir);
+module spi_main(clk, SCK, MOSI, MISO, SSEL, LED, dout, din, step, dir, pout);
 parameter W=10;
 parameter F=11;//velocity width
 parameter T=4;//time width
@@ -41,9 +41,11 @@ input [I-1:0] din;
 
 reg Spolarity;
 
-reg[O-1:0] real_dout; output [O-1:0] dout = do_tristate ? {O-1{1'bZ}} : real_dout; 
+reg[O-1:0] real_dout; output [O-1:0] dout = do_tristate ? {O{1'bZ}} : real_dout; 
 wire[3:0] real_step; output [3:0] step = do_tristate ? 4'bZ : real_step ^ {4{Spolarity}};
 wire[3:0] real_dir; output [3:0] dir = do_tristate ? 4'bZ : real_dir;
+wire real_pout; output pout = do_tristate ? 1'bZ : real_pout;
+
 `ifdef OD
 OC_Buff ocout[O-1:0](real_dout, dout);
 OC_Buff ocstep[3:0](real_step ^ {4{Spolarity}}, step);
@@ -54,6 +56,7 @@ wire [W+F-1:0] pos0, pos1, pos2, pos3;
 reg  [F:0]     vel0, vel1, vel2, vel3;
 reg [T-1:0] dirtime, steptime;
 reg [1:0] tap;
+reg [7:0] pin = 8'd0;
 
 reg [10:0] div2048;
 wire stepcnt = ~|(div2048[5:0]);
@@ -64,7 +67,7 @@ end
 
 wire do_enable_wdt, do_tristate;
 wdt w(clk, do_enable_wdt, &div2048, do_tristate);
-
+pwm p(pin, &div2048, real_pout);
 stepgen #(W,F,T) s0(clk, stepcnt, pos0, vel0, dirtime, steptime, real_step[0], real_dir[0], tap);
 stepgen #(W,F,T) s1(clk, stepcnt, pos1, vel1, dirtime, steptime, real_step[1], real_dir[1], tap);
 stepgen #(W,F,T) s2(clk, stepcnt, pos2, vel2, dirtime, steptime, real_step[2], real_dir[2], tap);
@@ -198,7 +201,12 @@ always @(posedge clk) begin
 		end
 		
 		//------------------------------------------------- word 3
-		else if(spibytecnt == 5'b01100) data_outbuf <= pos3[7:0];
+		else if(spibytecnt == 5'b01100) begin // 12
+			data_outbuf <= pos3[7:0];
+			if(byte_received) begin
+				pin <= data_recvd;
+			end
+		end
 		else if(spibytecnt == 5'b01101) data_outbuf <= pos3[15:8];
 		else if(spibytecnt == 5'b01110) data_outbuf <= pos3[W+F-1:16];
 		else if(spibytecnt == 5'b01111) data_outbuf <= 8'b0;
