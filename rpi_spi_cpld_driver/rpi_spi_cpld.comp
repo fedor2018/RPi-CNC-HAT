@@ -76,6 +76,10 @@ pin out bit din.##_not[16]
 """din.\\fIMM\\fR corresponds to the pin labeled
 IN\\fIM\\fR on the pinout diagram.""";
 
+param rw u16 spindle.rpm "Spindle rpm";
+//param rw u32 servo.pwm "Set pwm 1-2ms (0-255)";
+param rw u8 pwm.out "Set pwm 0-255";
+
 param rw u32 communication_error """Incremented each time 
 pluto-step.read detects an error code in the EPP status register.  While
 this register is nonzero, new values are not being written to the Pluto-P
@@ -130,11 +134,9 @@ author "Matsche";
 #include <errno.h>
 #include <stdarg.h>
 
-/* SPICLK = 250 MHz/(1 << SPICLKDIV) */
-#define SPICLKDIV		6		/* SPI clk divider (0-15) */
-#define SPIBUFSIZE		20		/* SPI buffer size in bytes */
+//#define SPIBUFSIZE		20		/* SPI buffer size in bytes */
+#define SPI_BUFFER_SIZE 20
 #define BUFSIZE			(SPIBUFSIZE/4)
-#define SPI_BUFFER_SIZE 100
 
 #include "spi.h"
 #include "clk.h"
@@ -170,6 +172,8 @@ typedef struct {
 #define ONE (1<<F)
 #define MAX_STEP_RATE ((1<<F)-1)
 
+#define RPM_FREQ 19000 //?
+
 EXTRA_SETUP() {
   if(set_clk(40.0)<0){
 		rtapi_print_msg(RTAPI_MSG_ERR,
@@ -184,7 +188,8 @@ EXTRA_SETUP() {
   }
   spi_mode = 0;
   spi_bits = 8;
-  spi_speed = 500000;
+// SPICLK = 250 MHz/6 ~5Mbit
+  spi_speed = 5000000;
   spi_init(fd);
   
 	return 0;
@@ -204,29 +209,30 @@ FUNCTION(spitest) {
 	}
 	
 	/* activate transfer */
-	BCM2835_SPICS = SPI_CS_TA|SPI_CS_CPHA;
+//	BCM2835_SPICS = SPI_CS_TA|SPI_CS_CPHA;
 
 	/* send txBuf */
 	/* RPi SPI transfers 8 bits at a time only */
-	buf = (char *)txBuf;
+/*	buf = (char *)txBuf;
 	for (i=0; i<SPIBUFSIZE; i++) {
 		BCM2835_SPIFIFO = *buf++;
 	}
-
+*/
 	/* wait until transfer is finished */
-	while (!(BCM2835_SPICS & SPI_CS_DONE));
+//	while (!(BCM2835_SPICS & SPI_CS_DONE));
 
 	/* clear DONE bit */
-	BCM2835_SPICS = SPI_CS_DONE;
+//	BCM2835_SPICS = SPI_CS_DONE;
 
 	/*****************************************************************************/
 	/* read buffer */
 	/* RPi SPI transfers 8 bits at a time only */
-	buf = (char *)rxBuf;
+/*	buf = (char *)rxBuf;
 	for (i=0; i<SPIBUFSIZE; i++) {
 		*buf++ = BCM2835_SPIFIFO;
 	}
-	
+*/
+  spi_transfer32(fd, txBuf, rxBuf);	
 	for (i=5; i<BUFSIZE; i++) {
 		spidata = rxBuf[i];
 	}
@@ -338,34 +344,37 @@ FUNCTION(transfer) {
 	}else r &= 0x7FFF;
 	txBuf[2] |= r<<16;
 	
-	for (i=3; i<BUFSIZE; i++) {
+  txBuf[3]=(uint32_t)pwm_out;
+	for (i=4; i<BUFSIZE; i++) { //fake
 		txBuf[i] = i;
 	}
 	
 	/* activate transfer */
-	BCM2835_SPICS = SPI_CS_TA|SPI_CS_CPHA;
+//	BCM2835_SPICS = SPI_CS_TA|SPI_CS_CPHA;
 
 	/* send txBuf */
 	/* RPi SPI transfers 8 bits at a time only */
-	buf = (char *)txBuf;
+/*	buf = (char *)txBuf;
 	for (i=0; i<SPIBUFSIZE; i++) {
 		BCM2835_SPIFIFO = *buf++;
 	}
-
+*/
 	/* wait until transfer is finished */
-	while (!(BCM2835_SPICS & SPI_CS_DONE));
+//	while (!(BCM2835_SPICS & SPI_CS_DONE));
 
 	/* clear DONE bit */
-	BCM2835_SPICS = SPI_CS_DONE;
+//	BCM2835_SPICS = SPI_CS_DONE;
 
 	/*****************************************************************************/
 	/* read buffer */
 	/* RPi SPI transfers 8 bits at a time only */
-	buf = (char *)rxBuf;
+/*	buf = (char *)rxBuf;
 	for (i=0; i<SPIBUFSIZE; i++) {
 		*buf++ = BCM2835_SPIFIFO;
 	}
-	
+*/
+  spi_transfer32(fd, txBuf, rxBuf);
+  	
 	for(i=0; i<4; i++) {
 		int64_t count;
 		double fcount;
@@ -400,8 +409,10 @@ FUNCTION(transfer) {
 		din(i) = !!b;
 		din_not(i) = !b;
 	}
-	
-	for (i=5; i<BUFSIZE; i++) {
+
+	spindle_rpm=(RPM_FREQ*60)/(spidata>>16);
+  
+	for (i=5; i<BUFSIZE; i++) { //clear buf?
 		spidata = rxBuf[i];
 	}
 }

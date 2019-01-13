@@ -76,8 +76,23 @@ void spi_set_delay(int delay)
 	spi_delay = delay;
 }
 
+int spi_transfer32(int fd, uint32_t *tx, uint32_t *rx){
+	struct spi_ioc_transfer tr = 
+	{
+		.tx_buf = (unsigned long)tx,
+		.rx_buf = (unsigned long)rx,
+		.len = SPI_BUFFER_SIZE,
+		.delay_usecs = spi_delay,
+		.speed_hz = spi_speed,
+		.bits_per_word = spi_bits,
+	};
+	ret = ioctl(fd, SPI_IOC_MESSAGE(1), &tr);
+	if(ret < 1)
+		pabort("can't send spi message");
+	return ret;
+}
 //send and recieve data.
-int transfer(int fd, uint8_t *data, uint8_t *receive)
+int spi_transfer()
 {
 	int ret,i;
 	uint8_t tx[SPI_BUFFER_SIZE];
