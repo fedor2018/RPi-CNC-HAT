@@ -17,6 +17,7 @@
 //    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //**********************************************************************
 //`define OD
+//`define USE_SERVO
 // Open-Drain buffer
 `ifdef OD
 module OC_Buff(in, out);
@@ -71,7 +72,11 @@ end
 
 wire do_enable_wdt, do_tristate;
 wdt w(clk, do_enable_wdt, in_clk, do_tristate);
+`ifdef USE_SERVO
+rcservo s(in_pwm, in_clk, real_pout);
+`else
 pwm p(in_pwm, in_clk, real_pout);
+`endif
 rpm r(rin, &div2048[8:0], rpm);
 stepgen #(W,F,T) s0(clk, stepcnt, pos0, vel0, dirtime, steptime, real_step[0], real_dir[0], tap);
 stepgen #(W,F,T) s1(clk, stepcnt, pos1, vel1, dirtime, steptime, real_step[1], real_dir[1], tap);
