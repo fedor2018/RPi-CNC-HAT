@@ -17,7 +17,7 @@
 //    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //**********************************************************************
 //`define OD
-//`define USE_SERVO
+`define USE_SERVO
 // Open-Drain buffer
 `ifdef OD
 module OC_Buff(in, out);

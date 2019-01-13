@@ -137,6 +137,7 @@ author "Matsche";
 #define SPI_BUFFER_SIZE 100
 
 #include "spi.h"
+#include "clk.h"
 
 volatile unsigned *gpio, *spi;
 int fd;
@@ -170,6 +171,11 @@ typedef struct {
 #define MAX_STEP_RATE ((1<<F)-1)
 
 EXTRA_SETUP() {
+  if(set_clk(40.0)<0){
+		rtapi_print_msg(RTAPI_MSG_ERR,
+		        "HAL_rpi_spi_cpld: ERROR: cannot set clk\n");
+		return -1;
+  }
   fd=open("/dev/spidev1.2", O_RDWR);
   if(fd<0){
 		rtapi_print_msg(RTAPI_MSG_ERR,
