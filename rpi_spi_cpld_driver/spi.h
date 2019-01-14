@@ -64,7 +64,7 @@ extern uint16_t spi_delay;
 
 void pabort(const char *s);
 int spi_transfer(int, uint8_t *, uint8_t *);
-int spi_transfer32(int fd, uint32_t *tx, uint32_t *rx);
+int spi_transfer32(int fd, volatile  __u32 *tx, volatile __u32 *rx);
 int spi_set_mode(int, int);
 int spi_set_word(int, int);
 int spi_set_speed(int, int);

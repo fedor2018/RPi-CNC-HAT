@@ -76,7 +76,7 @@ void spi_set_delay(int delay)
 	spi_delay = delay;
 }
 
-int spi_transfer32(int fd, uint32_t *tx, uint32_t *rx){
+int spi_transfer32(int fd, __u32 *tx, __u32 *rx){
 	struct spi_ioc_transfer tr = 
 	{
 		.tx_buf = (unsigned long)tx,

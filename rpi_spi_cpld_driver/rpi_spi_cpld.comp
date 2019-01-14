@@ -18,10 +18,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-component pluto_step_rpspi """Hardware driver and firmware for the Pluto-P parallel-port FPGA, for use with stepper machines.and RaspberryPi SPI .""";
+component rpi_spi_cpld """Hardware driver and firmware for the RPi-CNC-HAT, for use with stepper machines.and RaspberryPi SPI .""";
 
 description """
-Pluto_step is a LinuxCNC software driver and associated firmware that allow the Pluto-P board to be used to control a stepper-based CNC machine.
+rpi_spi_cpld is a LinuxCNC software driver and associated firmware that allow the RPi-CNC-HAT board to be used to control a stepper-based CNC machine.
 
 The driver has 4 step+direction channels, 14 dedicated digital outputs, and 16
 dedicated digital inputs.
@@ -76,9 +76,9 @@ pin out bit din.##_not[16]
 """din.\\fIMM\\fR corresponds to the pin labeled
 IN\\fIM\\fR on the pinout diagram.""";
 
-param rw u16 spindle.rpm "Spindle rpm";
+param rw u32 spindle.rpm "Spindle rpm";
 //param rw u32 servo.pwm "Set pwm 1-2ms (0-255)";
-param rw u8 pwm.out "Set pwm 0-255";
+param rw u32 pwm.out "Set pwm 0-255";
 
 param rw u32 communication_error """Incremented each time 
 pluto-step.read detects an error code in the EPP status register.  While
@@ -106,14 +106,14 @@ function transfer  "transfers data between master and slave devices";
 function spitest "test spi transfer (only for developers)";
 
 license "GPL";
-author "Matsche";
+author "Matsche & fedor2018";
 ;;
 
 #include "rtapi.h"
 #include "rtapi_bitops.h"
 #include "rtapi_app.h"
 #include "hal.h"
-
+/*
 #if !defined(BUILD_SYS_USER_DSO)
 #error "This driver is for usermode threads only"
 #endif
@@ -121,7 +121,7 @@ author "Matsche";
 #if !defined(TARGET_PLATFORM_RASPBERRY)
 #error "This driver is for the Raspberry Pi platform only"
 #endif
-
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -134,16 +134,22 @@ author "Matsche";
 #include <errno.h>
 #include <stdarg.h>
 
-//#define SPIBUFSIZE		20		/* SPI buffer size in bytes */
+typedef enum {
+    UNSUPPORTED,
+    RPI,
+    RPI_2
+} platform_t;
+
+
 #define SPI_BUFFER_SIZE 20
-#define BUFSIZE			(SPIBUFSIZE/4)
+#define BUFSIZE		(SPI_BUFFER_SIZE/4)
 
 #include "spi.h"
 #include "clk.h"
 
 volatile unsigned *gpio, *spi;
 int fd;
-static volatile u32 txBuf[BUFSIZE], rxBuf[BUFSIZE];
+static volatile __u32 txBuf[BUFSIZE], rxBuf[BUFSIZE];
 static platform_t platform;
 
 platform_t check_platform(void);
@@ -208,31 +214,7 @@ FUNCTION(spitest) {
 		txBuf[i] = i;
 	}
 	
-	/* activate transfer */
-//	BCM2835_SPICS = SPI_CS_TA|SPI_CS_CPHA;
-
-	/* send txBuf */
-	/* RPi SPI transfers 8 bits at a time only */
-/*	buf = (char *)txBuf;
-	for (i=0; i<SPIBUFSIZE; i++) {
-		BCM2835_SPIFIFO = *buf++;
-	}
-*/
-	/* wait until transfer is finished */
-//	while (!(BCM2835_SPICS & SPI_CS_DONE));
-
-	/* clear DONE bit */
-//	BCM2835_SPICS = SPI_CS_DONE;
-
-	/*****************************************************************************/
-	/* read buffer */
-	/* RPi SPI transfers 8 bits at a time only */
-/*	buf = (char *)rxBuf;
-	for (i=0; i<SPIBUFSIZE; i++) {
-		*buf++ = BCM2835_SPIFIFO;
-	}
-*/
-  spi_transfer32(fd, txBuf, rxBuf);	
+	spi_transfer32(fd, txBuf, rxBuf);	
 	for (i=5; i<BUFSIZE; i++) {
 		spidata = rxBuf[i];
 	}
@@ -344,36 +326,12 @@ FUNCTION(transfer) {
 	}else r &= 0x7FFF;
 	txBuf[2] |= r<<16;
 	
-  txBuf[3]=(uint32_t)pwm_out;
+	txBuf[3]=(__u32)pwm_out;
 	for (i=4; i<BUFSIZE; i++) { //fake
 		txBuf[i] = i;
 	}
 	
-	/* activate transfer */
-//	BCM2835_SPICS = SPI_CS_TA|SPI_CS_CPHA;
-
-	/* send txBuf */
-	/* RPi SPI transfers 8 bits at a time only */
-/*	buf = (char *)txBuf;
-	for (i=0; i<SPIBUFSIZE; i++) {
-		BCM2835_SPIFIFO = *buf++;
-	}
-*/
-	/* wait until transfer is finished */
-//	while (!(BCM2835_SPICS & SPI_CS_DONE));
-
-	/* clear DONE bit */
-//	BCM2835_SPICS = SPI_CS_DONE;
-
-	/*****************************************************************************/
-	/* read buffer */
-	/* RPi SPI transfers 8 bits at a time only */
-/*	buf = (char *)rxBuf;
-	for (i=0; i<SPIBUFSIZE; i++) {
-		*buf++ = BCM2835_SPIFIFO;
-	}
-*/
-  spi_transfer32(fd, txBuf, rxBuf);
+	spi_transfer32(fd, txBuf, rxBuf);
   	
 	for(i=0; i<4; i++) {
 		int64_t count;
