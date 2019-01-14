@@ -7,6 +7,5 @@
 *.xrf
 *.sdo
 *.vho
-/spi_cpld_firmware/*.qsf
 /spi_cpld_firmware/*.qdf
 /spi_cpld_firmware/greybox_tmp
