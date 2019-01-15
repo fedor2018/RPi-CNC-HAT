@@ -6,6 +6,9 @@ rpi_spi_cpld is a LinuxCNC software driver and associated firmware that allow th
 The driver has 4 step+direction channels, 14 dedicated digital outputs, and 16
 dedicated digital inputs.
 
+.SS CPLD clk from rpi
+Use loadusr minimal_clk XX.X
+
 .SS Step generators
 The step generator takes a position input and output.
 
@@ -56,7 +59,7 @@ pin out bit din.##_not[16]
 """din.\\fIMM\\fR corresponds to the pin labeled
 IN\\fIM\\fR on the pinout diagram.""";
 
-param rw u32 spindle.rpm "Spindle rpm";
+param r u32 spindle.rpm "Spindle rpm";
 //param rw u32 servo.pwm "Set pwm 1-2ms (0-255)";
 param rw u32 pwm.out "Set pwm 0-255";
 
@@ -78,7 +81,6 @@ option singleton;
 option extra_setup;
 option extra_cleanup;
 option data internal;
-//extra_link_args "lspi.o -lclk.o";
 
 see_also """The \\fIpluto_step\\fR section in the HAL User Manual, which shows the location of each physical pin on the pluto board.""";
 
@@ -153,244 +155,8 @@ typedef struct {
 #define ONE (1<<F)
 #define MAX_STEP_RATE ((1<<F)-1)
 #define RPM_FREQ 19000 //?
-#define PLLD_FREQ 500e6
-
-static volatile uint32_t piModel = 1;
-
-static volatile uint32_t piPeriphBase = 0x20000000;
-static volatile uint32_t piBusAddr = 0x40000000;
-
-#define SYST_BASE  (piPeriphBase + 0x003000)
-#define DMA_BASE   (piPeriphBase + 0x007000)
-#define CLK_BASE   (piPeriphBase + 0x101000)
-#define GPIO_BASE  (piPeriphBase + 0x200000)
-#define UART0_BASE (piPeriphBase + 0x201000)
-#define PCM_BASE   (piPeriphBase + 0x203000)
-#define SPI0_BASE  (piPeriphBase + 0x204000)
-#define I2C0_BASE  (piPeriphBase + 0x205000)
-#define PWM_BASE   (piPeriphBase + 0x20C000)
-#define BSCS_BASE  (piPeriphBase + 0x214000)
-#define UART1_BASE (piPeriphBase + 0x215000)
-#define I2C1_BASE  (piPeriphBase + 0x804000)
-#define I2C2_BASE  (piPeriphBase + 0x805000)
-#define DMA15_BASE (piPeriphBase + 0xE05000)
-
-#define DMA_LEN   0x1000 /* allow access to all channels */
-#define CLK_LEN   0xA8
-#define GPIO_LEN  0xB4
-#define SYST_LEN  0x1C
-#define PCM_LEN   0x24
-#define PWM_LEN   0x28
-#define I2C_LEN   0x1C
-
-#define CLK_PASSWD  (0x5A<<24)
-
-#define CLK_CTL_MASH(x)((x)<<9)
-#define CLK_CTL_BUSY    (1 <<7)
-#define CLK_CTL_KILL    (1 <<5)
-#define CLK_CTL_ENAB    (1 <<4)
-#define CLK_CTL_SRC(x) ((x)<<0)
-
-#define CLK_SRCS 4
-
-#define CLK_CTL_SRC_OSC  1  /* 19.2 MHz */
-#define CLK_CTL_SRC_PLLC 5  /* 1000 MHz */
-#define CLK_CTL_SRC_PLLD 6  /*  500 MHz */
-#define CLK_CTL_SRC_HDMI 7  /*  216 MHz */
-
-#define CLK_DIV_DIVI(x) ((x)<<12)
-#define CLK_DIV_DIVF(x) ((x)<< 0)
-
-#define PI_ALT0   4
-
-#define CLK_GP0_CTL 28
-#define CLK_GP0_DIV 29
-#define CLK_GP1_CTL 30
-#define CLK_GP1_DIV 31
-#define CLK_GP2_CTL 32
-#define CLK_GP2_DIV 33
-
-static volatile uint32_t  *gpioReg = MAP_FAILED;
-static volatile uint32_t  *systReg = MAP_FAILED;
-static volatile uint32_t  *clkReg  = MAP_FAILED;
-
-static uint32_t * initMapMem(int fd, uint32_t addr, uint32_t len)
-{
-    return (uint32_t *) mmap(0, len,
-       PROT_READ|PROT_WRITE|PROT_EXEC,
-       MAP_SHARED|MAP_LOCKED,
-       fd, addr);
-}
-
-void gpioSetMode(unsigned gpio, unsigned mode)
-{
-   int reg, shift;
-
-   reg   =  gpio/10;
-   shift = (gpio%10) * 3;
-
-   gpioReg[reg] = (gpioReg[reg] & ~(7<<shift)) | (mode<<shift);
-}
-
-unsigned gpioHardwareRevision(void){
-   static unsigned rev = 0;
-
-   FILE * filp;
-   char buf[512];
-   char term;
-   int chars=4; /* number of chars in revision string */
-
-   if (rev) return rev;
-
-   piModel = 0;
-
-   filp = fopen ("/proc/cpuinfo", "r");
-
-   if (filp != NULL)
-   {
-      while (fgets(buf, sizeof(buf), filp) != NULL)
-      {
-         if (piModel == 0)
-         {
-            if (!strncasecmp("model name", buf, 10))
-            {
-               if (strstr (buf, "ARMv6") != NULL)
-               {
-                  piModel = 1;
-                  chars = 4;
-                  piPeriphBase = 0x20000000;
-                  piBusAddr = 0x40000000;
-               }
-               else if (strstr (buf, "ARMv7") != NULL)
-               {
-                  piModel = 2;
-                  chars = 6;
-                  piPeriphBase = 0x3F000000;
-                  piBusAddr = 0xC0000000;
-               }
-            }
-         }
-
-         if (!strncasecmp("revision", buf, 8))
-         {
-            if (sscanf(buf+strlen(buf)-(chars+1),
-               "%x%c", &rev, &term) == 2)
-            {
-               if (term != '\n') rev = 0;
-            }
-         }
-      }
-
-      fclose(filp);
-   }
-   return rev;
-}
-
-int gpioInitialise(void){
-   int fd;
-
-   gpioHardwareRevision(); /* sets piModel, needed for peripherals address */
-   fd = open("/dev/mem", O_RDWR | O_SYNC) ;
-   if (fd < 0){
-      //fprintf(stderr,"This program needs root privileges.  Try using sudo\n");
-      return -1;
-   }
-
-   gpioReg  = initMapMem(fd, GPIO_BASE, GPIO_LEN);
-   systReg  = initMapMem(fd, SYST_BASE, SYST_LEN);
-   clkReg   = initMapMem(fd, CLK_BASE,  CLK_LEN);
-
-   close(fd);
-
-   if ((gpioReg == MAP_FAILED) ||
-       (systReg == MAP_FAILED) ||
-       (clkReg == MAP_FAILED)){
-      //fprintf(stderr,  "Bad, mmap failed\n");
-      return -1;
-   }
-   return 0;
-}
-
-static int initClock(int clock, int source, int divI, int divF, int MASH)
-{
-   int ctl[] = {CLK_GP0_CTL, CLK_GP2_CTL};
-   int div[] = {CLK_GP0_DIV, CLK_GP2_DIV};
-   int src[CLK_SRCS] =
-      {CLK_CTL_SRC_PLLD,
-       CLK_CTL_SRC_OSC,
-       CLK_CTL_SRC_HDMI,
-       CLK_CTL_SRC_PLLC};
-
-   int clkCtl, clkDiv, clkSrc;
-   uint32_t setting;
-
-   if ((clock  < 0) || (clock  > 1))    return -1;
-   if ((source < 0) || (source > 3 ))   return -2;
-   if ((divI   < 2) || (divI   > 4095)) return -3;
-   if ((divF   < 0) || (divF   > 4095)) return -4;
-   if ((MASH   < 0) || (MASH   > 3))    return -5;
-
-   clkCtl = ctl[clock];
-   clkDiv = div[clock];
-   clkSrc = src[source];
-
-   clkReg[clkCtl] = CLK_PASSWD | CLK_CTL_KILL;
-
-   /* wait for clock to stop */
-
-   while (clkReg[clkCtl] & CLK_CTL_BUSY)
-   {
-      usleep(10);
-   }
-
-   clkReg[clkDiv] =
-      (CLK_PASSWD | CLK_DIV_DIVI(divI) | CLK_DIV_DIVF(divF));
-
-   usleep(10);
-
-   clkReg[clkCtl] =
-      (CLK_PASSWD | CLK_CTL_MASH(MASH) | CLK_CTL_SRC(clkSrc));
-
-   usleep(10);
-
-   clkReg[clkCtl] |= (CLK_PASSWD | CLK_CTL_ENAB);
-}
-
-int set_clk(double freq){//xx.ffMhz
-   double div, f;
-   char *clocks[CLK_SRCS]={"PLLD", " OSC", "HDMI", "PLLC"};
-   int divI, divF;
-
-  freq *= 1000.0;
-  if ((freq < 4687.5) || (freq > PLLD_FREQ)) {return(-1);}
-
-  div = PLLD_FREQ / freq;
-  divI = div;
-  divF = (div-divI) * 4096;
-
-//  printf("%s: %4d %4d ", clocks[0], divI, divF);
-  if ((divI<2) || (divI>4095)){
-    //printf("ILLEGAL\n");
-    return -1;
-  }else{
-    div = divI + (divF / 4096);
-    f = PLLD_FREQ/div;
-    //printf("%7.2f MHz\n", f/1000000.0);
-  }
-
-  if (gpioInitialise() < 0)
-		return -1;
-  initClock(0, 0, divI, divF, 0);
-  gpioSetMode(4, PI_ALT0);
-  return 0;
-}
 
 EXTRA_SETUP() {
-  if(set_clk(40.0)<0){
-		rtapi_print_msg(RTAPI_MSG_ERR,
-		        "HAL_rpi_spi_cpld: ERROR: cannot set clk\n");
-		return -1;
-  }
   fd=open("/dev/spidev1.2", O_RDWR);
   if(fd<0){
 		rtapi_print_msg(RTAPI_MSG_ERR,
@@ -439,6 +205,22 @@ FUNCTION(spitest) {
 	for (i=5; i<BUFSIZE; i++) {
 		spidata = rxBuf[i];
 	}
+}
+static inline int64_t extend(int64_t old, int newlow, int nbits) {
+    int64_t mask = (1<<nbits) - 1;
+    int64_t maxdelta = mask / 2;
+    int64_t oldhigh = old & ~mask;
+    int64_t oldlow = old & mask;
+    int64_t candidate1, candidate2;
+
+    candidate1 = oldhigh | newlow;
+    if(oldlow < newlow) candidate2 = candidate1 - (1<<nbits);
+    else                candidate2 = candidate1 + (1<<nbits);
+
+    if (llabs(old-candidate1) > maxdelta)
+	return candidate2;
+    else
+	return candidate1;
 }
 	
 FUNCTION(transfer) {
