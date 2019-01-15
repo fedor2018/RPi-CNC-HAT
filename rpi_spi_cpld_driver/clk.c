@@ -1,33 +1,6 @@
 /*
-   gcc -o minimal_clk minimal_clk.c
-   sudo ./minimal_clk x.xx [options]
-*/
-
-/*
-minimal_clock.c
-2014-05-20
-Public Domain
-*/
-
-/*
-
-This allows the setting of the three general purpose clocks.
-
-The clocks are named GPCLK0, GPCLK1, and GPCLK2.
-
-The clocks are accessible from the following gpios.
 
 gpio4  GPCLK0 ALT0
-gpio5  GPCLK1 ALT0 B+ and compute module only (reserved for system use)
-gpio6  GPCLK2 ALT0 B+ and compute module only
-gpio20 GPCLK0 ALT5 B+ and compute module only
-gpio21 GPCLK1 ALT5 Not available on Rev.2 B (reserved for system use)
-
-gpio32 GPCLK0 ALT0 Compute module only
-gpio34 GPCLK0 ALT0 Compute module only
-gpio42 GPCLK1 ALT0 Compute module only (reserved for system use)
-gpio43 GPCLK2 ALT0 Compute module only
-gpio44 GPCLK1 ALT0 Compute module only (reserved for system use)
 
 Clock sources
 
@@ -408,7 +381,7 @@ int gpioInitialise(void)
 #define PLLD_FREQ 500e6
 
 int set_clk(double freq){//xx.ffMhz
-   double freq, div, f;
+   double div, f;
 //   double cfreq[CLK_SRCS]={500e6, 19.2e6, 216e6, 1000e6};
    char *clocks[CLK_SRCS]={"PLLD", " OSC", "HDMI", "PLLC"};
    int divI, divF;
@@ -424,17 +397,17 @@ int set_clk(double freq){//xx.ffMhz
 
 //  for (i=0; i<CLK_SRCS; i++){
   printf("%s: %4d %4d ", clocks[0], divI, divF);
-  if ((divI<2) || (divI>4095)) 
+  if ((divI<2) || (divI>4095)){
     printf("ILLEGAL\n");
     return -1;
-  else{
+  }else{
     div = divI + (divF / 4096);
     f = PLLD_FREQ/div;
     printf("%7.2f MHz\n", f/1000000.0);
   }
 
   if (gpioInitialise() < 0) return 1;
-  initClock(opt_c, opt_s, divI[opt_s], divF[opt_s], opt_m);
+  initClock(0, 0, divI, divF, 0);
   gpioSetMode(4, PI_ALT0);
   return 0;
 }

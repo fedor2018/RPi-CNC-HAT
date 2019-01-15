@@ -63,7 +63,6 @@ extern uint32_t spi_speed;
 extern uint16_t spi_delay;
 
 void pabort(const char *s);
-int spi_transfer(int, uint8_t *, uint8_t *);
 int spi_transfer32(int fd, volatile  __u32 *tx, volatile __u32 *rx);
 int spi_set_mode(int, int);
 int spi_set_word(int, int);
@@ -72,11 +71,6 @@ void spi_set_delay(int);
 int spiOpen(const char*);
 int spiClose(int);
 void spi_init(int);
-
-#ifdef DEBUG
-void loopbackTest(int);
-void printSpiDetails();
-#endif
 
 #endif
 

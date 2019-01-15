@@ -97,8 +97,8 @@ param rw float debug_3=2.0
 option singleton;
 option extra_setup;
 option extra_cleanup;
-
 option data internal;
+//extra_link_args "lspi.o -lclk.o";
 
 see_also """The \\fIpluto_step\\fR section in the HAL User Manual, which shows the location of each physical pin on the pluto board.""";
 
