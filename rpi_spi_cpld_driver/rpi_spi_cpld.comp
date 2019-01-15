@@ -1,23 +1,3 @@
-/*   This is a component of pluto_step_rpspi for RaspberryPi , a stepper driver over SPI for linuxcnc.
- *    Copyright 2013 Matsche <tinker@play-pla.net>
- * 		based on GP Orcullo's picnc driver and
- * 		based on the pluto_step.comp from Jeff Epler <jepler@unpythonic.net>
- *
-// This program is free software; you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 2 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
-
 component rpi_spi_cpld """Hardware driver and firmware for the RPi-CNC-HAT, for use with stepper machines.and RaspberryPi SPI .""";
 
 description """
@@ -144,11 +124,15 @@ typedef enum {
 #define SPI_BUFFER_SIZE 20
 #define BUFSIZE		(SPI_BUFFER_SIZE/4)
 
-#include "spi.h"
 #include "clk.h"
 
 volatile unsigned *gpio, *spi;
 int fd;
+uint8_t spi_mode;
+uint8_t spi_bits;
+__32 spi_speed;
+__16 spi_delay;
+
 static volatile __u32 txBuf[BUFSIZE], rxBuf[BUFSIZE];
 static platform_t platform;
 
@@ -196,13 +180,31 @@ EXTRA_SETUP() {
   spi_bits = 8;
 // SPICLK = 250 MHz/6 ~5Mbit
   spi_speed = 5000000;
+  ioctl(fd, SPI_IOC_WR_MODE, &spi_mode);
+  ioctl(fd, SPI_IOC_RD_MODE, &spi_mode);
+  ioctl(fd, SPI_IOC_WR_BITS_PER_WORD, &spi_bits);
+  ioctl(fd, SPI_IOC_RD_BITS_PER_WORD, &spi_bits);
+  ioctl(fd, SPI_IOC_WR_MAX_SPEED_HZ, &spi_speed);
+  ioctl(fd, SPI_IOC_RD_MAX_SPEED_HZ, &spi_speed);
   spi_init(fd);
   
 	return 0;
 }
 
 EXTRA_CLEANUP() {
-  spiClose(fd);
+  close(fd);
+}
+
+int spi_transfer32(int fd, volatile __u32 *tx, volatile __u32 *rx){
+	struct spi_ioc_transfer tr = {
+		.tx_buf = (unsigned long)tx,
+		.rx_buf = (unsigned long)rx,
+		.len = SPI_BUFFER_SIZE,
+		.delay_usecs = spi_delay,
+		.speed_hz = spi_speed,
+		.bits_per_word = spi_bits,
+	};
+	return ioctl(fd, SPI_IOC_MESSAGE(1), &tr);
 }
 
 FUNCTION(spitest) {
