@@ -93,26 +93,19 @@ author "Matsche & fedor2018";
 #include "rtapi_bitops.h"
 #include "rtapi_app.h"
 #include "hal.h"
-/*
-#if !defined(BUILD_SYS_USER_DSO)
-#error "This driver is for usermode threads only"
-#endif
 
-#if !defined(TARGET_PLATFORM_RASPBERRY)
-#error "This driver is for the Raspberry Pi platform only"
-#endif
-*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <math.h>
 #include <fcntl.h>
 #include <sys/mman.h>
-#include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <errno.h>
 #include <stdarg.h>
+#include <linux/types.h>
+#include <linux/spi/spidev.h>
 
 typedef enum {
     UNSUPPORTED,
@@ -122,7 +115,7 @@ typedef enum {
 
 
 #define SPI_BUFFER_SIZE 20
-#define BUFSIZE		(SPI_BUFFER_SIZE/4)
+#define BUFSIZE	(SPI_BUFFER_SIZE/4)
 
 #include "clk.h"
 
@@ -130,8 +123,8 @@ volatile unsigned *gpio, *spi;
 int fd;
 uint8_t spi_mode;
 uint8_t spi_bits;
-__32 spi_speed;
-__16 spi_delay;
+__u32 spi_speed;
+__u16 spi_delay;
 
 static volatile __u32 txBuf[BUFSIZE], rxBuf[BUFSIZE];
 static platform_t platform;
@@ -186,8 +179,6 @@ EXTRA_SETUP() {
   ioctl(fd, SPI_IOC_RD_BITS_PER_WORD, &spi_bits);
   ioctl(fd, SPI_IOC_WR_MAX_SPEED_HZ, &spi_speed);
   ioctl(fd, SPI_IOC_RD_MAX_SPEED_HZ, &spi_speed);
-  spi_init(fd);
-  
 	return 0;
 }
 
