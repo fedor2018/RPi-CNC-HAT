@@ -136,7 +136,7 @@ __16 spi_delay;
 static volatile __u32 txBuf[BUFSIZE], rxBuf[BUFSIZE];
 static platform_t platform;
 
-platform_t check_platform(void);
+//platform_t check_platform(void);
 
 static int speedrange=0;
 RTAPI_MP_INT(speedrange, "Speed range 0..3");
@@ -161,8 +161,156 @@ typedef struct {
 
 #define ONE (1<<F)
 #define MAX_STEP_RATE ((1<<F)-1)
-
 #define RPM_FREQ 19000 //?
+#define PLLD_FREQ 500e6
+
+static uint32_t * initMapMem(int fd, uint32_t addr, uint32_t len)
+{
+    return (uint32_t *) mmap(0, len,
+       PROT_READ|PROT_WRITE|PROT_EXEC,
+       MAP_SHARED|MAP_LOCKED,
+       fd, addr);
+}
+
+int gpioInitialise(void){
+   int fd;
+
+   gpioHardwareRevision(); /* sets piModel, needed for peripherals address */
+
+   fd = open("/dev/mem", O_RDWR | O_SYNC) ;
+
+   if (fd < 0)
+   {
+      fprintf(stderr,
+         "This program needs root privileges.  Try using sudo\n");
+      return -1;
+   }
+
+   gpioReg  = initMapMem(fd, GPIO_BASE, GPIO_LEN);
+   systReg  = initMapMem(fd, SYST_BASE, SYST_LEN);
+   clkReg   = initMapMem(fd, CLK_BASE,  CLK_LEN);
+
+   close(fd);
+
+   if ((gpioReg == MAP_FAILED) ||
+       (systReg == MAP_FAILED) ||
+       (clkReg == MAP_FAILED))
+   {
+      fprintf(stderr,
+         "Bad, mmap failed\n");
+      return -1;
+   }
+   return 0;
+}
+
+int gpioInitialise(void){
+   int fd;
+
+   gpioHardwareRevision(); /* sets piModel, needed for peripherals address */
+   fd = open("/dev/mem", O_RDWR | O_SYNC) ;
+   if (fd < 0){
+      //fprintf(stderr,"This program needs root privileges.  Try using sudo\n");
+      return -1;
+   }
+
+   gpioReg  = initMapMem(fd, GPIO_BASE, GPIO_LEN);
+   systReg  = initMapMem(fd, SYST_BASE, SYST_LEN);
+   clkReg   = initMapMem(fd, CLK_BASE,  CLK_LEN);
+
+   close(fd);
+
+   if ((gpioReg == MAP_FAILED) ||
+       (systReg == MAP_FAILED) ||
+       (clkReg == MAP_FAILED)){
+      //fprintf(stderr,  "Bad, mmap failed\n");
+      return -1;
+   }
+   return 0;
+}
+
+static int initClock(int clock, int source, int divI, int divF, int MASH)
+{
+   int ctl[] = {CLK_GP0_CTL, CLK_GP2_CTL};
+   int div[] = {CLK_GP0_DIV, CLK_GP2_DIV};
+   int src[CLK_SRCS] =
+      {CLK_CTL_SRC_PLLD,
+       CLK_CTL_SRC_OSC,
+       CLK_CTL_SRC_HDMI,
+       CLK_CTL_SRC_PLLC};
+
+   int clkCtl, clkDiv, clkSrc;
+   uint32_t setting;
+
+   if ((clock  < 0) || (clock  > 1))    return -1;
+   if ((source < 0) || (source > 3 ))   return -2;
+   if ((divI   < 2) || (divI   > 4095)) return -3;
+   if ((divF   < 0) || (divF   > 4095)) return -4;
+   if ((MASH   < 0) || (MASH   > 3))    return -5;
+
+   clkCtl = ctl[clock];
+   clkDiv = div[clock];
+   clkSrc = src[source];
+
+   clkReg[clkCtl] = CLK_PASSWD | CLK_CTL_KILL;
+
+   /* wait for clock to stop */
+
+   while (clkReg[clkCtl] & CLK_CTL_BUSY)
+   {
+      usleep(10);
+   }
+
+   clkReg[clkDiv] =
+      (CLK_PASSWD | CLK_DIV_DIVI(divI) | CLK_DIV_DIVF(divF));
+
+   usleep(10);
+
+   clkReg[clkCtl] =
+      (CLK_PASSWD | CLK_CTL_MASH(MASH) | CLK_CTL_SRC(clkSrc));
+
+   usleep(10);
+
+   clkReg[clkCtl] |= (CLK_PASSWD | CLK_CTL_ENAB);
+}
+
+int set_clk(double freq){//xx.ffMhz
+   double div, f;
+   char *clocks[CLK_SRCS]={"PLLD", " OSC", "HDMI", "PLLC"};
+   int divI, divF;
+
+  freq *= 1000.0;
+  if ((freq < 4687.5) || (freq > PLLD_FREQ)) {return(-1);}
+
+  div = PLLD_FREQ / freq;
+  divI = div;
+  divF = (div-divI) * 4096;
+
+//  printf("%s: %4d %4d ", clocks[0], divI, divF);
+  if ((divI<2) || (divI>4095)){
+    //printf("ILLEGAL\n");
+    return -1;
+  }else{
+    div = divI + (divF / 4096);
+    f = PLLD_FREQ/div;
+    //printf("%7.2f MHz\n", f/1000000.0);
+  }
+
+  if (gpioInitialise() < 0)
+		return -1;
+  initClock(0, 0, divI, divF, 0);
+  gpioSetMode(4, PI_ALT0);
+  return 0;
+}
+
+void gpioSetMode(unsigned gpio, unsigned mode)
+{
+   int reg, shift;
+
+   reg   =  gpio/10;
+   shift = (gpio%10) * 3;
+
+   gpioReg[reg] = (gpioReg[reg] & ~(7<<shift)) | (mode<<shift);
+}
 
 EXTRA_SETUP() {
   if(set_clk(40.0)<0){
@@ -376,7 +524,7 @@ FUNCTION(transfer) {
 		spidata = rxBuf[i];
 	}
 }
-
+/*
 platform_t check_platform(void)
 {
 	FILE *fp;
@@ -390,7 +538,7 @@ platform_t check_platform(void)
 	if (fsize == 0 || fsize == sizeof(buf))
 		return 0;
 
-	/* NUL terminate the buffer */
+	// NUL terminate the buffer
 	buf[fsize] = '\0';
 
 	if (NULL != strstr(buf, "BCM2708"))
@@ -400,3 +548,4 @@ platform_t check_platform(void)
 	else
 		return UNSUPPORTED;
 }
+*/
