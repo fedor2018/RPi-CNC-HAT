@@ -114,7 +114,7 @@ typedef enum {
     RPI,
     RPI_2
 } platform_t;
-
+platform_t check_platform(void);
 
 #define SPI_BUFFER_SIZE 20
 #define BUFSIZE	(SPI_BUFFER_SIZE/4)
@@ -157,8 +157,13 @@ typedef struct {
 #define RPM_FREQ 19000 //?
 
 EXTRA_SETUP() {
-  fd=open("/dev/spidev1.2", O_RDWR);
-  if(fd<0){
+    if(check_platform()==UNSUPPORTED){
+	rtapi_print_msg(RTAPI_MSG_ERR,
+	        "HAL_rpi_spi_cpld: ERROR: platform unsupported\n");
+	return -1;
+    }
+    fd=open("/dev/spidev1.2", O_RDWR);
+    if(fd<0){
 		rtapi_print_msg(RTAPI_MSG_ERR,
 		        "HAL_rpi_spi_cpld: ERROR: cannot open spi\n");
 		return -1;
@@ -377,7 +382,7 @@ FUNCTION(transfer) {
 		spidata = rxBuf[i];
 	}
 }
-/*
+
 platform_t check_platform(void)
 {
 	FILE *fp;
@@ -401,4 +406,3 @@ platform_t check_platform(void)
 	else
 		return UNSUPPORTED;
 }
-*/
