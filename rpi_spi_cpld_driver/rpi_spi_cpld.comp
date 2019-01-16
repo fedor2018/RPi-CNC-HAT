@@ -1,23 +1,3 @@
-/*   This is a component of pluto_step_rpspi for RaspberryPi , a stepper driver over SPI for linuxcnc.
- *    Copyright 2013 Matsche <tinker@play-pla.net>
- * 		based on GP Orcullo's picnc driver and
- * 		based on the pluto_step.comp from Jeff Epler <jepler@unpythonic.net>
- *
-// This program is free software; you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 2 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
-
 component rpi_spi_cpld """Hardware driver and firmware for the RPi-CNC-HAT, for use with stepper machines.and RaspberryPi SPI .""";
 
 description """
@@ -25,6 +5,9 @@ rpi_spi_cpld is a LinuxCNC software driver and associated firmware that allow th
 
 The driver has 4 step+direction channels, 14 dedicated digital outputs, and 16
 dedicated digital inputs.
+
+.SS CPLD clk from rpi
+Use loadusr minimal_clk XX.X
 
 .SS Step generators
 The step generator takes a position input and output.
@@ -76,7 +59,7 @@ pin out bit din.##_not[16]
 """din.\\fIMM\\fR corresponds to the pin labeled
 IN\\fIM\\fR on the pinout diagram.""";
 
-param rw u32 spindle.rpm "Spindle rpm";
+param r u32 spindle.rpm "Spindle rpm";
 //param rw u32 servo.pwm "Set pwm 1-2ms (0-255)";
 param rw u32 pwm.out "Set pwm 0-255";
 
@@ -98,7 +81,6 @@ option singleton;
 option extra_setup;
 option extra_cleanup;
 option data internal;
-//extra_link_args "lspi.o -lclk.o";
 
 see_also """The \\fIpluto_step\\fR section in the HAL User Manual, which shows the location of each physical pin on the pluto board.""";
 
@@ -113,46 +95,41 @@ author "Matsche & fedor2018";
 #include "rtapi_bitops.h"
 #include "rtapi_app.h"
 #include "hal.h"
-/*
-#if !defined(BUILD_SYS_USER_DSO)
-#error "This driver is for usermode threads only"
-#endif
 
-#if !defined(TARGET_PLATFORM_RASPBERRY)
-#error "This driver is for the Raspberry Pi platform only"
-#endif
-*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <math.h>
 #include <fcntl.h>
 #include <sys/mman.h>
-#include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <errno.h>
 #include <stdarg.h>
+#include <linux/types.h>
+#include <linux/spi/spidev.h>
 
 typedef enum {
     UNSUPPORTED,
     RPI,
     RPI_2
 } platform_t;
-
+platform_t check_platform(void);
 
 #define SPI_BUFFER_SIZE 20
-#define BUFSIZE		(SPI_BUFFER_SIZE/4)
-
-#include "spi.h"
-#include "clk.h"
+#define BUFSIZE	(SPI_BUFFER_SIZE/4)
 
 volatile unsigned *gpio, *spi;
 int fd;
+uint8_t spi_mode;
+uint8_t spi_bits;
+__u32 spi_speed;
+__u16 spi_delay;
+
 static volatile __u32 txBuf[BUFSIZE], rxBuf[BUFSIZE];
 static platform_t platform;
 
-platform_t check_platform(void);
+//platform_t check_platform(void);
 
 static int speedrange=0;
 RTAPI_MP_INT(speedrange, "Speed range 0..3");
@@ -177,17 +154,16 @@ typedef struct {
 
 #define ONE (1<<F)
 #define MAX_STEP_RATE ((1<<F)-1)
-
 #define RPM_FREQ 19000 //?
 
 EXTRA_SETUP() {
-  if(set_clk(40.0)<0){
-		rtapi_print_msg(RTAPI_MSG_ERR,
-		        "HAL_rpi_spi_cpld: ERROR: cannot set clk\n");
-		return -1;
-  }
-  fd=open("/dev/spidev1.2", O_RDWR);
-  if(fd<0){
+    if(check_platform()==UNSUPPORTED){
+	rtapi_print_msg(RTAPI_MSG_ERR,
+	        "HAL_rpi_spi_cpld: ERROR: platform unsupported\n");
+	return -1;
+    }
+    fd=open("/dev/spidev1.2", O_RDWR);
+    if(fd<0){
 		rtapi_print_msg(RTAPI_MSG_ERR,
 		        "HAL_rpi_spi_cpld: ERROR: cannot open spi\n");
 		return -1;
@@ -196,13 +172,29 @@ EXTRA_SETUP() {
   spi_bits = 8;
 // SPICLK = 250 MHz/6 ~5Mbit
   spi_speed = 5000000;
-  spi_init(fd);
-  
+  ioctl(fd, SPI_IOC_WR_MODE, &spi_mode);
+  ioctl(fd, SPI_IOC_RD_MODE, &spi_mode);
+  ioctl(fd, SPI_IOC_WR_BITS_PER_WORD, &spi_bits);
+  ioctl(fd, SPI_IOC_RD_BITS_PER_WORD, &spi_bits);
+  ioctl(fd, SPI_IOC_WR_MAX_SPEED_HZ, &spi_speed);
+  ioctl(fd, SPI_IOC_RD_MAX_SPEED_HZ, &spi_speed);
 	return 0;
 }
 
 EXTRA_CLEANUP() {
-  spiClose(fd);
+  close(fd);
+}
+
+int spi_transfer32(int fd, volatile __u32 *tx, volatile __u32 *rx){
+	struct spi_ioc_transfer tr = {
+		.tx_buf = (unsigned long)tx,
+		.rx_buf = (unsigned long)rx,
+		.len = SPI_BUFFER_SIZE,
+		.delay_usecs = spi_delay,
+		.speed_hz = spi_speed,
+		.bits_per_word = spi_bits,
+	};
+	return ioctl(fd, SPI_IOC_MESSAGE(1), &tr);
 }
 
 FUNCTION(spitest) {
@@ -218,6 +210,22 @@ FUNCTION(spitest) {
 	for (i=5; i<BUFSIZE; i++) {
 		spidata = rxBuf[i];
 	}
+}
+static inline int64_t extend(int64_t old, int newlow, int nbits) {
+    int64_t mask = (1<<nbits) - 1;
+    int64_t maxdelta = mask / 2;
+    int64_t oldhigh = old & ~mask;
+    int64_t oldlow = old & mask;
+    int64_t candidate1, candidate2;
+
+    candidate1 = oldhigh | newlow;
+    if(oldlow < newlow) candidate2 = candidate1 - (1<<nbits);
+    else                candidate2 = candidate1 + (1<<nbits);
+
+    if (llabs(old-candidate1) > maxdelta)
+	return candidate2;
+    else
+	return candidate1;
 }
 	
 FUNCTION(transfer) {
@@ -388,7 +396,7 @@ platform_t check_platform(void)
 	if (fsize == 0 || fsize == sizeof(buf))
 		return 0;
 
-	/* NUL terminate the buffer */
+	// NUL terminate the buffer
 	buf[fsize] = '\0';
 
 	if (NULL != strstr(buf, "BCM2708"))
