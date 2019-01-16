@@ -1,9 +1,12 @@
-# Сетевой JTAG программатор для Altera Quartus
+# РЎРµС‚РµРІРѕР№ JTAG РїСЂРѕРіСЂР°РјРјР°С‚РѕСЂ РґР»СЏ Altera Quartus
 
-Копия с сайта Марсоход
+РљРѕРїРёСЏ СЃ СЃР°Р№С‚Р° РњР°СЂСЃРѕС…РѕРґ
 
-Ссылки:
--[Сетевой JTAG программатор для Altera Quartus Prime из Raspberry Pi3]https://habr.com/ru/post/343524/
--[Скачать FPGA проекты, документацию или драйвера]https://marsohod.org/downloads/category/26-narsohod2rpi
+РЎСЃС‹Р»РєРё:
+
+- [РЎРµС‚РµРІРѕР№ JTAG РїСЂРѕРіСЂР°РјРјР°С‚РѕСЂ РґР»СЏ Altera Quartus Prime РёР· Raspberry Pi3](https://habr.com/ru/post/343524/)
+- [РЎРєР°С‡Р°С‚СЊ FPGA РїСЂРѕРµРєС‚С‹, РґРѕРєСѓРјРµРЅС‚Р°С†РёСЋ РёР»Рё РґСЂР°Р№РІРµСЂР°](https://marsohod.org/downloads/category/26-narsohod2rpi)
+
+
 
  
