@@ -16,9 +16,9 @@
 //    along with this program; if not, write to the Free Software
 //    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //**********************************************************************
-//`define OD
 `define USE_SERVO
 // Open-Drain buffer
+//`define OD
 `ifdef OD
 module OC_Buff(in, out);
 input in;
@@ -26,13 +26,16 @@ output out;
 assign out = in ? 1'bz : 1'b0;
 endmodule
 `endif
-
+//all = 31
+//uni = 14 
+// in = 5  + rpm =1
+//out = 10 + pwm/rc=1
 module spi_main(clk, SCK, MOSI, MISO, SSEL, LED, dout, din, step, dir, pout, rin);
 parameter W=10;
 parameter F=11;//velocity width
 parameter T=4;//time width
-parameter I=13;//pins input
-parameter O=9;//pins output
+parameter I=16;//pins input
+parameter O=16;//pins output
 parameter INV_PWM=1;//invert pwm
 input clk;
 
@@ -44,7 +47,7 @@ input rin;//rpm in
 
 reg Spolarity;
 
-reg[O-1:0] real_dout; output [O-1:0] dout = do_tristate ? {O{1'bZ}} : real_dout; 
+reg[O-1:0] real_dout; output [O-1:0] dout = do_tristate ? {O-1{1'bZ}} : real_dout; 
 wire[3:0] real_step; output [3:0] step = do_tristate ? 4'bZ : real_step ^ {4{Spolarity}};
 wire[3:0] real_dir; output [3:0] dir = do_tristate ? 4'bZ : real_dir;
 wire real_pout; output pout = do_tristate ? 1'bZ : (INV_PWM)?~real_pout:real_pout;
@@ -191,7 +194,7 @@ always @(posedge clk) begin
 		else if(spibytecnt == 5'b01001) begin	// 9
 			data_outbuf <= pos2[15:8];
 			if(byte_received) begin
-				real_dout <= {data_recvd[O-9:0],data_inbuf};	//real_dout
+				real_dout <= {data_recvd[O-8-1:0], data_inbuf};	//real_dout
 			end
 		end
 		
@@ -222,7 +225,7 @@ always @(posedge clk) begin
 		else if(spibytecnt == 5'b01111) data_outbuf <= 8'b0;//15
 		//------------------------------------------------- word 4
 		else if(spibytecnt == 5'b10000) data_outbuf <= din[7:0];//15
-		else if(spibytecnt == 5'b10001) data_outbuf <= din[I-1:8];//17
+		else if(spibytecnt == 5'b10001) data_outbuf <= din[I-1:8];//I-1:8];//17
 		else if(spibytecnt == 5'b10010) data_outbuf <= rpm[7:0];//8'b0;//18
 		else if(spibytecnt == 5'b10011) data_outbuf <= rpm[15:8];//8'b0;//19
 		else data_outbuf <= spibytecnt;//20
