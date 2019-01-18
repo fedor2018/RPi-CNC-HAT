@@ -7,7 +7,7 @@ The driver has 4 step+direction channels, 14 dedicated digital outputs, and 16
 dedicated digital inputs.
 
 .SS CPLD clk from rpi
-Use loadusr minimal_clk XX.X
+Use loadusr -w minimal_clk 40M -q
 
 .SS Step generators
 The step generator takes a position input and output.
@@ -62,7 +62,7 @@ IN\\fIM\\fR on the pinout diagram.""";
 param r u32 spindle.rpm "Spindle rpm";
 //param rw u32 servo.pwm "Set pwm 1-2ms (0-255)";
 param rw u32 pwm.out "Set pwm 0-255";
-
+/*
 param rw u32 communication_error """Incremented each time 
 pluto-step.read detects an error code in the EPP status register.  While
 this register is nonzero, new values are not being written to the Pluto-P
@@ -70,7 +70,7 @@ board, and the status of digital outputs and the PWM duty cycle of the PWM
 outputs will remain unchanged.  If the hardware watchdog is enabled, it will
 activate shortly after the communication error is detected by LinuxCNC.  To continue
 after a communication error, set this parameter back to zero.""";
-
+*/
 param rw s32 debug_0;
 param rw s32 debug_1;
 param rw float debug_2=.5;
@@ -135,10 +135,14 @@ static volatile __u32 txBuf[BUFSIZE], rxBuf[BUFSIZE];
 static int speedrange=0;
 RTAPI_MP_INT(speedrange, "Speed range 0..3");
 
-#define PLUTO_SPEED_NS (1600)
-#define PLUTO_SPEED    (PLUTO_SPEED_NS * 1e-9)
-#define PLUTO_FREQ     (1e9 / PLUTO_SPEED_NS)
-#define TMAX           ((1<<5)-1)
+#define PLUTO_CLK   40000000      //40MHz
+#define PLUTO_SPEED_NS (1600)      //1.6us=625kHz=>0.8us
+#define PLUTO_SPEED    (PLUTO_SPEED_NS * 1e-9)   // 0,0000016
+#define PLUTO_FREQ     (1e9 / PLUTO_SPEED_NS)    // 625kHz
+#define TMAX           ((1<<5)-1)  // 0x1f=b11111
+#define ONE (1<<F)    // 0x8000
+#define MAX_STEP_RATE ((1<<F)-1) //  0x7fff
+#define RPM_FREQ PLUTO_CLK/2048 //19692,3 Hz
 
 #define W 10
 #define F 11
@@ -153,9 +157,6 @@ typedef struct {
 	double old_velocity_cmd[4];
 } internal;
 
-#define ONE (1<<F)
-#define MAX_STEP_RATE ((1<<F)-1)
-#define RPM_FREQ 19000 //?
 
 EXTRA_SETUP() {
     if(check_platform()==UNSUPPORTED){

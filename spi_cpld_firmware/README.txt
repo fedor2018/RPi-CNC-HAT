@@ -1,7 +1,7 @@
 clk=40MHz
 spi_clk=clk/2
-stepcnt=clk/32		0.8us
-wd_cnt=clk/2048   51us/19.5kHz
+stepcnt=clk/32		0.8us/1.25MHz (1600ns)
+wd_cnt=clk/2048   51,2us/19531,25Hz
 #define RPM_V(r) (uint16)((RPM_FREQ*60)/r)//
 ===================
 PINOUT
