@@ -59,9 +59,9 @@ pin out bit din.##_not[16]
 """din.\\fIMM\\fR corresponds to the pin labeled
 IN\\fIM\\fR on the pinout diagram.""";
 
-param r u32 spindle.rpm "Spindle rpm";
+pin out float spindle.rpm "Spindle rpm";
+pin in  float pwm.out "Set pwm 0-255";
 //param rw u32 servo.pwm "Set pwm 1-2ms (0-255)";
-param rw u32 pwm.out "Set pwm 0-255";
 /*
 param rw u32 communication_error """Incremented each time 
 pluto-step.read detects an error code in the EPP status register.  While
