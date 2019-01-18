@@ -114,22 +114,23 @@ typedef enum {
     RPI,
     RPI_2
 } platform_t;
+static platform_t platform;
 platform_t check_platform(void);
 
 #define SPI_BUFFER_SIZE 20
 #define BUFSIZE	(SPI_BUFFER_SIZE/4)
 
-volatile unsigned *gpio, *spi;
-int fd;
-uint8_t spi_mode;
-uint8_t spi_bits;
-__u32 spi_speed;
-__u16 spi_delay;
+//volatile unsigned *spi;
+static int fd;
+static uint8_t spi_mode=0;
+static uint8_t spi_bits=8;
+static __u32 spi_speed=1000000;
+static __u16 spi_delay=0;
+//  spi_mode = 0;
+//  spi_bits = 8;
+//  spi_speed = 500000;
 
 static volatile __u32 txBuf[BUFSIZE], rxBuf[BUFSIZE];
-static platform_t platform;
-
-//platform_t check_platform(void);
 
 static int speedrange=0;
 RTAPI_MP_INT(speedrange, "Speed range 0..3");
@@ -168,21 +169,33 @@ EXTRA_SETUP() {
 		        "HAL_rpi_spi_cpld: ERROR: cannot open spi\n");
 		return -1;
   }
-  spi_mode = 0;
-  spi_bits = 8;
-// SPICLK = 250 MHz/6 ~5Mbit
-  spi_speed = 5000000;
-  ioctl(fd, SPI_IOC_WR_MODE, &spi_mode);
-  ioctl(fd, SPI_IOC_RD_MODE, &spi_mode);
-  ioctl(fd, SPI_IOC_WR_BITS_PER_WORD, &spi_bits);
-  ioctl(fd, SPI_IOC_RD_BITS_PER_WORD, &spi_bits);
-  ioctl(fd, SPI_IOC_WR_MAX_SPEED_HZ, &spi_speed);
-  ioctl(fd, SPI_IOC_RD_MAX_SPEED_HZ, &spi_speed);
+  if(ioctl(fd, SPI_IOC_WR_MODE, &spi_mode)<0||
+    ioctl(fd, SPI_IOC_RD_MODE, &spi_mode)<0){
+	rtapi_print_msg(RTAPI_MSG_ERR,
+	        "HAL_rpi_spi_cpld: ERROR: SPI_IOC_xx_MODE\n");
+	return -1;
+    }
+  if(ioctl(fd, SPI_IOC_WR_BITS_PER_WORD, &spi_bits)<0||
+    ioctl(fd, SPI_IOC_RD_BITS_PER_WORD, &spi_bits)<0){
+	rtapi_print_msg(RTAPI_MSG_ERR,
+	        "HAL_rpi_spi_cpld: ERROR: SPI_IOC_xx_BITS_PER_WORD\n");
+	return -1;
+    }
+  if(ioctl(fd, SPI_IOC_WR_MAX_SPEED_HZ, &spi_speed)<0||
+    ioctl(fd, SPI_IOC_RD_MAX_SPEED_HZ, &spi_speed)<0){
+	rtapi_print_msg(RTAPI_MSG_ERR,
+	        "HAL_rpi_spi_cpld: ERROR: SPI_IOC_xx_MAX_SPEED_HZ\n");
+	return -1;
+    }
+    rtapi_print_msg(RTAPI_MSG_ERR,
+	    "HAL_rpi_spi_cpld: setup ok\n");
 	return 0;
 }
 
 EXTRA_CLEANUP() {
   close(fd);
+    rtapi_print_msg(RTAPI_MSG_ERR,
+	    "HAL_rpi_spi_cpld: cleanup\n");
 }
 
 int spi_transfer32(int fd, volatile __u32 *tx, volatile __u32 *rx){
@@ -194,7 +207,12 @@ int spi_transfer32(int fd, volatile __u32 *tx, volatile __u32 *rx){
 		.speed_hz = spi_speed,
 		.bits_per_word = spi_bits,
 	};
-	return ioctl(fd, SPI_IOC_MESSAGE(1), &tr);
+	if(ioctl(fd, SPI_IOC_MESSAGE(1), &tr)<0){
+	    rtapi_print_msg(RTAPI_MSG_ERR,
+	        "HAL_rpi_spi_cpld: ERROR: transer32\n");
+	    return -1;
+	}
+	return 0;
 }
 
 FUNCTION(spitest) {
@@ -206,11 +224,16 @@ FUNCTION(spitest) {
 		txBuf[i] = i;
 	}
 	
-	spi_transfer32(fd, txBuf, rxBuf);	
-	for (i=5; i<BUFSIZE; i++) {
+	rtapi_print_msg(RTAPI_MSG_ERR,
+	    "HAL_rpi_spi_cpld: test transfer32=%d: ",
+	    spi_transfer32(fd, txBuf, rxBuf));
+	for (i=0; i<BUFSIZE; i++) {
 		spidata = rxBuf[i];
+	    rtapi_print_msg(RTAPI_MSG_ERR," %08X",spidata);
 	}
+	rtapi_print_msg(RTAPI_MSG_ERR,"\n");
 }
+
 static inline int64_t extend(int64_t old, int newlow, int nbits) {
     int64_t mask = (1<<nbits) - 1;
     int64_t maxdelta = mask / 2;
