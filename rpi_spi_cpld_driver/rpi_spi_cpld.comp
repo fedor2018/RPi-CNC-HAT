@@ -60,7 +60,7 @@ pin out bit din.##_not[16]
 IN\\fIM\\fR on the pinout diagram.""";
 
 pin out float spindle.rpm "Spindle rpm";
-pin in  float pwm.out "Set pwm 0-255";
+pin in  u32 pwm.out "Set pwm 0-255";
 //param rw u32 servo.pwm "Set pwm 1-2ms (0-255)";
 /*
 param rw u32 communication_error """Incremented each time 
@@ -188,14 +188,14 @@ EXTRA_SETUP() {
 	        "HAL_rpi_spi_cpld: ERROR: SPI_IOC_xx_MAX_SPEED_HZ\n");
 	return -1;
     }
-    rtapi_print_msg(RTAPI_MSG_ERR,
+    rtapi_print_msg(RTAPI_MSG_WARN,
 	    "HAL_rpi_spi_cpld: setup ok\n");
 	return 0;
 }
 
 EXTRA_CLEANUP() {
   close(fd);
-    rtapi_print_msg(RTAPI_MSG_ERR,
+    rtapi_print_msg(RTAPI_MSG_WARN,
 	    "HAL_rpi_spi_cpld: cleanup\n");
 }
 
@@ -208,11 +208,27 @@ int spi_transfer32(int fd, volatile __u32 *tx, volatile __u32 *rx){
 		.speed_hz = spi_speed,
 		.bits_per_word = spi_bits,
 	};
+/*
+	rtapi_print_msg(RTAPI_MSG_ERR,
+	    "HAL_rpi_spi_cpld: tx=: ");
+	for (int i=0; i<BUFSIZE; i++) {
+	    rtapi_print_msg(RTAPI_MSG_ERR," %08X",tx[i]);
+	}
+//	rtapi_print_msg(RTAPI_MSG_ERR,"\n");
+*/
 	if(ioctl(fd, SPI_IOC_MESSAGE(1), &tr)<0){
 	    rtapi_print_msg(RTAPI_MSG_ERR,
 	        "HAL_rpi_spi_cpld: ERROR: transer32\n");
 	    return -1;
 	}
+/*
+	rtapi_print_msg(RTAPI_MSG_ERR,
+	    "HAL_rpi_spi_cpld: rx=: ");
+	for (int i=0; i<BUFSIZE; i++) {
+	    rtapi_print_msg(RTAPI_MSG_ERR," %08X",rx[i]);
+	}
+//	rtapi_print_msg(RTAPI_MSG_ERR,"\n");
+*/
 	return 0;
 }
 
@@ -363,8 +379,9 @@ FUNCTION(transfer) {
 		txBuf[i] = i;
 	}
 	
-	spi_transfer32(fd, txBuf, rxBuf);
-  	
+	if(spi_transfer32(fd, txBuf, rxBuf)<0)
+	    return;
+	
 	for(i=0; i<4; i++) {
 		int64_t count;
 		double fcount;
@@ -399,9 +416,9 @@ FUNCTION(transfer) {
 		din(i) = !!b;
 		din_not(i) = !b;
 	}
+	spidata>>=16;
+	spindle_rpm=(float)((spidata>65500)?0:(RPM_FREQ*60)/(spidata+1));
 
-	spindle_rpm=(RPM_FREQ*60)/(spidata>>16);
-  
 	for (i=5; i<BUFSIZE; i++) { //clear buf?
 		spidata = rxBuf[i];
 	}
