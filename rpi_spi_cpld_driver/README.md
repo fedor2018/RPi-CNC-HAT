@@ -50,10 +50,3 @@ counter is incremented if it is not already at its maximum.  When the watchdog
 counter is at its maximum, the dedicated digital outputs and PWM outputs are
 tristated.
 
-test
-in out
-52 100 rin 
-58 91
-57 95
-56 92
-55 96

@@ -61,6 +61,9 @@ IN\\fIM\\fR on the pinout diagram.""";
 
 pin out float spindle.rpm "Spindle rpm";
 pin in  u32 pwm.out "Set pwm 0-255";
+
+pin out u32 raw.rx.din "din[x..15]";
+pin out u32 raw.tx.dout "dout[x..15]";
 //param rw u32 servo.pwm "Set pwm 1-2ms (0-255)";
 /*
 param rw u32 communication_error """Incremented each time 
@@ -126,9 +129,6 @@ static uint8_t spi_mode=0;
 static uint8_t spi_bits=8;
 static __u32 spi_speed=1000000;
 static __u16 spi_delay=0;
-//  spi_mode = 0;
-//  spi_bits = 8;
-//  spi_speed = 500000;
 
 static volatile __u32 txBuf[BUFSIZE], rxBuf[BUFSIZE];
 
@@ -366,14 +366,16 @@ FUNCTION(transfer) {
 		if(!dout(i) ^ !dout_invert(i)) r |= (1<<i);
 	}
 	txBuf[2] = r;
+	raw_tx_dout=r;
 	r=0;
 	r = steplen_ticks | (dirtime_ticks << 8);
 	//r = steplen_ticks+stepspace_ticks | (dirtime_ticks << 8);
 	if (stepgen_step_polarity) {
-			r |= 0x8000;
+		r |= 0x8000;
 	}else r &= 0x7FFF;
 	txBuf[2] |= r<<16;
-	
+	//txBuf[2] wdt ena?
+
 	txBuf[3]=(__u32)pwm_out;
 	for (i=4; i<BUFSIZE; i++) { //fake
 		txBuf[i] = i;
@@ -408,7 +410,7 @@ FUNCTION(transfer) {
 	}
 
 	spidata = rxBuf[4];
-	debug_0 = spidata; //din
+	raw_rx_din = debug_0 = spidata; //din
 	//debug_1 = spidata;
 
 	for(i=0; i< 16; i++) {
