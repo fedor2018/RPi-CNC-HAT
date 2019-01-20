@@ -121,3 +121,4 @@ set_global_assignment -name ASSIGNMENT_GROUP_MEMBER din[1] -section_id "opto in"
 set_global_assignment -name ASSIGNMENT_GROUP_MEMBER din[0] -section_id "opto in"
 set_location_assignment PIN_52 -to rin
 set_location_assignment PIN_43 -to dout[9]
+set_location_assignment PIN_53 -to din[10]
