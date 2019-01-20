@@ -47,10 +47,10 @@ input rin;//rpm in
 
 reg Spolarity;
 
-reg[O-1:0] real_dout; output [O-1:0] dout = do_tristate ? {O-1{1'bZ}} : real_dout; 
-wire[3:0] real_step; output [3:0] step = do_tristate ? 4'bZ : real_step ^ {4{Spolarity}};
-wire[3:0] real_dir; output [3:0] dir = do_tristate ? 4'bZ : real_dir;
-wire real_pout; output pout = do_tristate ? 1'bZ : (INV_PWM)?~real_pout:real_pout;
+reg[O-1:0] real_dout; output [O-1:0] dout = /*do_tristate ? {O-1{1'bZ}} :*/ real_dout; 
+wire[3:0] real_step; output [3:0] step = /*do_tristate ? 4'bZ :*/ real_step ^ {4{Spolarity}};
+wire[3:0] real_dir; output [3:0] dir = /*do_tristate ? 4'bZ :*/ real_dir;
+wire real_pout; output pout = /*do_tristate ? 1'bZ :*/ (INV_PWM)?~real_pout:real_pout;
 
 `ifdef OD
 OC_Buff ocout[O-1:0](real_dout, dout);
