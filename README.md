@@ -5,7 +5,7 @@
 - [x] fabrication
 - [x] soldering
 - [x] jtag over network
-- [ ] external clk
+- [x] external clk
 
 ### CPLD
 - [x] verilog modules
@@ -19,4 +19,10 @@
 - [x] compile
 - [ ] debug
 
- 
+### Linuxcnc GUI
+- [ ] hal
+- [ ] ini
+- [x] schematic
+- [ ] pyvcp panel
+- [ ] 
+
