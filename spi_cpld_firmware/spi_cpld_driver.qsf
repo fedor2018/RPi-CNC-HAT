@@ -73,24 +73,20 @@ set_location_assignment PIN_48 -to din[1]
 set_location_assignment PIN_49 -to din[2]
 set_location_assignment PIN_50 -to din[3]
 set_location_assignment PIN_51 -to din[4]
-set_location_assignment PIN_56 -to din[5]
-set_location_assignment PIN_55 -to din[6]
-set_location_assignment PIN_57 -to din[7]
-set_location_assignment PIN_54 -to din[8]
-set_location_assignment PIN_58 -to din[9]
+set_location_assignment PIN_91 -to din[5]
+set_location_assignment PIN_96 -to din[6]
+set_location_assignment PIN_95 -to din[7]
+set_location_assignment PIN_98 -to din[8]
+set_location_assignment PIN_97 -to din[9]
 set_location_assignment PIN_73 -to step[0]
 set_location_assignment PIN_75 -to step[1]
 set_location_assignment PIN_77 -to step[2]
 set_location_assignment PIN_41 -to step[3]
-set_location_assignment PIN_92 -to dout[0]
-set_location_assignment PIN_91 -to dout[1]
-set_location_assignment PIN_96 -to dout[2]
-set_location_assignment PIN_95 -to dout[3]
-set_location_assignment PIN_98 -to dout[4]
-set_location_assignment PIN_97 -to dout[5]
-set_location_assignment PIN_100 -to dout[6]
-set_location_assignment PIN_99 -to dout[7]
-set_location_assignment PIN_42 -to dout[8]
+set_location_assignment PIN_55 -to dout[0]
+set_location_assignment PIN_57 -to dout[1]
+set_location_assignment PIN_54 -to dout[2]
+set_location_assignment PIN_58 -to dout[3]
+set_location_assignment PIN_53 -to dout[4]
 set_global_assignment -name RESERVE_ALL_UNUSED_PINS_NO_OUTPUT_GND "AS INPUT TRI-STATED"
 set_instance_assignment -name IO_STANDARD "3.3V SCHMITT TRIGGER INPUT" -to din[0]
 set_instance_assignment -name IO_STANDARD "3.3V SCHMITT TRIGGER INPUT" -to din[1]
@@ -104,7 +100,7 @@ set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to din[1]
 set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to din[0]
 set_global_assignment -name LL_ROOT_REGION ON -section_id "Root Region"
 set_global_assignment -name LL_MEMBER_STATE LOCKED -section_id "Root Region"
-set_location_assignment PIN_61 -to pout
+set_location_assignment PIN_56 -to pout
 set_global_assignment -name SDC_FILE spi_cpld_driver.out.sdc
 set_global_assignment -name VERILOG_FILE wdt.v
 set_global_assignment -name VERILOG_FILE stepgen.v
@@ -119,6 +115,18 @@ set_global_assignment -name ASSIGNMENT_GROUP_MEMBER din[3] -section_id "opto in"
 set_global_assignment -name ASSIGNMENT_GROUP_MEMBER din[2] -section_id "opto in"
 set_global_assignment -name ASSIGNMENT_GROUP_MEMBER din[1] -section_id "opto in"
 set_global_assignment -name ASSIGNMENT_GROUP_MEMBER din[0] -section_id "opto in"
-set_location_assignment PIN_52 -to rin
-set_location_assignment PIN_43 -to dout[9]
-set_location_assignment PIN_53 -to din[10]
+set_location_assignment PIN_92 -to rin
+set_location_assignment PIN_100 -to din[10]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to din[5]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to din[6]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to din[7]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to din[8]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to din[9]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to rin
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to din[10]
+set_location_assignment PIN_99 -to din[11]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to din[11]
+set_location_assignment PIN_61 -to din[12]
+set_location_assignment PIN_52 -to din[13]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to din[13]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to din[12]
