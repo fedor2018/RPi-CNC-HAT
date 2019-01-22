@@ -62,8 +62,8 @@ IN\\fIM\\fR on the pinout diagram.""";
 pin out float spindle.rpm "Spindle rpm";
 pin in  u32 pwm.out "Set pwm 0-255";
 
-pin out u32 raw.rx.din "din[x..15]";
-pin out u32 raw.tx.dout "dout[x..15]";
+//pin out u32 raw.rx.din "din[x..15]";
+//pin out u32 raw.tx.dout "dout[x..15]";
 //param rw u32 servo.pwm "Set pwm 1-2ms (0-255)";
 /*
 param rw u32 communication_error """Incremented each time 
@@ -366,7 +366,7 @@ FUNCTION(transfer) {
 		if(!dout(i) ^ !dout_invert(i)) r |= (1<<i);
 	}
 	txBuf[2] = r;
-	raw_tx_dout=r;
+	//raw_tx_dout=r;
 	r=0;
 	r = steplen_ticks | (dirtime_ticks << 8);
 	//r = steplen_ticks+stepspace_ticks | (dirtime_ticks << 8);
@@ -410,7 +410,7 @@ FUNCTION(transfer) {
 	}
 
 	spidata = rxBuf[4];
-	raw_rx_din = debug_0 = spidata; //din
+	//raw_rx_din = debug_0 = spidata; //din
 	//debug_1 = spidata;
 
 	for(i=0; i< 16; i++) {
@@ -419,7 +419,7 @@ FUNCTION(transfer) {
 		din_not(i) = !b;
 	}
 	spidata>>=16;
-	spindle_rpm=(float)((spidata>65500)?0:(RPM_FREQ*60)/(spidata+1));
+	spindle_rpm=(float)((spidata>65500||spidata<50)?0:(RPM_FREQ*60)/(spidata+1));
 
 	for (i=5; i<BUFSIZE; i++) { //clear buf?
 		spidata = rxBuf[i];
