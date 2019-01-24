@@ -60,7 +60,7 @@ pin out bit din.##_not[16]
 IN\\fIM\\fR on the pinout diagram.""";
 
 pin out float spindle.rpm "Spindle rpm";
-pin in  u32 pwm.out "Set pwm 0-255";
+pin in  s32 pwm.out "Set pwm 0-255";
 
 //pin out u32 raw.rx.din "din[x..15]";
 //pin out u32 raw.tx.dout "dout[x..15]";
