@@ -82,11 +82,11 @@ set_location_assignment PIN_73 -to step[0]
 set_location_assignment PIN_75 -to step[1]
 set_location_assignment PIN_77 -to step[2]
 set_location_assignment PIN_41 -to step[3]
-set_location_assignment PIN_55 -to dout[0]
-set_location_assignment PIN_57 -to dout[1]
-set_location_assignment PIN_54 -to dout[2]
-set_location_assignment PIN_58 -to dout[3]
-set_location_assignment PIN_53 -to dout[4]
+set_location_assignment PIN_56 -to dout[0]
+set_location_assignment PIN_55 -to dout[1]
+set_location_assignment PIN_57 -to dout[2]
+set_location_assignment PIN_54 -to dout[3]
+set_location_assignment PIN_58 -to dout[4]
 set_global_assignment -name RESERVE_ALL_UNUSED_PINS_NO_OUTPUT_GND "AS INPUT TRI-STATED"
 set_instance_assignment -name IO_STANDARD "3.3V SCHMITT TRIGGER INPUT" -to din[0]
 set_instance_assignment -name IO_STANDARD "3.3V SCHMITT TRIGGER INPUT" -to din[1]
@@ -100,7 +100,7 @@ set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to din[1]
 set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to din[0]
 set_global_assignment -name LL_ROOT_REGION ON -section_id "Root Region"
 set_global_assignment -name LL_MEMBER_STATE LOCKED -section_id "Root Region"
-set_location_assignment PIN_56 -to pout
+set_location_assignment PIN_42 -to pout
 set_global_assignment -name SDC_FILE spi_cpld_driver.out.sdc
 set_global_assignment -name VERILOG_FILE wdt.v
 set_global_assignment -name VERILOG_FILE stepgen.v
@@ -128,7 +128,7 @@ set_location_assignment PIN_99 -to din[11]
 set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to din[11]
 set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to din[13]
 set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to din[12]
-set_location_assignment PIN_61 -to dout[5]
-set_location_assignment PIN_52 -to dout[6]
-set_location_assignment PIN_42 -to dout[7]
+set_location_assignment PIN_53 -to dout[5]
+set_location_assignment PIN_61 -to dout[6]
+set_location_assignment PIN_52 -to dout[7]
 set_location_assignment PIN_43 -to dout[8]
