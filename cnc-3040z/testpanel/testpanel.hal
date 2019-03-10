@@ -1,0 +1,90 @@
+
+# create a thread 
+loadrt threads name1=tt period1=1000000 name2=tt2 period2=1000000000
+
+#41.67 MHz
+loadusr -w minimal_clk 40M -q
+loadrt rpi_spi_cpld
+#41.67 MHz/2048
+setp rpi-spi-cpld.rpm.freq 20347
+
+#?setp rpi-spi-cpld.debug-3 2.0
+addf rpi-spi-cpld.transfer tt
+
+# IO
+# Link digital inputs to LEDs
+net din00 <= rpi-spi-cpld.din.00 => pyvcp.in00
+net din01 <= rpi-spi-cpld.din.01 => pyvcp.in01
+net din02 <= rpi-spi-cpld.din.02 => pyvcp.in02
+net din03 <= rpi-spi-cpld.din.03 => pyvcp.in03
+net din04 <= rpi-spi-cpld.din.04 => pyvcp.in04
+net din05 <= rpi-spi-cpld.din.05 => pyvcp.in05
+net din06 <= rpi-spi-cpld.din.06 => pyvcp.in06
+net din07 <= rpi-spi-cpld.din.07 => pyvcp.in07
+net din08 <= rpi-spi-cpld.din.08 => pyvcp.in08
+net din09 <= rpi-spi-cpld.din.09 => pyvcp.in09
+net din10 <= rpi-spi-cpld.din.10 => pyvcp.in10
+net din11 <= rpi-spi-cpld.din.11 => pyvcp.in11
+
+loadrt toggle count=9
+addf toggle.0 tt
+addf toggle.1 tt
+addf toggle.2 tt
+addf toggle.3 tt
+addf toggle.4 tt
+addf toggle.5 tt
+addf toggle.6 tt
+addf toggle.7 tt
+addf toggle.8 tt
+
+net out0in pyvcp.out00 toggle.0.in
+net out0   toggle.0.out => pyvcp.led00
+net out0   => rpi-spi-cpld.dout.00
+
+net out1in pyvcp.out01 toggle.1.in
+net out1   toggle.1.out => pyvcp.led01
+net out1   => rpi-spi-cpld.dout.01
+
+net out2in pyvcp.out02 toggle.2.in
+net out2   toggle.2.out => pyvcp.led02
+net out2   => rpi-spi-cpld.dout.02
+
+net out3in pyvcp.out03 toggle.3.in
+net out3   toggle.3.out => pyvcp.led03
+net out3   => rpi-spi-cpld.dout.03
+
+net out4in pyvcp.out04 toggle.4.in
+net out4   toggle.4.out => pyvcp.led04
+net out4   => rpi-spi-cpld.dout.04
+
+net out5in pyvcp.out05 toggle.5.in
+net out5   toggle.5.out => pyvcp.led05
+net out5   => rpi-spi-cpld.dout.05
+
+net out6in pyvcp.out06 toggle.6.in
+net out6   toggle.6.out => pyvcp.led06
+net out6   => rpi-spi-cpld.dout.06
+
+net out7in pyvcp.out07 toggle.7.in
+net out7   toggle.7.out => pyvcp.led07
+net out7   => rpi-spi-cpld.dout.07
+
+net out8in pyvcp.out08 toggle.8.in
+net out8   toggle.8.out => pyvcp.led08
+net out8   => rpi-spi-cpld.dout.08
+
+net spindle-cmd-rpm-abs => pyvcp.spindle-speed
+net spindle-pwm         => rpi-spi-cpld.pwm.out
+net spindle-cmd-rpm-abs <= rpi-spi-cpld.spindle.rpm
+
+net spindle-pwm <= pyvcp.spindle-pwm-i
+net spindle-pwm => pyvcp.spindle-pwm-view
+
+#helps for debugging
+##loadusr halmeter
+
+# start 
+start
+
+# wait for pyvcp to close before ending hal session
+#waitusr iotest
