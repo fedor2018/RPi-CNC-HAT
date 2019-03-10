@@ -36,7 +36,7 @@ parameter F=11;//velocity width
 parameter T=4;//time width
 parameter I=16;//pins input
 parameter O=16;//pins output
-parameter INV_PWM=1;//invert pwm
+parameter INV_PWM=0;//invert pwm
 input clk;
 
 input SCK, SSEL, MOSI;
