@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<pyvcp>
+ <vbox>
+    <relief>RIDGE</relief>
+    <bd>3</bd>
+    <labelframe text="Spindle">
+    <hbox>
+    <label text="RPM:" font='("Helvetica",20)'/>
+    <bar halpin="spindle-speed" max_='12000' />
+    </hbox>
+    <hbox>
+        <label text="PWM"  font='("Helvetica",20)'/>
+	<scale orient="horizontal" halpin="spindle-pwm" min_="0" max_="255" resolution="1" />
+	<s32 halpin="spindle-pwm-view"/>
+    </hbox>
+    <hbox>
+        <label text="PWR"/><led halpin="spindle-pwr-on"/>
+	<button halpin="spindle-on" text="ON"/><led halpin="spindle-on-led"/>
+	<label text="At-Speed:"/><led halpin="spindle-at-speed-led"/>
+    </hbox>
+    </labelframe>
+</vbox>
+<vbox>
+    <labelframe text="Estop">
+    <hbox>
+	<!--button halpin="estop-ext" text="EXT"/--><led halpin="estop-ext-led"/>
+    </hbox>
+    </labelframe>
+</vbox>
+<vbox>
+    <labelframe text="home X">
+    <hbox>
+        <label text="X"/><led halpin="both-home-x"/>
+        <label text="Y"/><led halpin="both-home-y"/>
+        <label text="Z"/><led halpin="both-home-z"/>
+    </hbox>
+    </labelframe>
+</vbox>
+<vbox>
+    <labelframe text="Probe IN">
+    <hbox>
+        <label text="In"/><led halpin="probe-in"/>
+        <label text="On"/><led halpin="probe-on"/>
+        <label text="Len"/><led halpin="probe-len"/>
+    </hbox>
+    </labelframe>
+</vbox>
+<hbox>
+<vbox>
+    <hbox><label text="IN0"/><led halpin="din0-led"/></hbox>
+    <hbox><label text="IN1"/><led halpin="din1-led"/></hbox>
+    <hbox><label text="IN2"/><led halpin="din2-led"/></hbox>
+    <hbox><label text="IN3"/><led halpin="din3-led"/></hbox>
+    <hbox><label text="IN4"/><led halpin="din4-led"/></hbox>
+    <hbox><label text="IN5"/><led halpin="din5-led"/></hbox>
+    <hbox><label text="IN6"/><led halpin="din6-led"/></hbox>
+    <hbox><label text="IN7"/><led halpin="din7-led"/></hbox>
+    <hbox><label text="IN8"/><led halpin="din8-led"/></hbox>
+    <hbox><label text="IN9"/><led halpin="din9-led"/></hbox>
+    <hbox><label text="IN10"/><led halpin="din10-led"/></hbox>
+    <hbox><label text="IN11"/><led halpin="din11-led"/></hbox>
+</vbox>
+<vbox>
+    <hbox><button halpin="dout1" text="OUT1"/><led halpin="dout1-led"/></hbox>
+    <hbox><button halpin="dout2" text="OUT2"/><led halpin="dout2-led"/></hbox>
+    <hbox><button halpin="dout3" text="OUT3"/><led halpin="dout3-led"/></hbox>
+    <hbox><button halpin="dout4" text="OUT4"/><led halpin="dout4-led"/></hbox>
+    <hbox><button halpin="dout5" text="OUT5"/><led halpin="dout5-led"/></hbox>
+    <hbox><button halpin="dout6" text="OUT6"/><led halpin="dout6-led"/></hbox>
+</vbox>
+</hbox>
+</pyvcp>

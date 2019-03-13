@@ -1,0 +1,79 @@
+# Include your customized HAL commands here
+# The commands in this file are run after the AXIS GUI (including PyVCP panel) starts
+
+# **** Setup of spindle speed display using pyvcp -START ****
+# **** Use COMMANDED spindle velocity from LinuxCNC because no spindle encoder was specified
+
+net spindle-cmd-rpm-abs    => pyvcp.spindle-speed
+
+loadrt toggle count=8
+addf toggle.0 servo-thread
+addf toggle.1 servo-thread
+addf toggle.2 servo-thread
+addf toggle.3 servo-thread
+addf toggle.4 servo-thread
+addf toggle.5 servo-thread
+addf toggle.6 servo-thread
+addf toggle.7 servo-thread
+
+net spindle-at-speed => pyvcp.spindle-at-speed-led
+#sets spindle-at-speed true
+net spindle-pwr-on => pyvcp.spindle-pwr-on
+
+net flood-toggle toggle.0.in <= pyvcp.spindle-on
+net flood-control toggle.0.out => pyvcp.spindle-on-led
+
+#net estop-ext  toggle.1.in <= pyvcp.estop-ext
+#net estop-ext  toggle.1.out => pyvcp.estop-ext-led
+net estop-ext  => pyvcp.estop-ext-led
+
+#net spindle-on => pyvcp.spindle-on
+net spindle-pwm <= pyvcp.spindle-pwm-i
+net spindle-pwm => pyvcp.spindle-pwm-view
+
+net both-home-x => pyvcp.both-home-x
+net both-home-y => pyvcp.both-home-y
+net both-home-z => pyvcp.both-home-z
+
+net probe-in =>  pyvcp.probe-in
+net probe-on =>  pyvcp.probe-on
+net probe-len => pyvcp.probe-len
+
+net out1in  toggle.2.in <= pyvcp.dout1
+net out1  toggle.2.out => pyvcp.dout1-led
+net out2in  toggle.3.in <= pyvcp.dout2
+net out2  toggle.3.out => pyvcp.dout2-led
+net out3in  toggle.4.in <= pyvcp.dout3
+net out3  toggle.4.out => pyvcp.dout3-led
+net out4in  toggle.5.in <= pyvcp.dout4
+net out4  toggle.5.out => pyvcp.dout4-led
+net out5in  toggle.6.in <= pyvcp.dout5
+net out5  toggle.6.out => pyvcp.dout5-led
+net out6in  toggle.7.in <= pyvcp.dout6
+net out6  toggle.7.out => pyvcp.dout6-led
+
+net out1 => rpi-spi-cpld.dout.01
+net out2 => rpi-spi-cpld.dout.02
+net out3 => rpi-spi-cpld.dout.03
+net out4 => rpi-spi-cpld.dout.04
+net out5 => rpi-spi-cpld.dout.05
+net out6 => rpi-spi-cpld.dout.06
+
+
+# Include your customized HAL commands here
+# This file will not be overwritten when you run stepconf again
+
+net din0 <= rpi-spi-cpld.din.00 => pyvcp.din0-led
+net din1 <= rpi-spi-cpld.din.01 => pyvcp.din1-led
+net din2 <= rpi-spi-cpld.din.02 => pyvcp.din2-led
+#net din3 <= tp_in  #rpi-spi-cpld.din.03
+net tp_in => pyvcp.din3-led
+net din4 <= rpi-spi-cpld.din.04 => pyvcp.din4-led
+net din5 <= rpi-spi-cpld.din.05 => pyvcp.din5-led
+net din6 <= rpi-spi-cpld.din.06 => pyvcp.din6-led
+net din7 <= rpi-spi-cpld.din.07 => pyvcp.din7-led
+net din8 <= rpi-spi-cpld.din.08 => pyvcp.din8-led
+net din9 <= rpi-spi-cpld.din.09 => pyvcp.din9-led
+net din10 <= rpi-spi-cpld.din.10 => pyvcp.din10-led
+net din11 <= rpi-spi-cpld.din.11 => pyvcp.din11-led
+

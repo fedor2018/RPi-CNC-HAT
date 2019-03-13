@@ -1,0 +1,11 @@
+[DEFAULT]
+blockheight = 19.9
+touch_off_y = 0.0
+touch_off_x = 0.0
+touch_off_z = 0.0
+probeheight = 30.2
+use_toolmeasurement = True
+probevel = 4.0
+searchvel = 600.0
+toolchange-number = 1.0
+

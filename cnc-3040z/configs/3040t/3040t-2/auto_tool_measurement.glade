@@ -1,0 +1,765 @@
+<?xml version="1.0"?>
+<interface>
+  <requires lib="gtk+" version="2.16"/>
+  <!-- interface-requires gladevcp 0.0 -->
+  <!-- interface-naming-policy project-wide -->
+  <object class="GtkAdjustment" id="adj_probe_height">
+    <property name="upper">1000</property>
+    <property name="step_increment">0.10000000000000001</property>
+    <property name="page_increment">1</property>
+    <property name="page_size">1</property>
+  </object>
+  <object class="GtkAdjustment" id="adj_block_height">
+    <property name="upper">1000</property>
+    <property name="step_increment">0.10000000000000001</property>
+    <property name="page_increment">1</property>
+    <property name="page_size">1</property>
+  </object>
+  <object class="GtkAdjustment" id="adj_search_vel">
+    <property name="upper">10000</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+    <property name="page_size">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adj_probe_vel">
+    <property name="upper">1000</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+    <property name="page_size">10</property>
+  </object>
+  <object class="GtkWindow" id="window1">
+    <property name="border_width">1</property>
+    <child>
+      <object class="GtkVBox" id="vbox1">
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkHBox" id="hbox3">
+            <property name="visible">True</property>
+            <child>
+              <object class="GtkVBox" id="vbox2">
+                <property name="visible">True</property>
+                <property name="resize_mode">queue</property>
+                <child>
+                  <object class="GtkFrame" id="frm_tool_change">
+                    <property name="visible">True</property>
+                    <property name="extension_events">all</property>
+                    <property name="label_xalign">0</property>
+                    <child>
+                      <object class="GtkAlignment" id="ali_tool_change">
+                        <property name="visible">True</property>
+                        <property name="top_padding">5</property>
+                        <property name="bottom_padding">5</property>
+                        <property name="left_padding">3</property>
+                        <property name="right_padding">3</property>
+                        <child>
+                          <object class="GtkVBox" id="vbox_tool_measurement">
+                            <property name="visible">True</property>
+                            <child>
+                              <object class="GtkCheckButton" id="chk_use_tool_measurement">
+                                <property name="label" translatable="yes">Use auto tool measurement</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="draw_indicator">True</property>
+                                <signal name="toggled" handler="on_chk_use_tool_measurement_toggled"/>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkFrame" id="frm_probe_pos">
+                                <property name="visible">True</property>
+                                <property name="label_xalign">0</property>
+                                <child>
+                                  <object class="GtkAlignment" id="ali_probe_pos">
+                                    <property name="visible">True</property>
+                                    <property name="top_padding">5</property>
+                                    <property name="bottom_padding">5</property>
+                                    <property name="left_padding">3</property>
+                                    <property name="right_padding">3</property>
+                                    <child>
+                                      <object class="GtkTable" id="tbl_probe_pos">
+                                        <property name="visible">True</property>
+                                        <property name="n_rows">6</property>
+                                        <property name="n_columns">2</property>
+                                        <child>
+                                          <object class="GtkLabel" id="lbl_pos_x">
+                                            <property name="visible">True</property>
+                                            <property name="xalign">0</property>
+                                            <property name="label" translatable="yes">X Pos.</property>
+                                          </object>
+                                          <packing>
+                                            <property name="x_options">GTK_SHRINK | GTK_FILL</property>
+                                            <property name="y_options">GTK_SHRINK</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkLabel" id="lbl_pos_y">
+                                            <property name="visible">True</property>
+                                            <property name="xalign">0</property>
+                                            <property name="label" translatable="yes">Y Pos.</property>
+                                          </object>
+                                          <packing>
+                                            <property name="top_attach">1</property>
+                                            <property name="bottom_attach">2</property>
+                                            <property name="x_options">GTK_SHRINK | GTK_FILL</property>
+                                            <property name="y_options">GTK_SHRINK</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkLabel" id="lbl_x_probe">
+                                            <property name="visible">True</property>
+                                            <property name="xalign">1</property>
+                                            <property name="label" translatable="yes">0.000</property>
+                                          </object>
+                                          <packing>
+                                            <property name="left_attach">1</property>
+                                            <property name="right_attach">2</property>
+                                            <property name="x_options">GTK_SHRINK | GTK_FILL</property>
+                                            <property name="y_options">GTK_SHRINK</property>
+                                            <property name="x_padding">5</property>
+                                            <property name="y_padding">2</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkLabel" id="lbl_y_probe">
+                                            <property name="visible">True</property>
+                                            <property name="xalign">1</property>
+                                            <property name="label" translatable="yes">0.000</property>
+                                          </object>
+                                          <packing>
+                                            <property name="left_attach">1</property>
+                                            <property name="right_attach">2</property>
+                                            <property name="top_attach">1</property>
+                                            <property name="bottom_attach">2</property>
+                                            <property name="x_options">GTK_SHRINK | GTK_FILL</property>
+                                            <property name="y_options">GTK_SHRINK</property>
+                                            <property name="x_padding">5</property>
+                                            <property name="y_padding">2</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkLabel" id="lbl_pos_z">
+                                            <property name="visible">True</property>
+                                            <property name="xalign">0</property>
+                                            <property name="label" translatable="yes">Z Pos.</property>
+                                          </object>
+                                          <packing>
+                                            <property name="top_attach">2</property>
+                                            <property name="bottom_attach">3</property>
+                                            <property name="x_options">GTK_SHRINK | GTK_FILL</property>
+                                            <property name="y_options">GTK_SHRINK</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkLabel" id="lbl_z_probe">
+                                            <property name="visible">True</property>
+                                            <property name="xalign">1</property>
+                                            <property name="label" translatable="yes">0.000</property>
+                                          </object>
+                                          <packing>
+                                            <property name="left_attach">1</property>
+                                            <property name="right_attach">2</property>
+                                            <property name="top_attach">2</property>
+                                            <property name="bottom_attach">3</property>
+                                            <property name="x_options">GTK_SHRINK | GTK_FILL</property>
+                                            <property name="y_options">GTK_SHRINK</property>
+                                            <property name="x_padding">5</property>
+                                            <property name="y_padding">2</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkLabel" id="lbl_max_probe">
+                                            <property name="visible">True</property>
+                                            <property name="xalign">0</property>
+                                            <property name="label" translatable="yes">Max. Probe</property>
+                                          </object>
+                                          <packing>
+                                            <property name="top_attach">3</property>
+                                            <property name="bottom_attach">4</property>
+                                            <property name="x_options">GTK_SHRINK | GTK_FILL</property>
+                                            <property name="y_options">GTK_SHRINK</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkLabel" id="lbl_maxprobe">
+                                            <property name="visible">True</property>
+                                            <property name="xalign">1</property>
+                                            <property name="label" translatable="yes">0.000</property>
+                                          </object>
+                                          <packing>
+                                            <property name="left_attach">1</property>
+                                            <property name="right_attach">2</property>
+                                            <property name="top_attach">3</property>
+                                            <property name="bottom_attach">4</property>
+                                            <property name="x_options">GTK_SHRINK | GTK_FILL</property>
+                                            <property name="y_options">GTK_SHRINK</property>
+                                            <property name="x_padding">5</property>
+                                            <property name="y_padding">2</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkLabel" id="lbl_probe_height">
+                                            <property name="visible">True</property>
+                                            <property name="xalign">0</property>
+                                            <property name="label" translatable="yes">Tool setter Height</property>
+                                          </object>
+                                          <packing>
+                                            <property name="top_attach">5</property>
+                                            <property name="bottom_attach">6</property>
+                                            <property name="x_options">GTK_SHRINK | GTK_FILL</property>
+                                            <property name="y_options">GTK_SHRINK</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkSpinButton" id="spbtn_probe_height">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">True</property>
+                                            <property name="tooltip_text" translatable="yes">press ENTER after typing from keyboard</property>
+                                            <property name="invisible_char">&#x25CF;</property>
+                                            <property name="xalign">1</property>
+                                            <property name="primary_icon_sensitive">True</property>
+                                            <property name="secondary_icon_sensitive">True</property>
+                                            <property name="adjustment">adj_probe_height</property>
+                                            <property name="digits">3</property>
+                                            <property name="numeric">True</property>
+                                            <signal name="value_changed" handler="on_spbtn_probe_height_value_changed"/>
+                                          </object>
+                                          <packing>
+                                            <property name="left_attach">1</property>
+                                            <property name="right_attach">2</property>
+                                            <property name="top_attach">5</property>
+                                            <property name="bottom_attach">6</property>
+                                            <property name="x_options">GTK_SHRINK | GTK_FILL</property>
+                                            <property name="y_options">GTK_SHRINK</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkButton" id="btn_probe_tool_setter">
+                                            <property name="label" translatable="yes">probe Tool Setter</property>
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">True</property>
+                                            <property name="receives_default">True</property>
+                                            <property name="tooltip_text" translatable="yes">Start probe_down.ngc</property>
+                                            <property name="related_action">hal_action_reload</property>
+                                            <property name="xalign">1</property>
+                                            <signal name="clicked" handler="clicked_btn_probe_tool_setter"/>
+                                          </object>
+                                          <packing>
+                                            <property name="top_attach">4</property>
+                                            <property name="bottom_attach">5</property>
+                                            <property name="x_options">GTK_SHRINK</property>
+                                            <property name="y_options">GTK_SHRINK</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="ToolEdit" id="tooledit1">
+                                            <property name="sensitive">False</property>
+                                          </object>
+                                          <packing>
+                                            <property name="left_attach">1</property>
+                                            <property name="right_attach">2</property>
+                                            <property name="top_attach">4</property>
+                                            <property name="bottom_attach">5</property>
+                                            <property name="x_options">GTK_SHRINK</property>
+                                            <property name="y_options">GTK_SHRINK</property>
+                                          </packing>
+                                        </child>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child type="label">
+                                  <object class="GtkLabel" id="lbl_frm_probe">
+                                    <property name="visible">True</property>
+                                    <property name="label" translatable="yes">&lt;b&gt;Tool setter Informations&lt;/b&gt;</property>
+                                    <property name="use_markup">True</property>
+                                  </object>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkFrame" id="frm_probe_vel">
+                                <property name="visible">True</property>
+                                <property name="label_xalign">0</property>
+                                <child>
+                                  <object class="GtkAlignment" id="ali_probe_vel">
+                                    <property name="visible">True</property>
+                                    <property name="top_padding">5</property>
+                                    <property name="bottom_padding">5</property>
+                                    <property name="left_padding">3</property>
+                                    <property name="right_padding">3</property>
+                                    <child>
+                                      <object class="GtkTable" id="tbl_probe_vel">
+                                        <property name="visible">True</property>
+                                        <property name="n_rows">2</property>
+                                        <property name="n_columns">2</property>
+                                        <child>
+                                          <object class="GtkLabel" id="lbl_search_vel">
+                                            <property name="visible">True</property>
+                                            <property name="xalign">0</property>
+                                            <property name="label" translatable="yes">Search Vel.                </property>
+                                          </object>
+                                          <packing>
+                                            <property name="x_options">GTK_SHRINK | GTK_FILL</property>
+                                            <property name="y_options">GTK_SHRINK</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkLabel" id="lbl_latch_vel">
+                                            <property name="visible">True</property>
+                                            <property name="xalign">0</property>
+                                            <property name="label" translatable="yes">Probe Vel.</property>
+                                          </object>
+                                          <packing>
+                                            <property name="top_attach">1</property>
+                                            <property name="bottom_attach">2</property>
+                                            <property name="x_options">GTK_SHRINK | GTK_FILL</property>
+                                            <property name="y_options">GTK_SHRINK</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkSpinButton" id="spbtn_search_vel">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">True</property>
+                                            <property name="tooltip_text" translatable="yes">press ENTER after typing from keyboard</property>
+                                            <property name="invisible_char">&#x25CF;</property>
+                                            <property name="xalign">1</property>
+                                            <property name="primary_icon_sensitive">True</property>
+                                            <property name="secondary_icon_sensitive">True</property>
+                                            <property name="adjustment">adj_search_vel</property>
+                                            <property name="numeric">True</property>
+                                            <signal name="value_changed" handler="on_spbtn_search_vel_value_changed"/>
+                                          </object>
+                                          <packing>
+                                            <property name="left_attach">1</property>
+                                            <property name="right_attach">2</property>
+                                            <property name="x_options">GTK_SHRINK | GTK_FILL</property>
+                                            <property name="y_options">GTK_SHRINK</property>
+                                            <property name="x_padding">5</property>
+                                            <property name="y_padding">2</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkSpinButton" id="spbtn_probe_vel">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">True</property>
+                                            <property name="tooltip_text" translatable="yes">press ENTER after typing from keyboard</property>
+                                            <property name="invisible_char">&#x25CF;</property>
+                                            <property name="xalign">1</property>
+                                            <property name="primary_icon_sensitive">True</property>
+                                            <property name="secondary_icon_sensitive">True</property>
+                                            <property name="adjustment">adj_probe_vel</property>
+                                            <property name="numeric">True</property>
+                                            <signal name="value_changed" handler="on_spbtn_probe_vel_value_changed"/>
+                                          </object>
+                                          <packing>
+                                            <property name="left_attach">1</property>
+                                            <property name="right_attach">2</property>
+                                            <property name="top_attach">1</property>
+                                            <property name="bottom_attach">2</property>
+                                            <property name="x_options">GTK_SHRINK | GTK_FILL</property>
+                                            <property name="y_options">GTK_SHRINK</property>
+                                            <property name="x_padding">5</property>
+                                            <property name="y_padding">2</property>
+                                          </packing>
+                                        </child>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child type="label">
+                                  <object class="GtkLabel" id="lbl_frm_probe_vel">
+                                    <property name="visible">True</property>
+                                    <property name="label" translatable="yes">&lt;b&gt;Probe velocity&lt;/b&gt;</property>
+                                    <property name="use_markup">True</property>
+                                  </object>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">2</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkFrame" id="frm_block">
+                                <property name="visible">True</property>
+                                <property name="label_xalign">0</property>
+                                <child>
+                                  <object class="GtkAlignment" id="ali_block">
+                                    <property name="visible">True</property>
+                                    <property name="top_padding">5</property>
+                                    <property name="bottom_padding">5</property>
+                                    <property name="left_padding">3</property>
+                                    <property name="right_padding">3</property>
+                                    <child>
+                                      <object class="GtkTable" id="tbl_block_surface">
+                                        <property name="visible">True</property>
+                                        <property name="n_rows">2</property>
+                                        <property name="n_columns">2</property>
+                                        <child>
+                                          <object class="GtkLabel" id="lbl_block_height1">
+                                            <property name="visible">True</property>
+                                            <property name="xalign">0</property>
+                                            <property name="label" translatable="yes">Block Height       </property>
+                                          </object>
+                                          <packing>
+                                            <property name="top_attach">1</property>
+                                            <property name="bottom_attach">2</property>
+                                            <property name="x_options">GTK_SHRINK | GTK_FILL</property>
+                                            <property name="y_options">GTK_SHRINK</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkSpinButton" id="spbtn_block_height">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">True</property>
+                                            <property name="tooltip_text" translatable="yes">press ENTER after typing from keyboard</property>
+                                            <property name="invisible_char">&#x25CF;</property>
+                                            <property name="xalign">1</property>
+                                            <property name="shadow_type">etched-out</property>
+                                            <property name="primary_icon_sensitive">True</property>
+                                            <property name="secondary_icon_sensitive">True</property>
+                                            <property name="adjustment">adj_block_height</property>
+                                            <property name="digits">3</property>
+                                            <property name="numeric">True</property>
+                                            <signal name="value_changed" handler="on_spbtn_block_height_value_changed"/>
+                                          </object>
+                                          <packing>
+                                            <property name="left_attach">1</property>
+                                            <property name="right_attach">2</property>
+                                            <property name="top_attach">1</property>
+                                            <property name="bottom_attach">2</property>
+                                            <property name="x_options">GTK_SHRINK | GTK_FILL</property>
+                                            <property name="y_options">GTK_SHRINK</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkButton" id="btn_probe_workpiece">
+                                            <property name="label" translatable="yes">probe Workpiece</property>
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">True</property>
+                                            <property name="receives_default">True</property>
+                                            <property name="tooltip_text" translatable="yes">Start block_down.ngc</property>
+                                            <property name="related_action">hal_action_reload</property>
+                                            <property name="xalign">1</property>
+                                            <signal name="clicked" handler="clicked_btn_probe_workpiece"/>
+                                          </object>
+                                          <packing>
+                                            <property name="x_options">GTK_SHRINK</property>
+                                            <property name="y_options">GTK_SHRINK</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <placeholder/>
+                                        </child>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child type="label">
+                                  <object class="GtkLabel" id="lbl_block">
+                                    <property name="visible">True</property>
+                                    <property name="label" translatable="yes">&lt;b&gt;Workpiece&lt;/b&gt;</property>
+                                    <property name="use_markup">True</property>
+                                  </object>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">3</property>
+                              </packing>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child type="label">
+                      <object class="GtkLabel" id="lbl_frm_tool_measur">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">&lt;b&gt;Tool Measurement&lt;/b&gt;</property>
+                        <property name="use_markup">True</property>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkVBox" id="vbox3">
+                <property name="visible">True</property>
+                <child>
+                  <object class="GtkFrame" id="frm_offsets">
+                    <property name="visible">True</property>
+                    <property name="tooltip_text" translatable="yes">Set ofsetts by 
+G10 L20 P0 X?
+G10 L20 P0 Y?
+G10 L20 P0 Z?</property>
+                    <property name="label_xalign">0</property>
+                    <child>
+                      <object class="GtkAlignment" id="ali_offsets">
+                        <property name="visible">True</property>
+                        <child>
+                          <object class="GtkTable" id="table1">
+                            <property name="visible">True</property>
+                            <property name="n_rows">3</property>
+                            <property name="n_columns">2</property>
+                            <child>
+                              <object class="GtkSpinButton" id="spbtn_touch_off_x">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="tooltip_text" translatable="yes">press ENTER after typing from keyboard</property>
+                                <property name="invisible_char">&#x25CF;</property>
+                                <property name="adjustment">adj_touch_off_x</property>
+                                <property name="digits">3</property>
+                                <property name="numeric">True</property>
+                                <signal name="value_changed" handler="on_spbtn_touch_off_x_value_changed"/>
+                              </object>
+                              <packing>
+                                <property name="x_options">GTK_SHRINK | GTK_FILL</property>
+                                <property name="y_options">GTK_SHRINK</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkSpinButton" id="spbtn_touch_off_y">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="tooltip_text" translatable="yes">press ENTER after typing from keyboard</property>
+                                <property name="invisible_char">&#x25CF;</property>
+                                <property name="adjustment">adj_touch_off_y</property>
+                                <property name="digits">3</property>
+                                <property name="numeric">True</property>
+                                <signal name="value_changed" handler="on_spbtn_touch_off_y_value_changed"/>
+                              </object>
+                              <packing>
+                                <property name="top_attach">1</property>
+                                <property name="bottom_attach">2</property>
+                                <property name="x_options">GTK_SHRINK | GTK_FILL</property>
+                                <property name="y_options">GTK_SHRINK</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkSpinButton" id="spbtn_touch_off_z">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="tooltip_text" translatable="yes">press ENTER after typing from keyboard</property>
+                                <property name="invisible_char">&#x25CF;</property>
+                                <property name="adjustment">adj_touch_off_z</property>
+                                <property name="digits">3</property>
+                                <property name="numeric">True</property>
+                                <signal name="value_changed" handler="on_spbtn_touch_off_z_value_changed"/>
+                              </object>
+                              <packing>
+                                <property name="top_attach">2</property>
+                                <property name="bottom_attach">3</property>
+                                <property name="x_options">GTK_SHRINK | GTK_FILL</property>
+                                <property name="y_options">GTK_SHRINK</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkButton" id="btn_set_x">
+                                <property name="label" translatable="yes">Set X</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="related_action">hal_action_reload</property>
+                                <signal name="clicked" handler="clicked_btn_set_x"/>
+                              </object>
+                              <packing>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                                <property name="x_options">GTK_SHRINK</property>
+                                <property name="y_options">GTK_SHRINK</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkButton" id="btn_set_y">
+                                <property name="label" translatable="yes">Set Y</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="related_action">hal_action_reload</property>
+                                <signal name="clicked" handler="clicked_btn_set_y"/>
+                              </object>
+                              <packing>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                                <property name="top_attach">1</property>
+                                <property name="bottom_attach">2</property>
+                                <property name="x_options">GTK_SHRINK</property>
+                                <property name="y_options">GTK_SHRINK</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkButton" id="btn_set_z">
+                                <property name="label" translatable="yes">Set Z</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="related_action">hal_action_reload</property>
+                                <signal name="clicked" handler="clicked_btn_set_z"/>
+                              </object>
+                              <packing>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                                <property name="top_attach">2</property>
+                                <property name="bottom_attach">3</property>
+                                <property name="x_options">GTK_SHRINK</property>
+                                <property name="y_options">GTK_SHRINK</property>
+                              </packing>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child type="label">
+                      <object class="GtkLabel" id="lbl_offsets">
+                        <property name="visible">True</property>
+                        <property name="xalign">0</property>
+                        <property name="label" translatable="yes">&lt;b&gt;Offsets in current coord. system&lt;/b&gt;</property>
+                        <property name="use_markup">True</property>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkFrame" id="frm_misc">
+                    <property name="visible">True</property>
+                    <property name="label_xalign">0</property>
+                    <child>
+                      <object class="GtkAlignment" id="ali_misc">
+                        <property name="visible">True</property>
+                        <property name="left_padding">12</property>
+                        <child>
+                          <object class="GtkTable" id="table2">
+                            <property name="visible">True</property>
+                            <property name="n_columns">2</property>
+                            <child>
+                              <object class="GtkButton" id="btn_manual_change">
+                                <property name="label" translatable="yes">Manual tool change</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="tooltip_text" translatable="yes">M6 T?
+G43 H?</property>
+                                <property name="xalign">0</property>
+                                <signal name="clicked" handler="clicked_btn_manual_change"/>
+                              </object>
+                              <packing>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                                <property name="x_options">GTK_SHRINK</property>
+                                <property name="y_options">GTK_SHRINK</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkSpinButton" id="spbtn_tool_number">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="tooltip_text" translatable="yes">press ENTER after typing from keyboard</property>
+                                <property name="invisible_char">&#x25CF;</property>
+                                <property name="adjustment">adj_tool_number</property>
+                                <signal name="value_changed" handler="on_spbtn_tool_number_value_changed"/>
+                              </object>
+                              <packing>
+                                <property name="x_options">GTK_SHRINK | GTK_FILL</property>
+                                <property name="y_options">GTK_SHRINK</property>
+                              </packing>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child type="label">
+                      <object class="GtkLabel" id="label1">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">&lt;b&gt;Miscellaneous&lt;/b&gt;</property>
+                        <property name="use_markup">True</property>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkImage" id="image1">
+                    <property name="visible">True</property>
+                    <property name="xalign">0</property>
+                    <property name="yalign">0</property>
+                    <property name="ypad">70</property>
+                    <property name="pixbuf">sketch_auto_tool_measurement.png</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="position">0</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkAdjustment" id="adj_touch_off_x">
+    <property name="lower">-2000</property>
+    <property name="upper">2000</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+    <property name="page_size">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adj_touch_off_y">
+    <property name="lower">-2000</property>
+    <property name="upper">2000</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+    <property name="page_size">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adj_touch_off_z">
+    <property name="lower">-1000</property>
+    <property name="upper">1000</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+    <property name="page_size">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adj_tool_number">
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+    <property name="page_size">10</property>
+  </object>
+  <object class="EMC_Action_Reload" id="hal_action_reload"/>
+</interface>
