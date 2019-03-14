@@ -1,0 +1,14 @@
+
+loadrt mux2 name=probe-mux
+setp probe-mux.in0 1
+
+net tp_in probe-mux.in1 <= rpi-spi-cpld.din.03
+net tp_on probe-mux.sel <= rpi-spi-cpld.din.04
+
+
+#net tp_in or2.0.in0 <= rpi-spi-cpld.din.03
+#net tp_on or2.0.in1 <= rpi-spi-cpld.din.04-not
+#net probe-in or2.0.out => motion.probe-input
+#net probe-in        <= rpi-spi-cpld.din.03-not
+#net probe-on        <= rpi-spi-cpld.din.04-not
+net probe-len       <= rpi-spi-cpld.din.05-not
