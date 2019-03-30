@@ -11,6 +11,15 @@ setp rpi-spi-cpld.rpm.freq 20347
 #?setp rpi-spi-cpld.debug-3 2.0
 addf rpi-spi-cpld.transfer tt
 
+loadrt oneshot
+loadrt and2
+loadrt or2 count=2
+addf and2.0 tt
+addf or2.0  tt
+addf or2.1  tt
+addf oneshot.0 tt
+setp oneshot.0.width 1
+
 # IO
 # Link digital inputs to LEDs
 net din00 <= rpi-spi-cpld.din.00 => pyvcp.in00
@@ -71,7 +80,9 @@ net out7   => rpi-spi-cpld.dout.07
 
 net out8in pyvcp.out08 toggle.8.in
 net out8   toggle.8.out => pyvcp.led08
-net out8   => rpi-spi-cpld.dout.08
+net out8   or2.1.in0
+net bz oneshot.0.out or2.1.in1
+net buz or2.1.out => rpi-spi-cpld.dout.08
 
 net spindle-cmd-rpm-abs => pyvcp.spindle-speed
 net spindle-pwm         => rpi-spi-cpld.pwm.out
@@ -79,6 +90,13 @@ net spindle-cmd-rpm-abs <= rpi-spi-cpld.spindle.rpm
 
 net spindle-pwm <= pyvcp.spindle-pwm-i
 net spindle-pwm => pyvcp.spindle-pwm-view
+
+
+net din03 and2.0.in0
+net din04 and2.0.in1
+net din4not rpi-spi-cpld.din.04-not or2.0.in0
+net tp2 and2.0.out or2.0.in1
+net probe-in or2.0.out => pyvcp.probe
 
 #helps for debugging
 ##loadusr halmeter

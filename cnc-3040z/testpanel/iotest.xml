@@ -135,26 +135,30 @@
 </vbox>
 </labelframe>
 
-<labelframe text="Spindel">
 <vbox>
 
-<hbox>
+<labelframe text="Spindel">
+<vbox>
 <vbox>
 <label text="PWM"/>
 <scale orient="horizontal" halpin="spindle-pwm" min_="0" max_="255" resolution="1" />
 <s32 halpin="spindle-pwm-view"/>
 </vbox>
-</hbox>
-<hbox>
 <vbox>
 <label text="RPM:"/>
-<bar halpin="spindle-speed" max_='12000' />
+<number halpin="spindle-speed" format="6d"/>
 </vbox>
-</hbox>
-
 </vbox>
 </labelframe>
 
+<labelframe text="Logic">
+<hbox>
+<label text="Probe:"/>
+<led halpin="probe"/>
+</hbox>
+</labelframe>
+
+</vbox>
 
 </hbox>
 </pyvcp>

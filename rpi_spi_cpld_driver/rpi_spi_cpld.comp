@@ -43,7 +43,7 @@ pin in bit stepgen.#.reset[4] "When TRUE, reset position-fb to 0";
 param rw float stepgen.#.scale[4] = 1.0;
 param rw float stepgen.#.maxvel[4] = 0;
 param rw bit stepgen.step_polarity;
-param rw bit stepgen.#.dir_polarity[4]; "true -> invert"
+param rw bit dir.#.polarity[4]=0 "true -> invert";
 
 param rw u32 stepgen.steplen "Step length in ns.";
 param rw u32 stepgen.stepspace "Step space in ns";
@@ -62,6 +62,7 @@ IN\\fIM\\fR on the pinout diagram.""";
 
 pin out float spindle.rpm "Spindle rpm";
 pin in  s32 pwm.out "Set pwm 0-255";
+param rw u32 rpm.freq=0 "freq for calc RPM";
 
 //pin out u32 raw.rx.din "din[x..15]";
 //pin out u32 raw.tx.dout "dout[x..15]";
@@ -429,11 +430,11 @@ FUNCTION(transfer) {
 		din_not(i) = !b;
 	}
 	spidata>>=16;
-  if(rpm_freq==0){
-     spindle_rpm=(float)spidata;
-  }else{
-     spindle_rpm=(float)((spidata>65500||spidata<50)?0:(rpm_freq*60)/(spidata+1));
-  }
+        if(rpm_freq==0){
+            spindle_rpm=(float)spidata;
+        }else{
+            spindle_rpm=(float)((spidata>65500||spidata<50)?0:(rpm_freq*60)/(spidata+1));
+        }
 
 	for (i=5; i<BUFSIZE; i++) { //clear buf?
 		spidata = rxBuf[i];
