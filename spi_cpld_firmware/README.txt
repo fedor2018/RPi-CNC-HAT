@@ -31,7 +31,7 @@ LED -1
 9  pos2[15:8]  real_dout[13:8]
                do_enable_wdt
 10 pos2[20:16] dirtime[3:0]
-               Spolarity
+               Spolarity[7]
 11 0           steptime[3:0]
                tap[1:0]
 -------------------------3

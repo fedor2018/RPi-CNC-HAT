@@ -46,10 +46,11 @@ input [I-1:0] din;
 input rin;//rpm in
 
 reg Spolarity;
+reg [3:0] Dpolarity;
 
 reg[O-1:0] real_dout; output [O-1:0] dout = /*do_tristate ? {O-1{1'bZ}} :*/ real_dout; 
 wire[3:0] real_step; output [3:0] step = /*do_tristate ? 4'b0 :*/ real_step ^ {4{Spolarity}};
-wire[3:0] real_dir; output [3:0] dir = /*do_tristate ? 4'b0 :*/ real_dir;
+wire[3:0] real_dir; output [3:0] dir = /*do_tristate ? 4'b0 :*/ real_dir ^ Dpolarity;
 wire real_pout; output pout = /*do_tristate ? 1'b0 :*/ (INV_PWM)?~real_pout:real_pout;
 
 `ifdef OD
@@ -220,7 +221,12 @@ always @(posedge clk) begin
 				in_pwm <= data_recvd;
 			end
 		end
-		else if(spibytecnt == 5'b01101) data_outbuf <= pos3[15:8];//13
+		else if(spibytecnt == 5'b01101) begin //13
+			data_outbuf <= pos3[15:8];
+			if(byte_received) begin
+				Dpolarity <= data_recvd[3:0];
+			end
+		end
 		else if(spibytecnt == 5'b01110) data_outbuf <= pos3[W+F-1:16];//14
 		else if(spibytecnt == 5'b01111) data_outbuf <= 8'b0;//15
 		//------------------------------------------------- word 4
