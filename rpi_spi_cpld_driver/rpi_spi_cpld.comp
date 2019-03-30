@@ -429,7 +429,11 @@ FUNCTION(transfer) {
 		din_not(i) = !b;
 	}
 	spidata>>=16;
-	spindle_rpm=(float)((spidata>65500||spidata<50)?0:(RPM_FREQ*60)/(spidata+1));
+  if(rpm_freq==0){
+     spindle_rpm=(float)spidata;
+  }else{
+     spindle_rpm=(float)((spidata>65500||spidata<50)?0:(rpm_freq*60)/(spidata+1));
+  }
 
 	for (i=5; i<BUFSIZE; i++) { //clear buf?
 		spidata = rxBuf[i];

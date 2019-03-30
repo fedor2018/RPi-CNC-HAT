@@ -379,7 +379,7 @@ FUNCTION(transfer) {
 	txBuf[2] |= r<<16;
 	//txBuf[2] wdt ena?
 //12-15 bytes
-	txBuf[3]=((__u32)pwm_out & 0xFF);
+	txBuf[3]=((__u32)pwm_out & 0xFF);//12 byte
 	r=0;
 	for(i=0; i<4; i++){
 		 if(dir_polarity (i))
@@ -429,7 +429,11 @@ FUNCTION(transfer) {
 		din_not(i) = !b;
 	}
 	spidata>>=16;
-	spindle_rpm=(float)((spidata>65500||spidata<50)?0:(RPM_FREQ*60)/(spidata+1));
+        if(rpm_freq==0){
+            spindle_rpm=(float)spidata;
+        }else{
+            spindle_rpm=(float)((spidata>65500||spidata<50)?0:(rpm_freq*60)/(spidata+1));
+        }
 
 	for (i=5; i<BUFSIZE; i++) { //clear buf?
 		spidata = rxBuf[i];
