@@ -1,0 +1,300 @@
+<?xml version="1.0"?>
+<interface>
+  <requires lib="gtk+" version="2.16"/>
+  <!-- interface-requires gladevcp 0.0 -->
+  <!-- interface-naming-policy project-wide -->
+  <object class="GtkWindow" id="window1">
+    <property name="default_width">640</property>
+    <property name="default_height">480</property>
+    <signal name="destroy" handler="on_window1_destroy"/>
+    <child>
+      <object class="GtkVBox" id="vbox1">
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkToolbar" id="toolbar1">
+            <property name="visible">True</property>
+            <property name="toolbar_style">icons</property>
+            <child>
+              <object class="GtkToggleToolButton" id="toolbutton_estop">
+                <property name="visible">True</property>
+                <property name="related_action">emc_toggle_estop</property>
+                <property name="use_action_appearance">True</property>
+                <property name="label" translatable="yes">ESTOP</property>
+                <property name="use_underline">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkToggleToolButton" id="toolbutton_power">
+                <property name="visible">True</property>
+                <property name="related_action">emc_toggle_power</property>
+                <property name="use_action_appearance">True</property>
+                <property name="label" translatable="yes">Power</property>
+                <property name="use_underline">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkSeparatorToolItem" id="toolbutton1">
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkToolButton" id="toolbutton_open">
+                <property name="visible">True</property>
+                <property name="related_action">emc_open</property>
+                <property name="label" translatable="yes">Open</property>
+                <property name="use_underline">True</property>
+                <property name="stock_id">gtk-open</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkToolButton" id="toolbutton_reload">
+                <property name="visible">True</property>
+                <property name="related_action">emc_reload</property>
+                <property name="label" translatable="yes">Reload</property>
+                <property name="use_underline">True</property>
+                <property name="stock_id">gtk-refresh</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkSeparatorToolItem" id="toolbutton2">
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkToggleToolButton" id="toolbutton_run">
+                <property name="visible">True</property>
+                <property name="related_action">emc_toggle_run</property>
+                <property name="label" translatable="yes">Run</property>
+                <property name="use_underline">True</property>
+                <property name="stock_id">gtk-media-play</property>
+                <accelerator key="r" signal="clicked"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkToolButton" id="toolbutton_step">
+                <property name="visible">True</property>
+                <property name="related_action">emc_auto_step</property>
+                <property name="label" translatable="yes">Step</property>
+                <property name="use_underline">True</property>
+                <property name="stock_id">gtk-media-next</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkToggleToolButton" id="toolbutton_pause">
+                <property name="visible">True</property>
+                <property name="related_action">emc_toggle_pause</property>
+                <property name="label" translatable="yes">Pause</property>
+                <property name="use_underline">True</property>
+                <property name="stock_id">gtk-media-pause</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkToggleToolButton" id="toolbutton_stop">
+                <property name="visible">True</property>
+                <property name="related_action">emc_toggle_stop</property>
+                <property name="label" translatable="yes">Stop</property>
+                <property name="use_underline">True</property>
+                <property name="stock_id">gtk-media-stop</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkHBox" id="hbox1">
+            <property name="visible">True</property>
+            <child>
+              <object class="GtkVBox" id="vbox2">
+                <property name="visible">True</property>
+                <child>
+                  <object class="GtkHBox" id="hbox2">
+                    <property name="visible">True</property>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <object class="GtkVBox" id="vbox3">
+                        <property name="visible">True</property>
+                        <child>
+                          <object class="GtkButton" id="button1">
+                            <property name="label" translatable="yes">button</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <property name="related_action">emc_home_x</property>
+                          </object>
+                          <packing>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="button2">
+                            <property name="label" translatable="yes">button</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <property name="related_action">emc_home_y</property>
+                          </object>
+                          <packing>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="button3">
+                            <property name="label" translatable="yes">button</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <property name="related_action">emc_home_z</property>
+                          </object>
+                          <packing>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+              </object>
+              <packing>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="HAL_Gremlin" id="hal_gremlin1">
+                <property name="visible">True</property>
+                <property name="double_buffered">False</property>
+              </object>
+              <packing>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="EMC_Action_Run" id="emc_auto_run">
+    <property name="label">Run</property>
+    <property name="tooltip">Run current file</property>
+    <property name="stock_id">gtk-media-play</property>
+  </object>
+  <object class="EMC_Action_Step" id="emc_auto_step">
+    <property name="label">Step</property>
+    <property name="tooltip">Step over next command</property>
+    <property name="stock_id">gtk-media-next</property>
+  </object>
+  <object class="EMC_Action_Pause" id="emc_auto_pause">
+    <property name="label">Pause</property>
+    <property name="tooltip">Pause/resume execution</property>
+    <property name="stock_id">gtk-media-pause</property>
+  </object>
+  <object class="EMC_Action_Resume" id="emc_auto_resume">
+    <property name="stock_id">gtk-media-stop</property>
+  </object>
+  <object class="EMC_Action_Stop" id="emc_auto_stop"/>
+  <object class="GtkImage" id="image2">
+    <property name="visible">True</property>
+    <property name="stock">gtk-disconnect</property>
+  </object>
+  <object class="EMC_ToggleAction_ESTOP" id="emc_toggle_estop">
+    <property name="label">ESTOP</property>
+    <property name="tooltip">Toggle Emergency Stop</property>
+    <property name="stock_id">gtk-stop</property>
+  </object>
+  <object class="EMC_ToggleAction_Power" id="emc_toggle_power">
+    <property name="label">Power</property>
+    <property name="tooltip">Toggle Machine Power</property>
+    <property name="stock_id">gtk-disconnect</property>
+  </object>
+  <object class="EMC_ToggleAction_Run" id="emc_toggle_run">
+    <property name="label">Run</property>
+    <property name="tooltip">Run current file</property>
+    <property name="stock_id">gtk-media-play</property>
+  </object>
+  <object class="EMC_ToggleAction_Stop" id="emc_toggle_stop">
+    <property name="stock_id">gtk-media-stop</property>
+  </object>
+  <object class="EMC_ToggleAction_Pause" id="emc_toggle_pause">
+    <property name="icon_name">gtk-media-pause</property>
+  </object>
+  <object class="EMC_Action_MDI" id="hal_action_mdi1">
+    <property name="visible_horizontal">False</property>
+    <property name="visible_vertical">False</property>
+    <property name="visible_overflown">False</property>
+    <property name="command">G0 X0 Y0 Z0</property>
+  </object>
+  <object class="EMC_Action_Open" id="emc_open">
+    <property name="stock_id">gtk-open</property>
+  </object>
+  <object class="EMC_Action_Reload" id="emc_reload">
+    <property name="stock_id">gtk-refresh</property>
+  </object>
+  <object class="EMC_Action_Home" id="emc_home_x">
+    <property name="confirm_homed">True</property>
+    <property name="axis">0</property>
+  </object>
+  <object class="EMC_Stat" id="hal_stat1"/>
+  <object class="EMC_Action_Home" id="emc_home_y">
+    <property name="axis">1</property>
+  </object>
+  <object class="EMC_Action_Home" id="emc_home_z">
+    <property name="axis">2</property>
+  </object>
+</interface>

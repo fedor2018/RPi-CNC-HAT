@@ -1,0 +1,92 @@
+loadrt trivkins
+loadrt tp
+loadrt [EMCMOT]EMCMOT base_period_nsec=[EMCMOT]BASE_PERIOD servo_period_nsec=[EMCMOT]SERVO_PERIOD num_joints=[TRAJ]AXES kins=trivkins tp=tp
+
+loadrt or2
+loadrt and2 count=2
+loadrt timedelay
+setp timedelay.0.on-delay 5
+setp timedelay.0.off-delay 1
+
+#41.67 MHz
+loadusr -w minimal_clk 40M -q
+loadrt rpi_spi_cpld
+#41.67 MHz/2048
+setp rpi-spi-cpld.rpm.freq 20347
+#setp rpi-spi-cpld.stepgen.step_polarity 1
+
+#?setp rpi-spi-cpld.debug-3 2.0
+addf rpi-spi-cpld.transfer servo-thread
+addf motion-command-handler servo-thread
+addf motion-controller servo-thread
+#addf rpi-spi-cpld.spitest servo-thread
+addf and2.0 servo-thread
+addf and2.1 servo-thread
+addf or2.0 servo-thread
+addf timedelay.0 servo-thread
+
+net tp_in and2.1.in0 <= rpi-spi-cpld.din.03
+net tp_on and2.1.in1 <= rpi-spi-cpld.din.04
+net tp_on_not rpi-spi-cpld.din.04-not or2.0.in0
+net tp2 and2.1.out or2.0.in1
+net probe-in or2.0.out => motion.probe-input
+
+net probe-len       <= rpi-spi-cpld.din.05-not
+net estop-ext       <= rpi-spi-cpld.din.06-not
+
+net both-home-x     <= rpi-spi-cpld.din.00
+net both-home-y     <= rpi-spi-cpld.din.01
+net max-home-z     <= rpi-spi-cpld.din.02
+
+#net spindle-cmd-rpm => pwmgen.0.value
+net spindle-pwr and2.0.in0 <= rpi-spi-cpld.din.07-not
+net spindle-in  and2.0.in1 <= motion.spindle-on
+net spindle-on  and2.0.out => rpi-spi-cpld.dout.00
+net spindle-on => timedelay.0.in
+net spindle-at-speed timedelay.0.out => motion.spindle-at-speed
+
+net spindle-pwm     => rpi-spi-cpld.pwm.out
+net spindle-cmd-rpm-abs <= rpi-spi-cpld.spindle.rpm
+#net spindle-cmd-rpm     <= motion.spindle-speed-out
+#net spindle-cmd-rps     <= motion.spindle-speed-out-rps
+
+setp rpi-spi-cpld.stepgen.steplen 20000
+setp rpi-spi-cpld.stepgen.stepspace 20000
+setp rpi-spi-cpld.stepgen.dirtime 20000
+
+setp rpi-spi-cpld.stepgen.0.scale [AXIS_0]SCALE
+net xpos-cmd axis.0.motor-pos-cmd => rpi-spi-cpld.stepgen.0.position-cmd
+net xpos-fb rpi-spi-cpld.stepgen.0.position-fb => axis.0.motor-pos-fb
+net xenable axis.0.amp-enable-out => rpi-spi-cpld.stepgen.0.enable
+net both-home-x => axis.0.home-sw-in
+net both-home-x => axis.0.neg-lim-sw-in
+net both-home-x => axis.0.pos-lim-sw-in
+
+setp rpi-spi-cpld.dir.1.polarity 1
+setp rpi-spi-cpld.stepgen.1.scale [AXIS_1]SCALE
+net ypos-cmd axis.1.motor-pos-cmd => rpi-spi-cpld.stepgen.1.position-cmd
+net ypos-fb rpi-spi-cpld.stepgen.1.position-fb => axis.1.motor-pos-fb
+net yenable axis.1.amp-enable-out => rpi-spi-cpld.stepgen.1.enable
+net both-home-y => axis.1.home-sw-in
+net both-home-y => axis.1.neg-lim-sw-in
+net both-home-y => axis.1.pos-lim-sw-in
+
+setp rpi-spi-cpld.dir.2.polarity 1
+setp rpi-spi-cpld.stepgen.2.scale [AXIS_2]SCALE
+net zpos-cmd axis.2.motor-pos-cmd => rpi-spi-cpld.stepgen.2.position-cmd
+net zpos-fb rpi-spi-cpld.stepgen.2.position-fb => axis.2.motor-pos-fb
+net zenable axis.2.amp-enable-out => rpi-spi-cpld.stepgen.2.enable
+net max-home-z => axis.2.home-sw-in
+#net max-home-z => axis.2.neg-lim-sw-in
+net max-home-z => axis.2.pos-lim-sw-in
+
+net estop-out <= iocontrol.0.user-enable-out
+net estop-ext => iocontrol.0.emc-enable-in
+
+#loadusr -W hal_manualtoolchange
+#net tool-change iocontrol.0.tool-change => hal_manualtoolchange.change
+#net tool-changed iocontrol.0.tool-changed <= hal_manualtoolchange.changed
+#net tool-number iocontrol.0.tool-prep-number => hal_manualtoolchange.number
+#net tool-prepare-loopback iocontrol.0.tool-prepare => iocontrol.0.tool-prepared
+
+
