@@ -50,9 +50,9 @@ net spindle-cmd-rpm-abs <= rpi-spi-cpld.spindle.rpm
 #net spindle-cmd-rpm     <= motion.spindle-speed-out
 #net spindle-cmd-rps     <= motion.spindle-speed-out-rps
 
-setp rpi-spi-cpld.stepgen.steplen 20000
-setp rpi-spi-cpld.stepgen.stepspace 20000
-setp rpi-spi-cpld.stepgen.dirtime 20000
+setp rpi-spi-cpld.stepgen.steplen 120000
+setp rpi-spi-cpld.stepgen.stepspace 120000
+setp rpi-spi-cpld.stepgen.dirtime 120000
 
 setp rpi-spi-cpld.stepgen.0.scale [AXIS_0]SCALE
 net xpos-cmd axis.0.motor-pos-cmd => rpi-spi-cpld.stepgen.0.position-cmd
