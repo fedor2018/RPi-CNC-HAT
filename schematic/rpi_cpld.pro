@@ -1,10 +1,7 @@
-update=19.01.2019 13:30:50
+update=03.04.2019 7:54:35
 last_client=kicad
 [general]
 version=1
-[eeschema]
-version=1
-LibDir=D:/usr/KiCad/Data/library;D:/usr/KiCad/Data/template
 [schematic_editor]
 version=1
 PageLayoutDescrFile=
@@ -15,3 +12,8 @@ NetFmtName=
 SpiceForceRefPrefix=0
 SpiceUseNetNumbers=0
 LabSize=60
+[eeschema]
+version=1
+LibDir=D:/usr/KiCad/Data/library;D:/usr/KiCad/Data/template
+[eeschema/libraries]
+LibName1=C:/usr/KiCad4/Data/kicad/library/power

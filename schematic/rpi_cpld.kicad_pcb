@@ -949,10 +949,10 @@
       (net 12 /SCLK))
     (pad 30 thru_hole circle (at 11.43 -1.27) (size 1.524 1.524) (drill 1.016) (layers *.Cu *.Mask F.SilkS)
       (net 1 GND))
-    (model Connector_PinSocket_2.54mm.3dshapes/PinSocket_2x20_P2.54mm_Vertical.wrl
-      (at (xyz -0.95 -0.05 -0.05))
+    (model Socket_Strips.3dshapes/Socket_Strip_Straight_2x20_Pitch2.54mm.wrl
+      (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
-      (rotate (xyz 180 0 90))
+      (rotate (xyz 180 0 0))
     )
   )
 
@@ -2394,7 +2394,7 @@
       (net 50 /RXD) (solder_mask_margin 0.1016))
     (pad 4 thru_hole circle (at 7.62 0 90) (size 1.8796 1.8796) (drill 1.016) (layers *.Cu *.Mask)
       (net 51 /GNDR) (solder_mask_margin 0.1016))
-    (model Connector_PinHeader_2.54mm.3dshapes/PinHeader_1x04_P2.54mm_Vertical.wrl
+    (model Pin_Headers.3dshapes/Pin_Header_Straight_1x04_Pitch2.54mm.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 -90))
@@ -2643,7 +2643,7 @@
       (net 66 /SCL) (solder_mask_margin 0.1016))
     (pad 4 thru_hole circle (at 7.62 0) (size 1.8796 1.8796) (drill 1.016) (layers *.Cu *.Mask)
       (net 1 GND) (solder_mask_margin 0.1016))
-    (model Connector_PinHeader_2.54mm.3dshapes/PinHeader_1x04_P2.54mm_Vertical.wrl
+    (model Pin_Headers.3dshapes/Pin_Header_Straight_1x04_Pitch2.54mm.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 -90))
@@ -3103,7 +3103,7 @@
       (net 95 "Net-(J9-Pad9)"))
     (pad 10 thru_hole oval (at 2.54 10.16) (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask)
       (net 1 GND))
-    (model Connector_PinHeader_2.54mm.3dshapes/PinHeader_2x05_P2.54mm_Vertical.wrl
+    (model Pin_Headers.3dshapes/Pin_Header_Straight_2x05_Pitch2.54mm.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -3485,7 +3485,7 @@
       (net 105 "Net-(J6-Pad9)"))
     (pad 10 thru_hole oval (at 2.54 10.16 180) (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask)
       (net 106 "Net-(J6-Pad10)"))
-    (model Connector_PinHeader_2.54mm.3dshapes/PinHeader_2x05_P2.54mm_Vertical.wrl
+    (model Pin_Headers.3dshapes/Pin_Header_Straight_2x05_Pitch2.54mm.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
