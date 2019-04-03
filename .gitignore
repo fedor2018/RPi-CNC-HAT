@@ -16,3 +16,4 @@
 *.tmp
 *.do
 *.dsn
+/schematic3/rescue-backup
