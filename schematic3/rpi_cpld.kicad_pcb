@@ -857,6 +857,11 @@
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
     )
+    (model C:/usr/KiCad5/Data/kicad/packages3D/kicad-packages3D/Connector_Molex.3dshapes/Molex_KK-254_AE-6410-02A_1x02_P2.54mm_Vertical.wrl
+      (at (xyz 0 0 0))
+      (scale (xyz 1 1 1))
+      (rotate (xyz 0 0 0))
+    )
   )
 
   (module hat-design-lib:hat-PIN_ARRAY_20X2 (layer F.Cu) (tedit 5C18F1A4) (tstamp 5C2EE5FD)
@@ -1163,6 +1168,11 @@
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
     )
+    (model Package_QFP.3dshapes/LQFP-100_14x14mm_P0.5mm.wrl
+      (at (xyz 0 0 0))
+      (scale (xyz 1 1 1))
+      (rotate (xyz 0 0 0))
+    )
   )
 
   (module Clocks:OSCILLATOR-SMD-7X5-4PAD (layer B.Cu) (tedit 5C18A9B9) (tstamp 5C2EE6BB)
@@ -1211,6 +1221,11 @@
       (net 4 /CLK) (solder_mask_margin 0.1016))
     (pad 4 smd rect (at -2.54 2.10312 180) (size 1.99898 1.79832) (layers B.Cu B.Paste B.Mask)
       (net 38 +3.3VA) (solder_mask_margin 0.1016))
+    (model Package_QFP.3dshapes/LQFP-100_14x14mm_P0.5mm.wrl
+      (at (xyz 0 0 0))
+      (scale (xyz 1 1 1))
+      (rotate (xyz 0 0 0))
+    )
   )
 
   (module Capacitors_SMD:C_0603_HandSoldering (layer B.Cu) (tedit 5C177AE9) (tstamp 5C2FB5C9)
