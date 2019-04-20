@@ -33,7 +33,7 @@ endmodule
 module spi_main(clk, SCK, MOSI, MISO, SSEL, LED, dout, din, step, dir, pout, rin);
 parameter W=10;
 parameter F=11;//velocity width
-parameter T=4;//time width
+parameter T=5;//time width *1600ns
 parameter I=16;//pins input
 parameter O=16;//pins output
 parameter INV_PWM=0;//invert pwm
