@@ -131,20 +131,21 @@ static volatile __u32 txBuf[BUFSIZE], rxBuf[BUFSIZE];
 static int speedrange=0;
 RTAPI_MP_INT(speedrange, "Speed range 0..3");
 
+#define W 10
+#define F 11
+
 #define PLUTO_CLK   40000000      //40MHz
 #define PLUTO_SPEED_NS (1600)      //1.6us=625kHz=>0.8us
 #define PLUTO_SPEED    (PLUTO_SPEED_NS * 1e-9)   // 0,0000016
 #define PLUTO_FREQ     (1e9 / PLUTO_SPEED_NS)    // 625kHz
 #define TMAX           ((1<<5)-1)  // 0x1f=b11111
-#define ONE (1<<F)    // 0x8000
-#define MAX_STEP_RATE ((1<<F)-1) //  0x7fff
-#define RPM_FREQ PLUTO_CLK/2048 //19692,3 Hz
+#define ONE (1<<F)    // 0x800
+#define MAX_STEP_RATE ((1<<F)-1) //  0x7ff
+#define RPM_FREQ PLUTO_CLK/2048 //  19531,25
 
-#define W 10
-#define F 11
-#define MODULO ((1<<(W+F))-1)
-#define MASK ((1<<(W+F))-1)
-#define MAXDELTA (MASK/2)
+#define MODULO ((1<<(W+F))-1)  //   1FFFFF
+#define MASK ((1<<(W+F))-1)    //
+#define MAXDELTA (MASK/2)      //  FFFFFF
 #define LEN_MASK 0x1F
 
 typedef struct {
