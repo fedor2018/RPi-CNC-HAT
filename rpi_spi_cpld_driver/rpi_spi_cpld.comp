@@ -55,6 +55,10 @@ param rw u32 stepgen.stepspace
 param rw u32 stepgen.dirtime =20000
 """Dir hold/setup in ns (max=49600ns[1600*31])""";
 
+param rw u32 spi.speed = 4000000
+"""spi speed HZ""";
+
+
 pin in bit dout.##[14]
 """dout.\\fIMM\\fR corresponds to the pin labeled
 OUT\\fIM\\fR on the pinout diagram.""";
@@ -123,7 +127,7 @@ platform_t check_platform(void);
 static int fd;
 static uint8_t spi_mode=0;
 static uint8_t spi_bits=8;
-static __u32 spi_speed=1000000;
+static __u32 spi_spd=spi_speed;
 static __u16 spi_delay=0;
 
 static volatile __u32 txBuf[BUFSIZE], rxBuf[BUFSIZE];
@@ -133,12 +137,13 @@ RTAPI_MP_INT(speedrange, "Speed range 0..3");
 
 #define W 10
 #define F 11
+#define T 5
 
 #define PLUTO_CLK   40000000      //40MHz
 #define PLUTO_SPEED_NS (1600)      //1.6us=625kHz=>0.8us
 #define PLUTO_SPEED    (PLUTO_SPEED_NS * 1e-9)   // 0,0000016
 #define PLUTO_FREQ     (1e9 / PLUTO_SPEED_NS)    // 625kHz
-#define TMAX           ((1<<5)-1)  // 0x1f=b11111
+#define TMAX           ((1<<T)-1)  // 0x1f=b11111
 #define ONE (1<<F)    // 0x800
 #define MAX_STEP_RATE ((1<<F)-1) //  0x7ff
 #define RPM_FREQ PLUTO_CLK/2048 //  19531,25
@@ -158,9 +163,9 @@ typedef struct {
 
 EXTRA_SETUP() {
     if(check_platform()==UNSUPPORTED){
-	rtapi_print_msg(RTAPI_MSG_ERR,
+			rtapi_print_msg(RTAPI_MSG_ERR,
 	        "HAL_rpi_spi_cpld: ERROR: platform unsupported\n");
-	return -1;
+			return -1;
     }
     fd=open("/dev/spidev1.2", O_RDWR);
     if(fd<0){
@@ -180,10 +185,11 @@ EXTRA_SETUP() {
 	        "HAL_rpi_spi_cpld: ERROR: SPI_IOC_xx_BITS_PER_WORD\n");
 	return -1;
     }
-  if(ioctl(fd, SPI_IOC_WR_MAX_SPEED_HZ, &spi_speed)<0||
-    ioctl(fd, SPI_IOC_RD_MAX_SPEED_HZ, &spi_speed)<0){
+  if(ioctl(fd, SPI_IOC_WR_MAX_SPEED_HZ, &spi_spd)<0||
+    ioctl(fd, SPI_IOC_RD_MAX_SPEED_HZ, &spi_spd)<0){
 	rtapi_print_msg(RTAPI_MSG_ERR,
-	        "HAL_rpi_spi_cpld: ERROR: SPI_IOC_xx_MAX_SPEED_HZ\n");
+	        "HAL_rpi_spi_cpld: ERROR: SPI_IOC_xx_MAX_SPEED_HZ=%d req=%d\n",
+					SPI_IOC_WR_MAX_SPEED_HZ, spi_spd);
 	return -1;
     }
     rtapi_print_msg(RTAPI_MSG_WARN,
@@ -300,7 +306,7 @@ FUNCTION(transfer) {
 
 	// Speed limits come from several sources
 	// First limit: step waveform timings
-	fmax = 1.0 / PLUTO_SPEED / (2 + steplen_ticks + stepspace_ticks);
+	fmax = /*1.0 / PLUTO_SPEED*/ PLUTO_FREQ / (2 + steplen_ticks + stepspace_ticks);
 	// Second limit: highest speed command
 	if(fmax > PLUTO_FREQ / (2<<speedrange))
 			fmax = PLUTO_SPEED * (2<<speedrange);
