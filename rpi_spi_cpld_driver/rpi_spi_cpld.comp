@@ -144,13 +144,13 @@ RTAPI_MP_INT(speedrange, "Speed range 0..3");
 #define PLUTO_SPEED    (PLUTO_SPEED_NS * 1e-9)   // 0,0000016
 #define PLUTO_FREQ     (1e9 / PLUTO_SPEED_NS)    // 625kHz
 #define TMAX           ((1<<T)-1)  // 0x1f=b11111
-#define ONE (1<<F)    // 0x800
+#define ONE (1<<F)    // 0x800 /2048
 #define MAX_STEP_RATE ((1<<F)-1) //  0x7ff
 #define RPM_FREQ PLUTO_CLK/2048 //  19531,25
 
-#define MODULO ((1<<(W+F))-1)  //   1FFFFF
+#define MODULO ((1<<(W+F))-1)  // 1FFFFF/2097151
 #define MASK ((1<<(W+F))-1)    //
-#define MAXDELTA (MASK/2)      //  FFFFFF
+#define MAXDELTA (MASK/2)      // FFFFF/1048575
 #define LEN_MASK 0x1F
 
 typedef struct {
@@ -308,11 +308,11 @@ FUNCTION(transfer) {
 	// First limit: step waveform timings
 	fmax = /*1.0 / PLUTO_SPEED*/ PLUTO_FREQ / (2 + steplen_ticks + stepspace_ticks);
 	// Second limit: highest speed command
-	if(fmax > PLUTO_FREQ / (2<<speedrange))
+	if(fmax > PLUTO_FREQ / (2<<speedrange))   // 78-312kHz
 			fmax = PLUTO_SPEED * (2<<speedrange);
-	// Third limit: max sign-extenable counts per period
+	// Third limit: max sign-extenable counts per period fperiod=(period*1e-9)
 	if(fmax > MAXDELTA / fperiod / (1<<speedrange))
-			fmax = MAXDELTA / fperiod / (1<<speedrange);
+			fmax = MAXDELTA / fperiod / (1<<speedrange); //
 
 	tbuf = (__u16 *)txBuf;
 	for(i=0; i<4; i++) {
@@ -350,7 +350,7 @@ FUNCTION(transfer) {
 			if(v < -stepgen_maxvel(i)) v = -stepgen_maxvel(i);
 			if(v > stepgen_maxvel(i)) v = stepgen_maxvel(i);
 		}
-		rate = v*stepgen_scale(i)*ONE*PLUTO_SPEED/(1<<speedrange);
+		rate = v*stepgen_scale(i)*ONE*PLUTO_SPEED/(1<<speedrange); //v*400*3.2ms
 
 		if(rate > maxrate) rate = maxrate;
 		if(rate < -maxrate) rate = -maxrate;
