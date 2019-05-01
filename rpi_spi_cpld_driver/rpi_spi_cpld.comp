@@ -127,7 +127,7 @@ platform_t check_platform(void);
 static int fd;
 static uint8_t spi_mode=0;
 static uint8_t spi_bits=8;
-static __u32 spi_spd=spi_speed;
+static __u32 spi_spd=1000000;
 static __u16 spi_delay=0;
 
 static volatile __u32 txBuf[BUFSIZE], rxBuf[BUFSIZE];
@@ -162,6 +162,7 @@ typedef struct {
 
 
 EXTRA_SETUP() {
+    spi_spd=spi_speed;
     if(check_platform()==UNSUPPORTED){
 			rtapi_print_msg(RTAPI_MSG_ERR,
 	        "HAL_rpi_spi_cpld: ERROR: platform unsupported\n");
@@ -209,7 +210,7 @@ int spi_transfer32(int fd, volatile __u32 *tx, volatile __u32 *rx){
 		.rx_buf = (unsigned long)rx,
 		.len = SPI_BUFFER_SIZE,
 		.delay_usecs = spi_delay,
-		.speed_hz = spi_speed,
+		.speed_hz = spi_spd,
 		.bits_per_word = spi_bits,
 	};
 /*
