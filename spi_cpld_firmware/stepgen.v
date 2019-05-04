@@ -20,8 +20,8 @@ module stepgen(clk, enable, position, velocity, dirtime, steptime, step, dir, ta
 `define STATE_DIRCHANGE 1
 `define STATE_DIRWAIT 2
 
-parameter W=12;
-parameter F=10;
+parameter W=10;
+parameter F=11;
 parameter T=5;
 
 input clk, enable;
