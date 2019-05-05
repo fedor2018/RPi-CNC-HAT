@@ -13,9 +13,9 @@ loadusr -w minimal_clk 40M -q
 loadrt rpi_spi_cpld
 #41.67 MHz/2048
 setp rpi-spi-cpld.rpm.freq 20347
-#setp rpi-spi-cpld.stepgen.step_polarity 1
+setp rpi-spi-cpld.stepgen.step.polarity 0
+setp rpi-spi-cpld.debug2 0.05
 
-#?setp rpi-spi-cpld.debug-3 2.0
 addf rpi-spi-cpld.transfer servo-thread
 addf motion-command-handler servo-thread
 addf motion-controller servo-thread
@@ -50,9 +50,9 @@ net spindle-cmd-rpm-abs <= rpi-spi-cpld.spindle.rpm
 #net spindle-cmd-rpm     <= motion.spindle-speed-out
 #net spindle-cmd-rps     <= motion.spindle-speed-out-rps
 
-setp rpi-spi-cpld.stepgen.steplen 120000
-setp rpi-spi-cpld.stepgen.stepspace 120000
-setp rpi-spi-cpld.stepgen.dirtime 120000
+setp rpi-spi-cpld.stepgen.steplen 10000
+setp rpi-spi-cpld.stepgen.stepspace 10000
+setp rpi-spi-cpld.stepgen.dirtime 10000
 
 setp rpi-spi-cpld.stepgen.0.scale [AXIS_0]SCALE
 net xpos-cmd axis.0.motor-pos-cmd => rpi-spi-cpld.stepgen.0.position-cmd
@@ -88,5 +88,7 @@ net estop-ext => iocontrol.0.emc-enable-in
 #net tool-changed iocontrol.0.tool-changed <= hal_manualtoolchange.changed
 #net tool-number iocontrol.0.tool-prep-number => hal_manualtoolchange.number
 #net tool-prepare-loopback iocontrol.0.tool-prepare => iocontrol.0.tool-prepared
+
+loadusr halmeter
 
 
