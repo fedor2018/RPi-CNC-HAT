@@ -76,7 +76,7 @@ param rw u32 rpm.freq=0 """freq for calc RPM""";
 
 param rw s32 debug_0;
 param rw s32 debug_1;
-param rw float debug_2=.5;
+param rw float debug2=0.01;//?? great value changes DIR
 //param rw float debug_3=2.0
 // """Registers that hold debugging information of interest to developers""";
 
@@ -322,8 +322,8 @@ FUNCTION(transfer) {
 		double est_err = stepgen_position_fb(i) + data.old_velocity_cmd[i] * fperiod - new_position_cmd;
 		double actual_max;
 		double scale_abs = abs(stepgen_scale(i));
-
-		v = v - debug_2 * est_err / fperiod;
+double v0=v;
+		v = v - debug2 * est_err / fperiod;
 		if(v > 0) v = v + .5/scale_abs;
 		else if(v < 0) v = v - .5/scale_abs;
 
@@ -357,7 +357,18 @@ FUNCTION(transfer) {
 		if(rate < -maxrate) rate = -maxrate;
 
 		if(!stepgen_enable(i)) rate = 0;
-		if(i == 0) debug_0 = rate;
+		if(i == 0){
+		    debug_0 = rate;
+/*		    static int orate=0;
+		    if(rate!=orate && rate!=0){
+		    printf("old=%d rate=%d maxrate=%d actual=%lf maxvel=%lf v=%lf->%lf*%lf fmax=%lf oldvel=%lf err=%lf f=%lf scale=%lf\n",
+			orate, rate, maxrate,actual_max, stepgen_maxvel(i), v0, v, 
+			(stepgen_scale(i)*ONE*PLUTO_SPEED/(1<<speedrange)), fmax,
+			data.old_velocity_cmd[i],est_err, fperiod, scale_abs);
+		    }
+		    orate=rate;
+*/		}
+		
 		//if(!i%2)
 		//	txBuf[i%2] = 0;
 		//txBuf[i%2] |= rate<<(16*(i%2));
