@@ -331,7 +331,7 @@ FUNCTION(transfer) {
                         if(v < -stepgen_maxvel(i)) v = -stepgen_maxvel(i);
                         if(v > stepgen_maxvel(i)) v = stepgen_maxvel(i);
                 }
-                rate = v*stepgen_scale(i)*ONE*PLUTO_SPEED/(1<<speedrange); //v*400*3.2ms
+                rate = v*stepgen_scale(i)*ONE*PLUTO_SPEED;///(1<<speedrange); //v*400*3.2ms
 
                 if(rate > maxrate) rate = maxrate;
                 if(rate < -maxrate) rate = -maxrate;
