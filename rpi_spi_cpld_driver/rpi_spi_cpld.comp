@@ -14,9 +14,7 @@ dtparam=spi=on
 === rpi2 /dev/spidev1.2
 dtoverlay=spi1-3cs
 === rpi3 /dev/spidev1.0
-dtoverlay=pi3-disable-bt
 dtoverlay=spi1-1cs
-dtoverlay=spi0-1cs,cs0_spidev=disabled,cs1_spidev=disabled
 ===
 
 .SS Step generators
@@ -193,8 +191,8 @@ EXTRA_SETUP() {
         return -1;
     }
     rtapi_print_msg(RTAPI_MSG_ERR,
-            "HAL_rpi_spi_cpld: CLK=%fMHz PLUTO_FREQ=%fkHz PLUTO_SPEED=%fuS: setup ok\n",
-						PLUTO_CLK/1000000, PLUTO_FREQ/1000, PLUTO_SPEED*1000000);
+            "HAL_rpi_spi_cpld: CLK=%dHz PLUTO_FREQ=%dHz PLUTO_SPEED=%.2fuS: setup ok\n",
+						PLUTO_CLK, PLUTO_FREQ, PLUTO_SPEED*1000000.0);
         return 0;
 }
 
@@ -458,9 +456,11 @@ int check_platform(void)
         buf[fsize] = '\0';
 
         if (NULL != strstr(buf, "BCM2708") ||
-						NULL != strstr(buf, "BCM2709") ||
-						NULL != strstr(buf, "BCM2835")){
-                return 1;
+						NULL != strstr(buf, "BCM2709"){
+					return 2;
+				}
+				if (NULL != strstr(buf, "BCM2835")){
+          return 3;
 				}
         return 0;
 }
