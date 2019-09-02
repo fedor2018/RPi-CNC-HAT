@@ -118,7 +118,7 @@ static volatile __u32 txBuf[BUFSIZE], rxBuf[BUFSIZE];
 
 //static int speedrange=0;
 //RTAPI_MP_INT(speedrange, "Speed range 0..3");
-static stepgen_clk = 40000000; //pluto_clk
+static __u32 stepgen_clk = 40000000; //pluto_clk
 RTAPI_MP_INT(stepgen_clk, "Clock in HZ");
 
 #define W 10
