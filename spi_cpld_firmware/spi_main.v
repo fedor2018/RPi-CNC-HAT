@@ -237,7 +237,8 @@ always @(posedge clk) begin
 		else data_outbuf <= spibytecnt;//20
 	end
 end
-assign LED = do_tristate ? 1'bZ : (real_step[0] ^ real_dir[0]);
+//assign LED = do_tristate ? 1'bZ : (real_step[0] ^ real_dir[0]);
 assign do_enable_wdt = data_recvd[6] & (spibytecnt == 5'b01001) & byte_received;
+assign LED = in_clk;
 
 endmodule

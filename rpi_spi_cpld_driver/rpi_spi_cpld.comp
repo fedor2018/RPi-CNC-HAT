@@ -49,7 +49,7 @@ param rw bit wdt.enable=0;
 param rw u32 tap=0;
 
 param rw u32 stepgen.width = 15
-"""Step/dir/space length in N=1-32(2-50uS).""";
+"""Step/dir/space length in N=1-32(1-32uS).""";
 
 param rw u32 spi.speed = 4000000
 """spi speed HZ""";
@@ -134,19 +134,19 @@ RTAPI_MP_INT(speedrange, "Speed range 0..3");
 #define F 11
 #define T 5
 
-#define PLUTO_CLK   40*1000000      //40MHz
+#define PLUTO_CLK   64*1000000      //40MHz
 #define PLUTO_DIV   64
-#define PLUTO_FREQ  (PLUTO_CLK / PLUTO_DIV) // 625kHz
-#define PLUTO_SPEED  (1.0/PLUTO_FREQ)       // 1.6 uS
-#define PLUTO_SPEED_NS (PLUTO_SPEED*1e9)    //1.6us=625kHz=>0.8us
+#define PLUTO_FREQ  (PLUTO_CLK / PLUTO_DIV) // 1MHz
+#define PLUTO_SPEED  (1.0/PLUTO_FREQ)       // 1e-6 S
+#define PLUTO_SPEED_NS (PLUTO_SPEED*1e9)    // 1us=1MHz
 
 #define TMAX          ((1<<T)-1) // 0x1f=b11111
 #define ONE           (1<<F)     // 0x800 /2048
 #define MAX_STEP_RATE ((1<<F)-1) //  0x7ff
-#define RPM_FREQ PLUTO_CLK/2048  //  19531,25
-#define MASK           ((1<<(W+F))-1)    //
-#define MAXDELTA       (MASK/2)      // FFFFF/1048575
-#define LEN_MASK       0x1F
+#define RPM_FREQ      PLUTO_CLK/2048  //  31.25kHz
+#define MASK          ((1<<(W+F))-1)    //
+#define MAXDELTA      (MASK/2)      // FFFFF/1048575
+#define LEN_MASK      0x1F
 
 typedef struct {
 	int64_t last_count[4];
