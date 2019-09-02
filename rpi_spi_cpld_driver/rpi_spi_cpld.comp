@@ -17,14 +17,11 @@ Step length and direction setup/hold time is enforced in the FPGA.  Step space
 is enforced by a velocity cap in the driver.
 
 \\fI(all the following numbers are subject to change)\\fR
-In \\fIspeedrange=0\\fR, the maximum step rate is 312.5kHz.  For position
+The maximum step rate is stepgen.clk/128.  For position
 feedback to be accurate, the maximum step rate is 512 pulses per servo cycle
 (so a 1kHz servo cycle does not impose any additional limitation).  The maximum
 step rate may be lowered by the step length and space parameters, which are
-rounded up to the nearest multiple of 1600ns.
-
-In successive speedranges the maximum step rate is divided in half, as is the
-maximum steps per servo cycle, and the minimum nonzero step rate.
+rounded up to the nearest multiple of 64/stepgen.clk.
 
 .SS Digital I/O
 The digital output pins conform to the `canonical digital output' interface
@@ -48,22 +45,18 @@ param rw bit dir.#.polarity[4]=0 """true -> invert""";
 param rw bit wdt.enable=0;
 param rw u32 tap=0;
 
-param rw u32 stepgen.clk = 40000000; //pluto_clk
-param rw u32 stepgen.width = 15
-"""Step/dir/space length in N=1-32(1-32uS).""";
+//param rw u32 stepgen.clk = 40000000; //pluto_clk
+param rw u32 stepgen.width = 15 """Step/dir/space length in N=1-32(1-32uS).""";
 
-param rw u32 spi.speed = 4000000
-"""spi speed HZ""";
+param rw u32 spi.speed = 4000000 """spi speed HZ""";
 
-pin in bit dout.##[14]
-"""dout.\\fIMM\\fR corresponds to the pin labeled
+pin in bit dout.##[14] """dout.\\fIMM\\fR corresponds to the pin labeled
 OUT\\fIM\\fR on the pinout diagram.""";
 param rw bit dout.##-invert[14]
 """If TRUE, the output on the corresponding \\fBdout.\\fIMM\\fR is inverted.""";
 
 pin out bit din.##[16];
-pin out bit din.##_not[16]
-"""din.\\fIMM\\fR corresponds to the pin labeled
+pin out bit din.##_not[16] """din.\\fIMM\\fR corresponds to the pin labeled
 IN\\fIM\\fR on the pinout diagram.""";
 
 pin out float spindle.rpm """Spindle rpm""";
@@ -123,8 +116,10 @@ static __u16 spi_delay=0;
 
 static volatile __u32 txBuf[BUFSIZE], rxBuf[BUFSIZE];
 
-static int speedrange=0;
-RTAPI_MP_INT(speedrange, "Speed range 0..3");
+//static int speedrange=0;
+//RTAPI_MP_INT(speedrange, "Speed range 0..3");
+static stepgen_clk = 40000000; //pluto_clk
+RTAPI_MP_INT(stepgen_clk, "Clock in HZ");
 
 #define W 10
 #define F 11
@@ -184,8 +179,9 @@ EXTRA_SETUP() {
                                         SPI_IOC_WR_MAX_SPEED_HZ, spi_spd);
         return -1;
     }
-    rtapi_print_msg(RTAPI_MSG_WARN,
-            "HAL_rpi_spi_cpld: setup ok\n");
+    rtapi_print_msg(RTAPI_MSG_ERR,
+            "HAL_rpi_spi_cpld: CLK=%fMHz PLUTO_FREQ=%fkHz PLUTO_SPEED=%fuS: setup ok\n",
+						stepgen_clk/1000000, PLUTO_FREQ/1000, PLUTO_SPEED*1000000);
         return 0;
 }
 
@@ -292,11 +288,11 @@ FUNCTION(transfer) {
         // First limit: step waveform timings
         fmax = PLUTO_FREQ / (4*steplen_ticks);//
         // Second limit: highest speed command
-        if(fmax > PLUTO_FREQ / (2<<speedrange))   // 78-312kHz
+        if(fmax > PLUTO_FREQ / 2)//(2<<speedrange))   // 78-312kHz
                         fmax = PLUTO_SPEED * (2<<speedrange);
         // Third limit: max sign-extenable counts per period fperiod=(period*1e-9)
-        if(fmax > MAXDELTA / fperiod / (1<<speedrange))
-                        fmax = MAXDELTA / fperiod / (1<<speedrange); //
+        if(fmax > MAXDELTA / fperiod )// / (1<<speedrange))
+                        fmax = MAXDELTA / fperiod;// / (1<<speedrange); //
 
         tbuf = (__u16 *)txBuf;
         for(i=0; i<4; i++) {
