@@ -71,7 +71,7 @@ param rw u32 rpm.freq=0 """freq for calc RPM""";
 
 param rw s32 debug_0;
 param rw s32 debug_1;
-param rw float debug2=0.01;//?? great value changes DIR
+//param rw float debug2=0.01;//?? great value changes DIR
 //param rw float debug_3=2.0
 // """Registers that hold debugging information of interest to developers""";
 
@@ -321,8 +321,9 @@ FUNCTION(transfer) {
 		double est_err = stepgen_position_fb(i) + data.old_velocity_cmd[i] * fperiod - new_position_cmd;
 		double actual_max;
 		double scale_abs = abs(stepgen_scale(i));
-double v0=v;
-		v = v - debug2 * est_err / fperiod;
+		double v0=v;
+
+		//v = v - debug2 * est_err / fperiod;//disable debug2
 		if(v > 0) v = v + .5/scale_abs;
 		else if(v < 0) v = v - .5/scale_abs;
 
