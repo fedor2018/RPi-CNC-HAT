@@ -9,6 +9,16 @@ dedicated digital inputs.
 .SS CPLD clk from rpi
 Use loadusr -w minimal_clk 40M -q
 
+.SS RPI config.txt
+dtparam=spi=on
+=== rpi2 /dev/spidev1.2
+dtoverlay=spi1-3cs
+=== rpi3 /dev/spidev1.0
+dtoverlay=pi3-disable-bt
+dtoverlay=spi1-1cs
+dtoverlay=spi0-1cs,cs0_spidev=disabled,cs1_spidev=disabled
+===
+
 .SS Step generators
 The step generator takes a position input and output.
 
@@ -118,14 +128,16 @@ static volatile __u32 txBuf[BUFSIZE], rxBuf[BUFSIZE];
 
 //static int speedrange=0;
 //RTAPI_MP_INT(speedrange, "Speed range 0..3");
-static __u32 stepgen_clk = 40000000; //pluto_clk
-RTAPI_MP_INT(stepgen_clk, "Clock in HZ");
+static __u32 pluto_clk = 40000000; //pluto_clk
+RTAPI_MP_INT(pluto_clk, "Clock in HZ(40000000)");
+static char *spi_dev="/dev/spidev1.2";
+RTAPI_MP_STRING(spi_dev, "default /dev/spidev1.2");
 
 #define W 10
 #define F 11
 #define T 5
 
-#define PLUTO_CLK   stepgen_clk             //40MHz
+#define PLUTO_CLK   pluto_clk             //40MHz
 #define PLUTO_DIV   64
 #define PLUTO_FREQ  (PLUTO_CLK / PLUTO_DIV) // 625kHz
 #define PLUTO_SPEED  (1.0/PLUTO_FREQ)       // 1.6e-6 S
@@ -154,10 +166,11 @@ EXTRA_SETUP() {
                 "HAL_rpi_spi_cpld: ERROR: platform unsupported\n");
                         return -1;
     }
-    fd=open("/dev/spidev1.2", O_RDWR);
+    fd=open(spi_dev, O_RDWR);
     if(fd<0){
                 rtapi_print_msg(RTAPI_MSG_ERR,
-                        "HAL_rpi_spi_cpld: ERROR: cannot open spi\n");
+                        "HAL_rpi_spi_cpld: ERROR: cannot open spi %s\n",
+												spi_dev);
                 return -1;
   }
   if(ioctl(fd, SPI_IOC_WR_MODE, &spi_mode)<0||
@@ -181,7 +194,7 @@ EXTRA_SETUP() {
     }
     rtapi_print_msg(RTAPI_MSG_ERR,
             "HAL_rpi_spi_cpld: CLK=%fMHz PLUTO_FREQ=%fkHz PLUTO_SPEED=%fuS: setup ok\n",
-						stepgen_clk/1000000, PLUTO_FREQ/1000, PLUTO_SPEED*1000000);
+						PLUTO_CLK/1000000, PLUTO_FREQ/1000, PLUTO_SPEED*1000000);
         return 0;
 }
 
