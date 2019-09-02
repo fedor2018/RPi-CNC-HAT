@@ -289,7 +289,7 @@ FUNCTION(transfer) {
         fmax = PLUTO_FREQ / (4*steplen_ticks);//
         // Second limit: highest speed command
         if(fmax > PLUTO_FREQ / 2)//(2<<speedrange))   // 78-312kHz
-                        fmax = PLUTO_SPEED * (2<<speedrange);
+                        fmax = PLUTO_SPEED * 2;//(2<<speedrange);
         // Third limit: max sign-extenable counts per period fperiod=(period*1e-9)
         if(fmax > MAXDELTA / fperiod )// / (1<<speedrange))
                         fmax = MAXDELTA / fperiod;// / (1<<speedrange); //
