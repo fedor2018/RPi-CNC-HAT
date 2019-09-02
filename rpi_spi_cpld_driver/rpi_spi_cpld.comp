@@ -109,13 +109,7 @@ author "Matsche & fedor2018";
 #include <linux/types.h>
 #include <linux/spi/spidev.h>
 
-typedef enum {
-    UNSUPPORTED,
-    RPI,
-    RPI_2
-} platform_t;
-static platform_t platform;
-platform_t check_platform(void);
+int check_platform(void);
 
 #define SPI_BUFFER_SIZE 20
 #define BUFSIZE (SPI_BUFFER_SIZE/4)
@@ -160,7 +154,7 @@ typedef struct {
 
 EXTRA_SETUP() {
     spi_spd=spi_speed;
-    if(check_platform()==UNSUPPORTED){
+    if(check_platform()==0){
                         rtapi_print_msg(RTAPI_MSG_ERR,
                 "HAL_rpi_spi_cpld: ERROR: platform unsupported\n");
                         return -1;
@@ -438,7 +432,7 @@ FUNCTION(transfer) {
         }
 }
 
-platform_t check_platform(void)
+int check_platform(void)
 {
         FILE *fp;
         char buf[2048];
@@ -454,10 +448,10 @@ platform_t check_platform(void)
         // NUL terminate the buffer
         buf[fsize] = '\0';
 
-        if (NULL != strstr(buf, "BCM2708"))
-                return RPI;
-        else if (NULL != strstr(buf, "BCM2709"))
-                return RPI_2;
-        else
-                return UNSUPPORTED;
+        if (NULL != strstr(buf, "BCM2708") ||
+						NULL != strstr(buf, "BCM2709") ||
+						NULL != strstr(buf, "BCM2835")){
+                return 1;
+				}
+        return 0;
 }
