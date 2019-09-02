@@ -48,16 +48,11 @@ param rw bit dir.#.polarity[4]=0 """true -> invert""";
 param rw bit wdt.enable=0;
 param rw u32 tap=0;
 
-param rw u32 stepgen.steplen =20000
-"""Step length in ns (max=49600ns[1600*31]).""";
-param rw u32 stepgen.stepspace 
-"""Step space in ns""";
-param rw u32 stepgen.dirtime =20000
-"""Dir hold/setup in ns (max=49600ns[1600*31])""";
+param rw u32 stepgen.width = 15
+"""Step/dir/space length in N=1-32(2-50uS).""";
 
 param rw u32 spi.speed = 4000000
 """spi speed HZ""";
-
 
 pin in bit dout.##[14]
 """dout.\\fIMM\\fR corresponds to the pin labeled
@@ -139,19 +134,19 @@ RTAPI_MP_INT(speedrange, "Speed range 0..3");
 #define F 11
 #define T 5
 
-#define PLUTO_CLK   40000000      //40MHz
-#define PLUTO_SPEED_NS (1600)      //1.6us=625kHz=>0.8us
-#define PLUTO_SPEED    (PLUTO_SPEED_NS * 1e-9)   // 0,0000016
-#define PLUTO_FREQ     (1e9 / PLUTO_SPEED_NS)    // 625kHz
-#define TMAX           ((1<<T)-1)  // 0x1f=b11111
-#define ONE (1<<F)    // 0x800 /2048
-#define MAX_STEP_RATE ((1<<F)-1) //  0x7ff
-#define RPM_FREQ PLUTO_CLK/2048 //  19531,25
+#define PLUTO_CLK   40*1000000      //40MHz
+#define PLUTO_DIV   64
+#define PLUTO_FREQ  (PLUTO_CLK / PLUTO_DIV) // 625kHz
+#define PLUTO_SPEED  (1.0/PLUTO_FREQ)       // 1.6 uS
+#define PLUTO_SPEED_NS (PLUTO_SPEED*1e9)    //1.6us=625kHz=>0.8us
 
-#define MODULO ((1<<(W+F))-1)  // 1FFFFF/2097151
-#define MASK ((1<<(W+F))-1)    //
-#define MAXDELTA (MASK/2)      // FFFFF/1048575
-#define LEN_MASK 0x1F
+#define TMAX          ((1<<T)-1) // 0x1f=b11111
+#define ONE           (1<<F)     // 0x800 /2048
+#define MAX_STEP_RATE ((1<<F)-1) //  0x7ff
+#define RPM_FREQ PLUTO_CLK/2048  //  19531,25
+#define MASK           ((1<<(W+F))-1)    //
+#define MAXDELTA       (MASK/2)      // FFFFF/1048575
+#define LEN_MASK       0x1F
 
 typedef struct {
 	int64_t last_count[4];
@@ -256,21 +251,23 @@ FUNCTION(spitest) {
 	rtapi_print_msg(RTAPI_MSG_ERR,"\n");
 }
 
-static inline int64_t extend(int64_t old, int newlow, int nbits) {
-    int64_t mask = (1<<nbits) - 1;
-    int64_t maxdelta = mask / 2;
-    int64_t oldhigh = old & ~mask;
-    int64_t oldlow = old & mask;
+static inline int64_t extend(int64_t old, int newlow)//, int nbits) {//W+F
+//    int64_t mask = (1<<nbits) - 1;
+//    int64_t maxdelta = mask / 2;
+    int64_t oldhigh = old & ~MASK;
+    int64_t oldlow =  old & MASK;
     int64_t candidate1, candidate2;
 
     candidate1 = oldhigh | newlow;
-    if(oldlow < newlow) candidate2 = candidate1 - (1<<nbits);
-    else                candidate2 = candidate1 + (1<<nbits);
-
-    if (llabs(old-candidate1) > maxdelta)
-	return candidate2;
-    else
-	return candidate1;
+    if(oldlow < newlow){
+			candidate2 = candidate1 - (1<<(W+F);//(1<<nbits);
+    }else{
+		  candidate2 = candidate1 + (1<<(W+F);//(1<<nbits);
+		}
+    if (llabs(old-candidate1) > MAXDELTA){
+			return candidate2;
+    }
+		return candidate1;
 }
 	
 FUNCTION(transfer) {
@@ -281,21 +278,23 @@ FUNCTION(transfer) {
 	__u32 spidata;
 	
 	int r = 0;
-	int stepspace_ticks = stepgen_stepspace/PLUTO_SPEED_NS;
-	int steplen_ticks = stepgen_steplen/PLUTO_SPEED_NS;
-	int dirtime_ticks = stepgen_dirtime/PLUTO_SPEED_NS;
+	int stepspace_ticks = stepgen_width; //stepgen_stepspace/PLUTO_SPEED_NS;
+//	int steplen_ticks = stepgen_steplen/PLUTO_SPEED_NS;
+//	int dirtime_ticks = stepgen_dirtime/PLUTO_SPEED_NS;
 	int rate, maxrate = MAX_STEP_RATE;
 	double fmax;
 
-	if(steplen_ticks > TMAX) {
+	if(steplen_ticks < 1) {
+    steplen_ticks=1;
+	}else if(steplen_ticks > TMAX) {
 		steplen_ticks = TMAX;
 		rtapi_print_msg(RTAPI_MSG_ERR,
 				"Requested step length %dns decreased to %dns "
 				"due to hardware limitations\n",
 				stepgen_steplen, TMAX * PLUTO_SPEED_NS);
-		stepgen_steplen = TMAX * PLUTO_SPEED_NS;
+		//stepgen_steplen = TMAX * PLUTO_SPEED_NS;
 	}
-
+/*
 	if(dirtime_ticks > TMAX) {
 		dirtime_ticks = TMAX;
 		rtapi_print_msg(RTAPI_MSG_ERR,
@@ -304,10 +303,10 @@ FUNCTION(transfer) {
 				stepgen_dirtime, TMAX * PLUTO_SPEED_NS);
 		stepgen_dirtime = TMAX * PLUTO_SPEED_NS;
 	}
-
+*/
 	// Speed limits come from several sources
 	// First limit: step waveform timings
-	fmax = /*1.0 / PLUTO_SPEED*/ PLUTO_FREQ / (2 + steplen_ticks + stepspace_ticks);
+	fmax = /*1.0 / PLUTO_SPEED*/ PLUTO_FREQ / (4*steplen_ticks);//(2 + steplen_ticks + stepspace_ticks);
 	// Second limit: highest speed command
 	if(fmax > PLUTO_FREQ / (2<<speedrange))   // 78-312kHz
 			fmax = PLUTO_SPEED * (2<<speedrange);
