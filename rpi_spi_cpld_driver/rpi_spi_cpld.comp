@@ -48,6 +48,7 @@ param rw bit dir.#.polarity[4]=0 """true -> invert""";
 param rw bit wdt.enable=0;
 param rw u32 tap=0;
 
+param rw u32 stepgen.clk = 40000000; //pluto_clk
 param rw u32 stepgen.width = 15
 """Step/dir/space length in N=1-32(1-32uS).""";
 
@@ -66,8 +67,9 @@ pin out bit din.##_not[16]
 IN\\fIM\\fR on the pinout diagram.""";
 
 pin out float spindle.rpm """Spindle rpm""";
+pin out s32 spindle.data  """Spindle count""";
 pin in  s32 pwm.out """Set pwm 0-255""";
-param rw u32 rpm.freq=0 """freq for calc RPM""";
+//param rw u32 rpm.freq=0 """freq for calc RPM""";
 
 param rw s32 debug_0;
 param rw s32 debug_1;
@@ -134,11 +136,11 @@ RTAPI_MP_INT(speedrange, "Speed range 0..3");
 #define F 11
 #define T 5
 
-#define PLUTO_CLK   64*1000000      //40MHz
+#define PLUTO_CLK   stepgen_clk             //40MHz
 #define PLUTO_DIV   64
-#define PLUTO_FREQ  (PLUTO_CLK / PLUTO_DIV) // 1MHz
-#define PLUTO_SPEED  (1.0/PLUTO_FREQ)       // 1e-6 S
-#define PLUTO_SPEED_NS (PLUTO_SPEED*1e9)    // 1us=1MHz
+#define PLUTO_FREQ  (PLUTO_CLK / PLUTO_DIV) // 625kHz
+#define PLUTO_SPEED  (1.0/PLUTO_FREQ)       // 1.6e-6 S
+#define PLUTO_SPEED_NS (PLUTO_SPEED*1e9)    // 0.8us
 
 #define TMAX          ((1<<T)-1) // 0x1f=b11111
 #define ONE           (1<<F)     // 0x800 /2048
@@ -440,11 +442,8 @@ FUNCTION(transfer) {
 		din_not(i) = !b;
 	}
 	spidata>>=16;
-        if(rpm_freq==0){
-            spindle_rpm=(float)spidata;
-        }else{
-            spindle_rpm=(float)((spidata>65500||spidata<50)?0:(rpm_freq*60)/(spidata+1));
-        }
+  spindle_data=spidata;
+  spindle_rpm=(float)((spidata>65500||spidata<50)?0:(RPM_FREQ*60)/(spidata+1));
 
 	for (i=5; i<BUFSIZE; i++) { //clear buf?
 		spidata = rxBuf[i];
