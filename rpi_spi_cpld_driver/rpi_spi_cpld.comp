@@ -47,8 +47,8 @@ pin in bit stepgen.#.enable[4];
 pin in bit stepgen.#.reset[4] """When TRUE, reset position-fb to 0""";
 param rw float stepgen.#.scale[4] = 1.0;
 param rw float stepgen.#.maxvel[4] = 0;
-param rw bit stepgen.step.polarity;
-param rw bit dir.#.polarity[4]=0 """true -> invert""";
+param rw bit stepgen.step.polarity """true -> invert""";
+param rw bit dir.#.polarity[4]=0 ;
 
 param rw bit wdt.enable=0;
 param rw u32 tap=0;
@@ -128,8 +128,8 @@ static volatile __u32 txBuf[BUFSIZE], rxBuf[BUFSIZE];
 //RTAPI_MP_INT(speedrange, "Speed range 0..3");
 static __u32 pluto_clk = 40000000; //pluto_clk
 RTAPI_MP_INT(pluto_clk, "Clock in HZ(40000000)");
-static char *spi_dev="/dev/spidev1.2";
-RTAPI_MP_STRING(spi_dev, "default /dev/spidev1.2");
+static char *spi_dev="";
+RTAPI_MP_STRING(spi_dev, "default auto");
 
 #define W 10
 #define F 11
@@ -159,17 +159,21 @@ typedef struct {
 
 EXTRA_SETUP() {
     spi_spd=spi_speed;
-    if(check_platform()==0){
-                        rtapi_print_msg(RTAPI_MSG_ERR,
+    int ret=check_platform();
+    if(ret==0){
+          rtapi_print_msg(RTAPI_MSG_ERR,
                 "HAL_rpi_spi_cpld: ERROR: platform unsupported\n");
-                        return -1;
+          return -1;
+    }
+    if(strlen(spi_dev)==0){
+        spi_dev=(ret==2)? "/dev/spidev1.2":"/dev/spidev1.0";
     }
     fd=open(spi_dev, O_RDWR);
     if(fd<0){
-                rtapi_print_msg(RTAPI_MSG_ERR,
-                        "HAL_rpi_spi_cpld: ERROR: cannot open spi %s\n",
-												spi_dev);
-                return -1;
+        rtapi_print_msg(RTAPI_MSG_ERR,
+            "HAL_rpi_spi_cpld: ERROR: cannot open spi %s\n",
+			spi_dev);
+        return -1;
   }
   if(ioctl(fd, SPI_IOC_WR_MODE, &spi_mode)<0||
     ioctl(fd, SPI_IOC_RD_MODE, &spi_mode)<0){
@@ -282,17 +286,17 @@ FUNCTION(transfer) {
 
         int r = 0;
         int steplen_ticks = stepgen_width;
-        int rate, maxrate = MAX_STEP_RATE;
+        int rate;//, maxrate = MAX_STEP_RATE;
         double fmax;
 
         if(steplen_ticks < 1) {
             steplen_ticks=1;
         }else if(steplen_ticks > TMAX) {
-                steplen_ticks = TMAX;
-                rtapi_print_msg(RTAPI_MSG_ERR,
-                                "Requested step length %dns decreased to %dns "
-                                "due to hardware limitations\n",
-                                stepgen_width, TMAX * PLUTO_SPEED_NS);
+            steplen_ticks = TMAX;
+            rtapi_print_msg(RTAPI_MSG_ERR,
+                 "Requested step length %dns decreased to %dns "
+                 "due to hardware limitations\n",
+                  stepgen_width, TMAX * PLUTO_SPEED_NS);
                 //stepgen_steplen = TMAX * PLUTO_SPEED_NS;
         }
         // Speed limits come from several sources
@@ -312,24 +316,24 @@ FUNCTION(transfer) {
                 double est_err = stepgen_position_fb(i) + data.old_velocity_cmd[i] * fperiod - new_position_cmd;
                 double actual_max;
                 double scale_abs = abs(stepgen_scale(i));
-                double v0=v;
+                //double v0=v;
 
-                //v = v - debug2 * est_err / fperiod;//disable debug2
+                //v = v - debug2 * est_err / fperiod;//disable debug2 ???
                 if(v > 0) v = v + .5/scale_abs;
                 else if(v < 0) v = v - .5/scale_abs;
 
                 data.old_position_cmd[i] = new_position_cmd;
                 data.old_velocity_cmd[i] = v;
                 actual_max = fmax / scale_abs;
-                if(stepgen_maxvel(i) < 0) stepgen_maxvel(i) = -stepgen_maxvel(i);
+                if(stepgen_maxvel(i) < 0) stepgen_maxvel(i) = -stepgen_maxvel(i);//
                 if(stepgen_maxvel(i) != 0 && stepgen_maxvel(i) > actual_max) {
                         static int message_printed[4] = {0,0,0,0};
                         if(!message_printed[i]) {
                                 rtapi_print_msg(RTAPI_MSG_ERR,
-                                                "Requested step rate %dHz decreased to %dHz "
-                                                "due to hardware or timing limitations\n",
-                                                (int)(stepgen_maxvel(i) * scale_abs),
-                                                (int)(fmax));
+                                     "Requested step rate %dHz decreased to %dHz "
+                                     "due to hardware or timing limitations\n",
+                                      (int)(stepgen_maxvel(i) * scale_abs),
+                                      (int)(fmax));
                                 message_printed[i] = 1;
                         }
                         stepgen_maxvel(i) = actual_max;
@@ -344,8 +348,8 @@ FUNCTION(transfer) {
                 }
                 rate = v*stepgen_scale(i)*ONE*PLUTO_SPEED;///(1<<speedrange); //v*400*3.2ms
 
-                if(rate > maxrate) rate = maxrate;
-                if(rate < -maxrate) rate = -maxrate;
+                if(rate > MAX_STEP_RATE) rate = MAX_STEP_RATE;
+                if(rate < -MAX_STEP_RATE) rate = -MAX_STEP_RATE;
 
                 if(!stepgen_enable(i)) rate = 0;
                 if(i == 0){
@@ -353,7 +357,7 @@ FUNCTION(transfer) {
 /*                  static int orate=0;
                     if(rate!=orate && rate!=0){
                     printf("old=%d rate=%d maxrate=%d actual=%lf maxvel=%lf v=%lf->%lf*%lf fmax=%lf oldvel=%lf err=%lf f=%lf scale=%lf\n",
-                        orate, rate, maxrate,actual_max, stepgen_maxvel(i), v0, v,
+                        orate, rate, MAX_STEP_RATE,actual_max, stepgen_maxvel(i), v0, v,
                         (stepgen_scale(i)*ONE*PLUTO_SPEED/(1<<speedrange)), fmax,
                         data.old_velocity_cmd[i],est_err, fperiod, scale_abs);
                     }
@@ -456,11 +460,11 @@ int check_platform(void)
         buf[fsize] = '\0';
 
         if (NULL != strstr(buf, "BCM2708") ||
-						NULL != strstr(buf, "BCM2709"){
+						NULL != strstr(buf, "BCM2709")){
 					return 2;
 				}
-				if (NULL != strstr(buf, "BCM2835")){
+		if (NULL != strstr(buf, "BCM2835")){
           return 3;
-				}
+		}
         return 0;
 }
