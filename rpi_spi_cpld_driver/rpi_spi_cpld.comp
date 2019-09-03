@@ -11,11 +11,11 @@ Use loadusr -w minimal_clk 40M -q
 
 .SS RPI config.txt
 dtparam=spi=on
-=== rpi2 /dev/spidev1.2
+## rpi2 /dev/spidev1.2
 dtoverlay=spi1-3cs
-=== rpi3 /dev/spidev1.0
+## rpi3 /dev/spidev1.0
 dtoverlay=spi1-1cs
-===
+##
 
 .SS Step generators
 The step generator takes a position input and output.
@@ -263,16 +263,17 @@ static inline int64_t extend(int64_t old, int newlow){//, int nbits) {//W+F
                 return candidate1;
 }
 
-int stepgen2(int i, double max_vel){// PiCnc v2
+int stepgen2(int i, double max_vel, long period){// PiCnc v2
     double max_accl=max_vel/fperiod; //set internal accel limit to its absolute max
+    double match_accl, new_vel;
 
     if(stepgen_maxaccel(i) <= 0.0){
         stepgen_maxaccel(i)=0.0;
     }else{
-        if((max_accl=stepgen_maxaccel(i)*fabs(stepgen_scale(i))) > max_accel){
-            max_accl=stepgen_maxaccel(i)/fabs(stepgen_scale(i)));
+        if((stepgen_maxaccel(i)*fabs(stepgen_scale(i))) > max_accl){
+            max_accl=stepgen_maxaccel(i)/fabs(stepgen_scale(i));
         }else{
-            max_accl=stepgen_maxaccel(i)*fabs(stepgen_scale(i)));
+            max_accl=stepgen_maxaccel(i)*fabs(stepgen_scale(i));
         }
     }
     double pos_cmd = stepgen_position_cmd(i)*stepgen_scale(i);// calculate position command in counts
@@ -285,16 +286,17 @@ int stepgen2(int i, double max_vel){// PiCnc v2
         vel_cmd = -max_vel;
     }
     if(vel_cmd > data.old_velocity_cmd[i]){//determine which way we need to ramp to match velocity
-        max_accl = max_accl;
+        match_accl = max_accl;
     }else if(vel_cmd < -data.old_velocity_cmd[i]){
-        max_accl = -max_accl;
+        match_accl = -max_accl;
     }
     double match_time = (vel_cmd-data.old_velocity_cmd[i])/match_accl;//determine how long the match would take
     double avg_v = (vel_cmd + data.old_velocity_cmd[i]) * 0.5;//calc output position at the end of the match
     double curr_pos = stepgen_position_fb(i)*stepgen_scale(i);//
     double est_out = curr_pos + avg_v * match_time;
     double est_cmd = pos_cmd + vel_cmd * (match_time - 1.5*fperiod);//calculate the expected command position at that time
-    est_err = est_out - est_cmd;
+    double est_err = est_out - est_cmd;
+
     if ( match_time < fperiod){//we can match velocity in one period
         if(fabs(est_err) < 0.0001){
             new_vel = vel_cmd;
@@ -307,7 +309,7 @@ int stepgen2(int i, double max_vel){// PiCnc v2
              }
         }
     }else{
-        double dv = -2.0*match_accel*fperiod;
+        double dv = -2.0*match_accl*fperiod;
         double dp = dv*match_time;
         if(fabs(est_err+fperiod*2.0)< fabs(est_err)){
             match_accl = -match_accl;
@@ -366,7 +368,7 @@ FUNCTION(transfer) {
 */
         tbuf = (__u16 *)txBuf;
         for(i=0; i<4; i++) {
-            rate=stepgen2(i, fmax);
+            rate=stepgen2(i, fmax, period);
 /*
             double new_position_cmd = stepgen_position_cmd(i);
             double v = new_position_cmd - data.old_position_cmd[i];
@@ -411,7 +413,7 @@ FUNCTION(transfer) {
             if(!stepgen_enable(i)) rate = 0;
             if(i == 0){
                 debug_0 = rate;
-/*                  static int orate=0;
+*//*                  static int orate=0;
                 if(rate!=orate && rate!=0){
                 printf("old=%d rate=%d maxrate=%d actual=%lf maxvel=%lf v=%lf->%lf*%lf fmax=%lf oldvel=%lf err=%lf f=%lf scale=%lf\n",
                     orate, rate, MAX_STEP_RATE,actual_max, stepgen_maxvel(i), v0, v,
@@ -419,7 +421,7 @@ FUNCTION(transfer) {
                     data.old_velocity_cmd[i],est_err, fperiod, scale_abs);
                 }
                 orate=rate;
-*/              }
+*//*              }
 
             //if(!i%2)
             //      txBuf[i%2] = 0;
