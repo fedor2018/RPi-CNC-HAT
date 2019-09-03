@@ -271,7 +271,7 @@ int stepgen2(int i, double max_vel, long period){// PiCnc v2
         stepgen_maxaccel(i)=0.0;
     }else{
         if((stepgen_maxaccel(i)*fabs(stepgen_scale(i))) > max_accl){
-            max_accl=stepgen_maxaccel(i)/fabs(stepgen_scale(i));
+            stepgen_maxaccel(i)=max_accl/fabs(stepgen_scale(i));
         }else{
             max_accl=stepgen_maxaccel(i)*fabs(stepgen_scale(i));
         }
