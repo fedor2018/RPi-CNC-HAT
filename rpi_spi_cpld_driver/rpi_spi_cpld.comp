@@ -326,8 +326,16 @@ int stepgen2(int i, double max_vel, long period){// PiCnc v2
     if(i==0){
         static int orate=0;
         if(rate!=orate && rate!=0){
-            printf("orate=%d rate=%d maxrate=%d nvel=%f\n",
-                orate, rate, MAX_STEP_RATE, new_vel);
+            printf("orate=%d rate=%d maxrate=%d "
+		"newvel=%.1f maxvel=%.1f pos_cmd=%.1f "
+		"max_accl=%.1f curr_pos=%.1f match_time=%f "
+		" est_out=%f est_cmd=%f est_err=%f "
+		" fp=%f scale=%.1f one=%d p_speed=%f\n",
+                orate, rate, MAX_STEP_RATE, 
+		new_vel, max_vel, pos_cmd,
+		max_accl, curr_pos, match_time,
+		est_out, est_cmd, est_err,
+		fperiod,stepgen_scale(i),ONE,PLUTO_SPEED);
         }
         orate=rate;
     }
