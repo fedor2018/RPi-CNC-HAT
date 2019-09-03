@@ -47,6 +47,7 @@ pin in bit stepgen.#.enable[4];
 pin in bit stepgen.#.reset[4] """When TRUE, reset position-fb to 0""";
 param rw float stepgen.#.scale[4] = 1.0;
 param rw float stepgen.#.maxvel[4] = 0;
+param rw float stepgen.#.maxaccel[4] = 1.0;
 param rw bit stepgen.step.polarity """true -> invert""";
 param rw bit dir.#.polarity[4]=0 ;
 
@@ -154,6 +155,7 @@ typedef struct {
         int64_t reset_count[4];
         double old_position_cmd[4];
         double old_velocity_cmd[4];
+        double maxaccel[4];
 } internal;
 
 
@@ -194,10 +196,10 @@ EXTRA_SETUP() {
                                         SPI_IOC_WR_MAX_SPEED_HZ, spi_spd);
         return -1;
     }
-    rtapi_print_msg(RTAPI_MSG_ERR,
-            "HAL_rpi_spi_cpld: CLK=%dHz PLUTO_FREQ=%dHz PLUTO_SPEED=%.2fuS: setup ok\n",
-						PLUTO_CLK, PLUTO_FREQ, PLUTO_SPEED*1000000.0);
-        return 0;
+    rtapi_print_msg(RTAPI_MSG_WARN,"HAL_rpi_spi_cpld: setup ok\n");
+    printf("HAL_rpi_spi_cpld: CLK=%dHz PLUTO_FREQ=%dHz PLUTO_SPEED=%.2fuS: setup ok\n",
+			PLUTO_CLK, PLUTO_FREQ, PLUTO_SPEED*1000000.0);
+    return 0;
 }
 
 EXTRA_CLEANUP() {
@@ -215,27 +217,11 @@ int spi_transfer32(int fd, volatile __u32 *tx, volatile __u32 *rx){
                 .speed_hz = spi_spd,
                 .bits_per_word = spi_bits,
         };
-/*
-        rtapi_print_msg(RTAPI_MSG_ERR,
-            "HAL_rpi_spi_cpld: tx=: ");
-        for (int i=0; i<BUFSIZE; i++) {
-            rtapi_print_msg(RTAPI_MSG_ERR," %08X",tx[i]);
-        }
-//      rtapi_print_msg(RTAPI_MSG_ERR,"\n");
-*/
         if(ioctl(fd, SPI_IOC_MESSAGE(1), &tr)<0){
             rtapi_print_msg(RTAPI_MSG_ERR,
                 "HAL_rpi_spi_cpld: ERROR: transer32\n");
             return -1;
         }
-/*
-        rtapi_print_msg(RTAPI_MSG_ERR,
-            "HAL_rpi_spi_cpld: rx=: ");
-        for (int i=0; i<BUFSIZE; i++) {
-            rtapi_print_msg(RTAPI_MSG_ERR," %08X",rx[i]);
-        }
-//      rtapi_print_msg(RTAPI_MSG_ERR,"\n");
-*/
         return 0;
 }
 
@@ -277,6 +263,75 @@ static inline int64_t extend(int64_t old, int newlow){//, int nbits) {//W+F
                 return candidate1;
 }
 
+int stepgen2(int i, double max_vel){// PiCnc v2
+    double max_accl=max_vel/fperiod; //set internal accel limit to its absolute max
+
+    if(stepgen_maxaccel(i) <= 0.0){
+        stepgen_maxaccel(i)=0.0;
+    }else{
+        if((max_accl=stepgen_maxaccel(i)*fabs(stepgen_scale(i))) > max_accel){
+            max_accl=stepgen_maxaccel(i)/fabs(stepgen_scale(i)));
+        }else{
+            max_accl=stepgen_maxaccel(i)*fabs(stepgen_scale(i)));
+        }
+    }
+    double pos_cmd = stepgen_position_cmd(i)*stepgen_scale(i);// calculate position command in counts
+    double vel_cmd = (pos_cmd-data.old_position_cmd[i])/fperiod;//calculate velocity command in counts/sec
+    data.old_position_cmd[i] = pos_cmd;
+
+    if(vel_cmd > max_vel){//apply frequency limit
+        vel_cmd = max_vel;
+    }else if(vel_cmd < -max_vel){
+        vel_cmd = -max_vel;
+    }
+    if(vel_cmd > data.old_velocity_cmd[i]){//determine which way we need to ramp to match velocity
+        max_accl = max_accl;
+    }else if(vel_cmd < -data.old_velocity_cmd[i]){
+        max_accl = -max_accl;
+    }
+    double match_time = (vel_cmd-data.old_velocity_cmd[i])/match_accl;//determine how long the match would take
+    double avg_v = (vel_cmd + data.old_velocity_cmd[i]) * 0.5;//calc output position at the end of the match
+    double curr_pos = stepgen_position_fb(i)*stepgen_scale(i);//
+    double est_out = curr_pos + avg_v * match_time;
+    double est_cmd = pos_cmd + vel_cmd * (match_time - 1.5*fperiod);//calculate the expected command position at that time
+    est_err = est_out - est_cmd;
+    if ( match_time < fperiod){//we can match velocity in one period
+        if(fabs(est_err) < 0.0001){
+            new_vel = vel_cmd;
+        }else{
+             new_vel = vel_cmd - 0.5 *est_err/fperiod;
+             if(new_vel > (data.old_velocity_cmd[i] + max_accl * fperiod)){
+                new_vel = (data.old_velocity_cmd[i] + max_accl * fperiod);
+             }else if(new_vel < (data.old_velocity_cmd[i] - max_accl * fperiod)){
+                new_vel = (data.old_velocity_cmd[i] - max_accl * fperiod);
+             }
+        }
+    }else{
+        double dv = -2.0*match_accel*fperiod;
+        double dp = dv*match_time;
+        if(fabs(est_err+fperiod*2.0)< fabs(est_err)){
+            match_accl = -match_accl;
+        }
+        new_vel = data.old_velocity_cmd[i] + match_accl*fperiod;
+    }
+    if(new_vel > max_vel){  //apply frequency limit
+        new_vel = max_vel;
+    }else if(new_vel < max_vel){
+        new_vel = -max_vel;
+    }
+    data.old_velocity_cmd[i]=new_vel;
+    int rate= new_vel *stepgen_scale(i)*ONE*PLUTO_SPEED;
+    if(i==0){
+        static int orate=0;
+        if(rate!=orate && rate!=0){
+            printf("orate=%d rate=%d maxrate=%d nvel=%f\n",
+                orate, rate, MAX_STEP_RATE, new_vel);
+        }
+        orate=rate;
+    }
+    return rate;
+}
+
 FUNCTION(transfer) {
         char *buf;
         __u16 * tbuf;
@@ -303,72 +358,74 @@ FUNCTION(transfer) {
         // First limit: step waveform timings
         fmax = PLUTO_FREQ / (4*steplen_ticks);//
         // Second limit: highest speed command
-        if(fmax > PLUTO_FREQ / 2)//(2<<speedrange))   // 78-312kHz
-                        fmax = PLUTO_SPEED * 2;//(2<<speedrange);
-        // Third limit: max sign-extenable counts per period fperiod=(period*1e-9)
-        if(fmax > MAXDELTA / fperiod )// / (1<<speedrange))
-                        fmax = MAXDELTA / fperiod;// / (1<<speedrange); //
-
+/*        if(fmax > PLUTO_FREQ / 2)// 78-312kHz
+            fmax = PLUTO_SPEED * 2;
+        // fperiod=(period*1e-9)
+        if(fmax > MAXDELTA / fperiod )
+            fmax = MAXDELTA / fperiod;
+*/
         tbuf = (__u16 *)txBuf;
         for(i=0; i<4; i++) {
-                double new_position_cmd = stepgen_position_cmd(i);
-                double v = new_position_cmd - data.old_position_cmd[i];
-                double est_err = stepgen_position_fb(i) + data.old_velocity_cmd[i] * fperiod - new_position_cmd;
-                double actual_max;
-                double scale_abs = abs(stepgen_scale(i));
-                //double v0=v;
+            rate=stepgen2(i, fmax);
+/*
+            double new_position_cmd = stepgen_position_cmd(i);
+            double v = new_position_cmd - data.old_position_cmd[i];
+            double est_err = stepgen_position_fb(i) + data.old_velocity_cmd[i] * fperiod - new_position_cmd;
+            double actual_max;
+            double scale_abs = abs(stepgen_scale(i));
+            //double v0=v;
 
-                //v = v - debug2 * est_err / fperiod;//disable debug2 ???
-                if(v > 0) v = v + .5/scale_abs;
-                else if(v < 0) v = v - .5/scale_abs;
+            //v = v - debug2 * est_err / fperiod;//disable debug2 ???
+            if(v > 0) v = v + .5/scale_abs;
+            else if(v < 0) v = v - .5/scale_abs;
 
-                data.old_position_cmd[i] = new_position_cmd;
-                data.old_velocity_cmd[i] = v;
-                actual_max = fmax / scale_abs;
-                if(stepgen_maxvel(i) < 0) stepgen_maxvel(i) = -stepgen_maxvel(i);//
-                if(stepgen_maxvel(i) != 0 && stepgen_maxvel(i) > actual_max) {
-                        static int message_printed[4] = {0,0,0,0};
-                        if(!message_printed[i]) {
-                                rtapi_print_msg(RTAPI_MSG_ERR,
-                                     "Requested step rate %dHz decreased to %dHz "
-                                     "due to hardware or timing limitations\n",
-                                      (int)(stepgen_maxvel(i) * scale_abs),
-                                      (int)(fmax));
-                                message_printed[i] = 1;
-                        }
-                        stepgen_maxvel(i) = actual_max;
-                }
-
-                if(stepgen_maxvel(i) == 0) {
-                        if(v < -actual_max) v = -actual_max;
-                        if(v > actual_max) v = actual_max;
-                }else {
-                        if(v < -stepgen_maxvel(i)) v = -stepgen_maxvel(i);
-                        if(v > stepgen_maxvel(i)) v = stepgen_maxvel(i);
-                }
-                rate = v*stepgen_scale(i)*ONE*PLUTO_SPEED;///(1<<speedrange); //v*400*3.2ms
-
-                if(rate > MAX_STEP_RATE) rate = MAX_STEP_RATE;
-                if(rate < -MAX_STEP_RATE) rate = -MAX_STEP_RATE;
-
-                if(!stepgen_enable(i)) rate = 0;
-                if(i == 0){
-                    debug_0 = rate;
-/*                  static int orate=0;
-                    if(rate!=orate && rate!=0){
-                    printf("old=%d rate=%d maxrate=%d actual=%lf maxvel=%lf v=%lf->%lf*%lf fmax=%lf oldvel=%lf err=%lf f=%lf scale=%lf\n",
-                        orate, rate, MAX_STEP_RATE,actual_max, stepgen_maxvel(i), v0, v,
-                        (stepgen_scale(i)*ONE*PLUTO_SPEED/(1<<speedrange)), fmax,
-                        data.old_velocity_cmd[i],est_err, fperiod, scale_abs);
+            data.old_position_cmd[i] = new_position_cmd;
+            data.old_velocity_cmd[i] = v;
+            actual_max = fmax / scale_abs;
+            if(stepgen_maxvel(i) < 0) stepgen_maxvel(i) = -stepgen_maxvel(i);//
+            if(stepgen_maxvel(i) != 0 && stepgen_maxvel(i) > actual_max) {
+                    static int message_printed[4] = {0,0,0,0};
+                    if(!message_printed[i]) {
+                            rtapi_print_msg(RTAPI_MSG_ERR,
+                                 "Requested step rate %dHz decreased to %dHz "
+                                 "due to hardware or timing limitations\n",
+                                  (int)(stepgen_maxvel(i) * scale_abs),
+                                  (int)(fmax));
+                            message_printed[i] = 1;
                     }
-                    orate=rate;
+                    stepgen_maxvel(i) = actual_max;
+            }
+
+            if(stepgen_maxvel(i) == 0) {
+                    if(v < -actual_max) v = -actual_max;
+                    if(v > actual_max) v = actual_max;
+            }else {
+                    if(v < -stepgen_maxvel(i)) v = -stepgen_maxvel(i);
+                    if(v > stepgen_maxvel(i)) v = stepgen_maxvel(i);
+            }
+            rate = v*stepgen_scale(i)*ONE*PLUTO_SPEED;///(1<<speedrange); //v*400*3.2ms
+
+            if(rate > MAX_STEP_RATE) rate = MAX_STEP_RATE;
+            if(rate < -MAX_STEP_RATE) rate = -MAX_STEP_RATE;
+
+            if(!stepgen_enable(i)) rate = 0;
+            if(i == 0){
+                debug_0 = rate;
+/*                  static int orate=0;
+                if(rate!=orate && rate!=0){
+                printf("old=%d rate=%d maxrate=%d actual=%lf maxvel=%lf v=%lf->%lf*%lf fmax=%lf oldvel=%lf err=%lf f=%lf scale=%lf\n",
+                    orate, rate, MAX_STEP_RATE,actual_max, stepgen_maxvel(i), v0, v,
+                    (stepgen_scale(i)*ONE*PLUTO_SPEED/(1<<speedrange)), fmax,
+                    data.old_velocity_cmd[i],est_err, fperiod, scale_abs);
+                }
+                orate=rate;
 */              }
 
-                //if(!i%2)
-                //      txBuf[i%2] = 0;
-                //txBuf[i%2] |= rate<<(16*(i%2));
-                tbuf[i] = rate;
-        }
+            //if(!i%2)
+            //      txBuf[i%2] = 0;
+            //txBuf[i%2] |= rate<<(16*(i%2));
+*/            tbuf[i] = rate;
+    }
 //word 2 8-11 bytes
         r = 0;
         for(i=0; i<14; i++) {
@@ -418,7 +475,6 @@ FUNCTION(transfer) {
                 stepgen_counts(i) = fcount;
                 stepgen_position_fb(i) = fcount/stepgen_scale(i);
 
-
                 if(i == 0) {
                 //              debug_0 = spidata;
                         debug_1 = newlow;
@@ -435,8 +491,8 @@ FUNCTION(transfer) {
                 din_not(i) = !b;
         }
         spidata>>=16;
-  spindle_data=spidata;
-  spindle_rpm=(float)((spidata>65500||spidata<50)?0:(RPM_FREQ*60)/(spidata+1));
+        spindle_data=spidata;
+        spindle_rpm=(float)((spidata>65500||spidata<50)?0:(RPM_FREQ*60)/(spidata+1));
 
         for (i=5; i<BUFSIZE; i++) { //clear buf?
                 spidata = rxBuf[i];
