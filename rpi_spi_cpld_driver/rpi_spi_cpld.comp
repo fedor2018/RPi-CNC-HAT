@@ -342,6 +342,30 @@ int stepgen2(int i, double max_vel, long period){// PiCnc v2
     return rate;
 }
 
+void stepgen_fb(__u32 spidata){
+    double fcount;
+//    spidata = rxBuf[i];
+
+    int reset = stepgen_reset(i);
+    int newlow = spidata & MASK;
+    int64_t count = extend(data.last_count[i], newlow);//, W+F);
+    stepgen_velocity_fb(i) = (count-data.last_count[i])/stepgen_scale(i)/fperiod/(1<<F);
+    data.last_count[i] = count;
+    if(reset) data.reset_count[i] = count;
+    fcount = (count-data.reset_count[i])*1.0/(1<<F);
+    stepgen_counts(i) = fcount;
+    stepgen_position_fb(i) = fcount/stepgen_scale(i);
+
+    if(i == 0) {
+    //  debug_0 = spidata;
+        debug_1 = newlow;
+        if(debug_1 != newlow){
+            printf("newlow=%d fcount=%f stepgen_position_fb=%f stepgen_velocity_fb=%f\n",
+            newlow, fcount, stepgen_position_fb(i), stepgen_velocity_fb(i));
+        }
+    }
+}
+
 FUNCTION(transfer) {
         char *buf;
         __u16 * tbuf;
@@ -370,10 +394,10 @@ FUNCTION(transfer) {
         // Second limit: highest speed command
 /*        if(fmax > PLUTO_FREQ / 2)// 78-312kHz
             fmax = PLUTO_SPEED * 2;
-        // fperiod=(period*1e-9)
+*/        // fperiod=(period*1e-9)
         if(fmax > MAXDELTA / fperiod )
             fmax = MAXDELTA / fperiod;
-*/
+
         tbuf = (__u16 *)txBuf;
         for(i=0; i<4; i++) {
             rate=stepgen2(i, fmax, period);
@@ -468,27 +492,7 @@ FUNCTION(transfer) {
             return;
 
         for(i=0; i<4; i++) {
-                int64_t count;
-                double fcount;
-                int newlow;
-                int reset;
-
-                spidata = rxBuf[i];
-
-                reset = stepgen_reset(i);
-                newlow = spidata & MASK;
-                count = extend(data.last_count[i], newlow);//, W+F);
-                stepgen_velocity_fb(i) = (count-data.last_count[i])/stepgen_scale(i)/fperiod/(1<<F);
-                data.last_count[i] = count;
-                if(reset) data.reset_count[i] = count;
-                fcount = (count-data.reset_count[i])*1.0/(1<<F);
-                stepgen_counts(i) = fcount;
-                stepgen_position_fb(i) = fcount/stepgen_scale(i);
-
-                if(i == 0) {
-                //              debug_0 = spidata;
-                        debug_1 = newlow;
-                }
+            stepgen_fb(rxBuf[i]);
         }
 
         spidata = rxBuf[4];
