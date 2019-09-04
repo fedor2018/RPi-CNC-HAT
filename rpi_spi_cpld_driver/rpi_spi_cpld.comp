@@ -342,7 +342,7 @@ int stepgen2(int i, double max_vel, long period){// PiCnc v2
     return rate;
 }
 
-void stepgen_fb(__u32 spidata){
+void stepgen_fb(__u32 spidata, int i, long period){
     double fcount;
 //    spidata = rxBuf[i];
 
@@ -492,7 +492,7 @@ FUNCTION(transfer) {
             return;
 
         for(i=0; i<4; i++) {
-            stepgen_fb(rxBuf[i]);
+            stepgen_fb(rxBuf[i], i, period);
         }
 
         spidata = rxBuf[4];
