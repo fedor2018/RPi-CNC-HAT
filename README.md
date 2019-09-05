@@ -20,9 +20,8 @@
 - [ ] debug
 
 ### Linuxcnc GUI
-- [ ] hal
-- [ ] ini
+- [x] hal
+- [x] ini
 - [x] schematic
 - [ ] pyvcp panel
-- [ ] 
 

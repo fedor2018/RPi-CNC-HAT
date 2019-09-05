@@ -1,0 +1,32 @@
+loadrt trivkins
+loadrt [EMCMOT]EMCMOT servo_period_nsec=[EMCMOT]SERVO_PERIOD num_joints=[TRAJ]AXES
+loadrt picnc-5a
+
+addf picnc-5a.read servo-thread
+addf motion-command-handler servo-thread
+addf motion-controller servo-thread
+addf picnc-5a.update servo-thread
+addf picnc-5a.write servo-thread
+
+net spindle-cmd <= motion.spindle-speed-out
+
+setp picnc-5a.axis.0.scale [AXIS_0]SCALE
+setp picnc-5a.axis.0.maxaccel [AXIS_0]STEPGEN_MAXACCEL
+
+net xpos-cmd axis.0.motor-pos-cmd => picnc-5a.axis.0.position-cmd
+net xpos-fb picnc-5a.axis.0.position-fb => axis.0.motor-pos-fb
+
+setp picnc-5a.axis.1.scale [AXIS_1]SCALE
+setp picnc-5a.axis.1.maxaccel [AXIS_1]STEPGEN_MAXACCEL
+
+net ypos-cmd axis.1.motor-pos-cmd => picnc-5a.axis.1.position-cmd
+net ypos-fb picnc-5a.axis.1.position-fb => axis.1.motor-pos-fb
+
+setp picnc-5a.axis.2.scale [AXIS_2]SCALE
+setp picnc-5a.axis.2.maxaccel [AXIS_2]STEPGEN_MAXACCEL
+
+net zpos-cmd axis.2.motor-pos-cmd => picnc-5a.axis.2.position-cmd
+net zpos-fb picnc-5a.axis.2.position-fb => axis.2.motor-pos-fb
+
+net estop-out <= iocontrol.0.user-enable-out
+net estop-out => iocontrol.0.emc-enable-in
