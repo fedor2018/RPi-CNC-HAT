@@ -1,0 +1,83 @@
+loadrt trivkins
+loadrt tp
+loadrt [EMCMOT]EMCMOT base_period_nsec=[EMCMOT]BASE_PERIOD servo_period_nsec=[EMCMOT]SERVO_PERIOD num_joints=[TRAJ]AXES kins=trivkins tp=tp
+
+loadrt stepgen step_type=0,0
+addf stepgen.make-pulses base-thread
+
+#pins
+#2,3,4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16,17,18,19,20,22,21,23,24,25,26,27
+#gpio pins ( not rpi pins! )
+###!3,5,7,29,31,26,24,21,19,23,32,33, 8,10,36,11,12,35,38,15,40,16,18,22,37,13
+#13,37,22,18,16,40,15,38,35,12,11,36,10, 8,33,32,23,19,21,24,26,31,29,7,5,3
+#dir     mask (0 means in   1 means out)
+# 0  1  1  1  0  1  0  1  1  0  1  1  1  1  1  1  0  1  1  1  1  1  1 1 1 1
+#exclude mask (0 means use  1 means dont use)
+# 0  1  1  1  0  1  0  1  1  0  0  1  0  0  1  1  1  1  1  1  1  1  1 0 0 0
+loadrt hal_gpio dir=30866943 exclude=30822392
+
+show pin hal_gpio
+
+net estop-out       => hal_gpio.pin-03-out
+net xstep           => hal_gpio.pin-05-out
+net xdir            => hal_gpio.pin-07-out
+net spindle-on      => hal_gpio.pin-08-out
+net zstep           => hal_gpio.pin-10-out
+net zdir            => hal_gpio.pin-11-out
+
+net estop-ext       <= hal_gpio.pin-12-in
+net max-home-x      <= hal_gpio.pin-13-in
+net max-home-z      <= hal_gpio.pin-15-in
+net probe-in        <= hal_gpio.pin-16-in
+
+addf hal_gpio.read  		base-thread
+addf hal_gpio.write 		base-thread
+addf stepgen.capture-position 	servo-thread
+addf motion-command-handler 	servo-thread
+addf motion-controller 		servo-thread
+addf stepgen.update-freq 	servo-thread
+
+net spindle-cmd-rpm     <= motion.spindle-speed-out
+net spindle-cmd-rpm-abs <= motion.spindle-speed-out-abs
+net spindle-cmd-rps     <= motion.spindle-speed-out-rps
+net spindle-cmd-rps-abs <= motion.spindle-speed-out-rps-abs
+net spindle-at-speed    => motion.spindle-at-speed
+net spindle-on <= motion.spindle-on
+
+net probe-in => motion.probe-input
+
+setp stepgen.0.position-scale [AXIS_0]SCALE
+setp stepgen.0.steplen 1
+setp stepgen.0.stepspace 0
+setp stepgen.0.dirhold 35000
+setp stepgen.0.dirsetup 35000
+setp stepgen.0.maxaccel [AXIS_0]STEPGEN_MAXACCEL
+net xpos-cmd axis.0.motor-pos-cmd => stepgen.0.position-cmd
+net xpos-fb stepgen.0.position-fb => axis.0.motor-pos-fb
+net xstep <= stepgen.0.step
+net xdir <= stepgen.0.dir
+net xenable axis.0.amp-enable-out => stepgen.0.enable
+net max-home-x => axis.0.home-sw-in
+net max-home-x => axis.0.pos-lim-sw-in
+
+setp stepgen.1.position-scale [AXIS_2]SCALE
+setp stepgen.1.steplen 1
+setp stepgen.1.stepspace 0
+setp stepgen.1.dirhold 35000
+setp stepgen.1.dirsetup 35000
+setp stepgen.1.maxaccel [AXIS_2]STEPGEN_MAXACCEL
+net zpos-cmd axis.2.motor-pos-cmd => stepgen.1.position-cmd
+net zpos-fb stepgen.1.position-fb => axis.2.motor-pos-fb
+net zstep <= stepgen.1.step
+net zdir <= stepgen.1.dir
+net zenable axis.2.amp-enable-out => stepgen.1.enable
+net max-home-z => axis.2.home-sw-in
+net max-home-z => axis.2.pos-lim-sw-in
+
+net estop-out <= iocontrol.0.user-enable-out
+net estop-ext => iocontrol.0.emc-enable-in
+
+show
+#loadusr linuxcncrsh 
+#loadusr ~/machinekit/Rockhopper/startRockhopper.sh
+
