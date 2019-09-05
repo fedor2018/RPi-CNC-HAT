@@ -1,3 +1,0 @@
-(sym_lib_table
-  (lib (name rpi_cpld-rescue)(type Legacy)(uri ${KIPRJMOD}/rpi_cpld-rescue.lib)(options "")(descr ""))
-)

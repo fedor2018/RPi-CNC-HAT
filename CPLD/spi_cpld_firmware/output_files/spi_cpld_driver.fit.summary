@@ -1,0 +1,11 @@
+Fitter Status : Successful - Mon Sep 02 11:23:28 2019
+Quartus II 64-Bit Version : 13.0.1 Build 232 06/12/2013 SP 1 SJ Full Version
+Revision Name : spi_cpld_driver
+Top-level Entity Name : spi_main
+Family : MAX II
+Device : EPM570T100C5
+Timing Models : Final
+Total logic elements : 475 / 570 ( 83 % )
+Total pins : 48 / 76 ( 63 % )
+Total virtual pins : 0
+UFM blocks : 0 / 1 ( 0 % )
