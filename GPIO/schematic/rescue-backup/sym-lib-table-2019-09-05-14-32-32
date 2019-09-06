@@ -1,6 +1,0 @@
-(sym_lib_table
-  (lib (name rpi_gpio-rescue)(type Legacy)(uri ${KIPRJMOD}/rpi_gpio-rescue.lib)(options "")(descr ""))
-  (lib (name hat-design-cache)(type Legacy)(uri ${KIPRJMOD}/schematic/hat-design-cache.lib)(options "")(descr ""))
-  (lib (name rpi_cpld-cache)(type Legacy)(uri ${KIPRJMOD}/schematic/rpi_cpld-cache.lib)(options "")(descr ""))
-  (lib (name RPi_Hat-cache)(type Legacy)(uri ${KIPRJMOD}/schematic/RPi_Hat-cache.lib)(options "")(descr ""))
-)
