@@ -12,16 +12,14 @@ setp timedelay.0.off-delay 1
 loadrt pwmgen output_type=0
 loadrt stepgen step_type=0,0,0
 
-# connector pins == gpio.pin
-# 1 3 2 1 1 4 1 3 3 1 1 3 1   3 3 2 1 2 2 2 3 2   
+
+# 1 3 2 1 1 4 1 3 3 1 1 3 1   3 3 2 1 2 2 2 3 2       # connector pins == gpio.pin
 # 3 7 2 8 6 0 5 8 5 2 1 6 0 8 3 2 3 9 1 4 6 1 9 7 5 3
-# gpio pins ( not rpi connector pins! )
-# 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1.
+# 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1.                # gpio pins == bcm gpio
 # 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2  (gpio1& 0 not used )
-#
 # 0 1 0 0 1 0 0 0 1 1 0 0 0 0 1 1 1 0 0 0 0 1 1 0 0 0 dir (0-in, 1-out)
-# 0 0 0 0 0 1 1 1 0 0 0 1 1 1 0 0 0 1 1 0 0 0 0 0 0 0 exc (0-use, 1-exc) 
-loadrt hal_gpio dir=19074584 exclude=816512
+# 0 0 0 0 0 1 0 1 0 0 0 0 1 1 0 0 0 1 1 1 0 0 0 0 1 1 exc (0-use, 1-exc)
+loadrt hal_gpio dir=19074584 exclude=1323459
 show pin hal_gpio
 
 addf stepgen.make-pulses base-thread
@@ -48,9 +46,10 @@ net both-home-x      <= hal_gpio.pin-07-in
 net both-home-y      <= hal_gpio.pin-11-in
 net max-home-z       <= hal_gpio.pin-13-in
 
-net probe-in         <= hal_gpio.pin-24-in
+net probe-in         <= hal_gpio.pin-36-in
 net tp_in and2.0.in0 <= hal_gpio.pin-15-in
 net tp_on and2.0.in1 <= hal_gpio.pin-22-in
+net buzzer-on        => hal_gpio.pin-16-out
 
 addf and2.0 servo-thread
 addf or2.0 servo-thread
@@ -74,7 +73,7 @@ net spindle-on => timedelay.0.in
 net spindle-at-speed timedelay.0.out => motion.spindle-at-speed
 
 setp stepgen.0.position-scale [AXIS_0]SCALE
-setp stepgen.0.steplen 1
+setp stepgen.0.steplen 25000
 setp stepgen.0.stepspace 0
 setp stepgen.0.dirhold 35000
 setp stepgen.0.dirsetup 35000
@@ -89,7 +88,7 @@ net both-home-x => axis.0.neg-lim-sw-in
 net both-home-x => axis.0.pos-lim-sw-in
 
 setp stepgen.1.position-scale [AXIS_1]SCALE
-setp stepgen.1.steplen 1
+setp stepgen.1.steplen 25000
 setp stepgen.1.stepspace 0
 setp stepgen.1.dirhold 35000
 setp stepgen.1.dirsetup 35000
@@ -104,7 +103,7 @@ net both-home-y => axis.1.neg-lim-sw-in
 net both-home-y => axis.1.pos-lim-sw-in
 
 setp stepgen.2.position-scale [AXIS_2]SCALE
-setp stepgen.3.steplen 1
+setp stepgen.3.steplen 25000
 setp stepgen.2.stepspace 0
 setp stepgen.2.dirhold 35000
 setp stepgen.2.dirsetup 35000
@@ -122,45 +121,3 @@ net estop-out <= iocontrol.0.user-enable-out
 net estop-ext => iocontrol.0.emc-enable-in
 
 show
-
-Component Pins:
-  Comp   Inst Type  Dir         Value  Name                                            Epsilon Flags  linked to:
-   474        bit   OUT         FALSE  hal_gpio.pin-03-in                               --l-
-   474        bit   OUT         FALSE  hal_gpio.pin-05-in                               --l-
-   474        bit   OUT         FALSE  hal_gpio.pin-07-in                               --l-
-   474        bit   OUT         FALSE  hal_gpio.pin-11-in                               --l-
-   474        bit   IN          FALSE  hal_gpio.pin-12-out                              --l-
-   474        bit   OUT         FALSE  hal_gpio.pin-13-in                               --l-
-   474        bit   IN          FALSE  hal_gpio.pin-16-out                              --l-
-   474        bit   OUT         FALSE  hal_gpio.pin-18-in                               --l-
-   474        bit   OUT         FALSE  hal_gpio.pin-22-in                               --l-
-   474        bit   IN          FALSE  hal_gpio.pin-23-out                              --l-
-   474        bit   OUT         FALSE  hal_gpio.pin-24-in                               --l-
-   474        bit   OUT         FALSE  hal_gpio.pin-26-in                               --l-
-   474        bit   IN          FALSE  hal_gpio.pin-29-out                              --l-
-   474        bit   IN          FALSE  hal_gpio.pin-31-out                              --l-
-   474        bit   IN          FALSE  hal_gpio.pin-33-out                              --l-
-   474        bit   IN          FALSE  hal_gpio.pin-35-out                              --l-
-   474        bit   IN          FALSE  hal_gpio.pin-37-out                              --l-
-   474        bit   OUT         FALSE  hal_gpio.pin-40-in                               --l-
-   474        s32   OUT             0  hal_gpio.read.time                               ----
-   474        s32   I/O             0  hal_gpio.read.tmax                               ----
-   474        bit   OUT         FALSE  hal_gpio.read.tmax-inc                           ----
-   474        s32   OUT             0  hal_gpio.write.time                              ----
-   474        s32   I/O             0  hal_gpio.write.tmax                              ----
-   474        bit   OUT         FALSE  hal_gpio.write.tmax-inc                          ----
-
-3040t-2.hal:26: Function 'stepgen.make-pulses' added to thread 'base-thread', rmb=0 wmb=0
-3040t-2.hal:27: Function 'stepgen.capture-position' added to thread 'servo-thread', rmb=0 wmb=0
-3040t-2.hal:28: Function 'stepgen.update-freq' added to thread 'servo-thread', rmb=0 wmb=0
-3040t-2.hal:29: Function 'pwmgen.update' added to thread 'servo-thread', rmb=0 wmb=0
-3040t-2.hal:30: Function 'pwmgen.make-pulses' added to thread 'base-thread', rmb=0 wmb=0
-3040t-2.hal:32: Function 'motion-command-handler' added to thread 'servo-thread', rmb=0 wmb=0
-3040t-2.hal:33: Function 'motion-controller' added to thread 'servo-thread', rmb=0 wmb=0
-3040t-2.hal:36: Pin 'hal_gpio.pin-23-out' linked to signal 'xstep'
-3040t-2.hal:37: Pin 'hal_gpio.pin-29-out' linked to signal 'xdir'
-3040t-2.hal:38: Pin 'hal_gpio.pin-31-out' linked to signal 'ystep'
-3040t-2.hal:39: Pin 'hal_gpio.pin-33-out' linked to signal 'ydir'
-3040t-2.hal:40: Pin 'hal_gpio.pin-35-out' linked to signal 'zstep'
-3040t-2.hal:41: Pin 'hal_gpio.pin-37-out' linked to signal 'zdir'
-3040t-2.hal:43: Pin 'hal_gpio.pin-32-out' does not exist
