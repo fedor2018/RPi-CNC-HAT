@@ -1,0 +1,155 @@
+<pyvcp>
+<hbox>
+
+<labelframe text="IN">
+<vbox>
+<hbox>
+   <label><text>"In-00:"</text></label>
+   <led><halpin>"in00"</halpin></led>
+    <label text="end-X"/>
+</hbox>
+<hbox>
+   <label><text>"In-01:"</text></label>
+   <led><halpin>"in01"</halpin></led>
+    <label text="end-Y"/>
+</hbox>
+<hbox>
+   <label><text>"In-02:"</text></label>
+   <led><halpin>"in02"</halpin></led>
+    <label text="end-Z"/>
+</hbox>
+<hbox>
+   <label><text>"In-03:"</text></label>
+   <led><halpin>"in03"</halpin></led>
+    <label text="TP-in"/>
+</hbox>
+<hbox>
+   <label><text>"In-04:"</text></label>
+   <led><halpin>"in04"</halpin></led>
+    <label text="TP-on"/>
+</hbox>
+<hbox>
+   <label><text>"In-05:"</text></label>
+   <led><halpin>"in05"</halpin></led>
+    <label text="Length"/>
+</hbox>
+<hbox>
+   <label><text>"In-06:"</text></label>
+   <led><halpin>"in06"</halpin></led>
+    <label text="STOP"/>
+</hbox>
+<hbox>
+   <label><text>"In-07:"</text></label>
+   <led><halpin>"in07"</halpin></led>
+    <label text="RPM"/>
+</hbox>
+
+</vbox>
+</labelframe>
+
+<labelframe text="OUT">
+<vbox>
+
+<hbox>
+<button> 
+    <halpin>"out00"</halpin> 
+    <text>"Out-00"</text>
+</button>
+   <led><halpin>"led00"</halpin></led>
+    <label text="SP-on"/>
+</hbox>
+<hbox>
+<button>
+    <halpin>"out01"</halpin>
+    <text>"Out-01"</text>
+</button>
+   <led><halpin>"led01"</halpin></led>
+    <label text="Xstep"/>
+</hbox>
+<hbox>
+<button>
+    <halpin>"out02"</halpin>
+    <text>"Out-02"</text>
+</button>
+   <led><halpin>"led02"</halpin></led>
+    <label text="Xdir"/>
+</hbox>
+<hbox>
+<button>
+    <halpin>"out03"</halpin>
+    <text>"Out-03"</text>
+</button>
+   <led><halpin>"led03"</halpin></led>
+    <label text="Ystep"/>
+</hbox>
+<hbox>
+<button>
+    <halpin>"out04"</halpin>
+    <text>"Out-04"</text>
+</button>
+   <led><halpin>"led04"</halpin></led>
+    <label text="Ydir"/>
+</hbox>
+<hbox>
+<button>
+    <halpin>"out05"</halpin>
+    <text>"Out-05"</text>
+</button>
+   <led><halpin>"led05"</halpin></led>
+    <label text="Zstep"/>
+</hbox>
+<hbox>
+<button>
+    <halpin>"out06"</halpin>
+    <text>"Out-06"</text>
+</button>
+   <led><halpin>"led06"</halpin></led>
+    <label text="Zdir"/>
+</hbox>
+<hbox>
+<button>
+    <halpin>"out07"</halpin>
+    <text>"Out-07"</text>
+</button>
+   <led><halpin>"led07"</halpin></led>
+    <label text="PWM"/>
+</hbox>
+<hbox>
+<button>
+    <halpin>"out08"</halpin>
+    <text>"Out-08"</text>
+</button>
+   <led><halpin>"led08"</halpin></led>
+    <label text="Buzzer"/>
+</hbox>
+
+</vbox>
+</labelframe>
+
+<!--vbox>
+
+<labelframe text="Spindel">
+<vbox>
+<vbox>
+<label text="PWM"/>
+<scale orient="horizontal" halpin="spindle-pwm" min_="0" max_="255" resolution="1" />
+<s32 halpin="spindle-pwm-view"/>
+</vbox>
+<vbox>
+<label text="RPM:"/>
+<number halpin="spindle-speed" format="6d"/>
+</vbox>
+</vbox>
+</labelframe>
+
+<labelframe text="Logic">
+<hbox>
+<label text="Probe:"/>
+<led halpin="probe"/>
+</hbox>
+</labelframe>
+
+</vbox-->
+
+</hbox>
+</pyvcp>

@@ -1,0 +1,106 @@
+
+# create a thread 
+loadrt threads name1=tt2 period1=1000000 name2=tt period2=1000000
+
+loadrt hal_gpio dir=19074584 exclude=1323459
+show pin hal_gpio
+addf hal_gpio.read  tt2
+addf hal_gpio.write tt2
+
+loadrt oneshot
+loadrt and2
+loadrt or2 count=2
+loadrt not
+addf and2.0 tt
+addf or2.0  tt
+addf or2.1  tt
+addf not.0  tt
+addf oneshot.0 tt
+setp oneshot.0.width 1
+
+# IO
+# Link digital inputs to LEDs
+net din00 <= hal_gpio.pin-07-in => pyvcp.in00
+net din01 <= hal_gpio.pin-11-in => pyvcp.in01
+net din02 <= hal_gpio.pin-13-in => pyvcp.in02
+net din03 <= hal_gpio.pin-15-in => pyvcp.in03
+net din04 <= hal_gpio.pin-22-in => pyvcp.in04
+net din05 <= hal_gpio.pin-36-in => pyvcp.in05
+net din06 <= hal_gpio.pin-18-in => pyvcp.in06
+net din07 <= hal_gpio.pin-26-in => pyvcp.in07
+#net din08 <= hal_gpio.pin--in => pyvcp.in08
+#net din09 <= hal_gpio.pin--in => pyvcp.in09
+#net din10 <= hal_gpio.pin--in => pyvcp.in10
+#net din11 <= hal_gpio.pin--in => pyvcp.in11
+
+loadrt toggle count=10
+addf toggle.0 tt
+addf toggle.1 tt
+addf toggle.2 tt
+addf toggle.3 tt
+addf toggle.4 tt
+addf toggle.5 tt
+addf toggle.6 tt
+addf toggle.7 tt
+addf toggle.8 tt
+addf toggle.9 tt
+
+net out0in pyvcp.out00 toggle.0.in
+net out0   toggle.0.out => pyvcp.led00
+net out0   => hal_gpio.pin-32-out
+
+net out1in pyvcp.out01 toggle.1.in
+net out1   toggle.1.out => pyvcp.led01
+net out1   => hal_gpio.pin-29-out
+
+net out2in pyvcp.out02 toggle.2.in
+net out2   toggle.2.out => pyvcp.led02
+net out2   => hal_gpio.pin-23-out
+
+net out3in pyvcp.out03 toggle.3.in
+net out3   toggle.3.out => pyvcp.led03
+net out3   => hal_gpio.pin-33-out
+
+net out4in pyvcp.out04 toggle.4.in
+net out4   toggle.4.out => pyvcp.led04
+net out4   => hal_gpio.pin-31-out
+
+net out5in pyvcp.out05 toggle.5.in
+net out5   toggle.5.out => pyvcp.led05
+net out5   => hal_gpio.pin-37-out
+
+net out6in pyvcp.out06 toggle.6.in
+net out6   toggle.6.out => pyvcp.led06
+net out6   => hal_gpio.pin-35-out
+
+net out7in pyvcp.out07 toggle.7.in
+net out7   toggle.7.out => pyvcp.led07
+net out7   => hal_gpio.pin-12-out
+
+net out8in pyvcp.out08 toggle.8.in
+net out8   toggle.8.out => pyvcp.led08
+net out8   or2.1.in0
+net bz oneshot.0.out or2.1.in1
+net buz or2.1.out => hal_gpio.pin-16-out
+
+#net spindle-cmd-rpm-abs => pyvcp.spindle-speed
+#net spindle-pwm         => hal_gpio.pin-12-out
+#net spindle-cmd-rpm-abs <= hal_gpio.pin-26-in
+
+#net spindle-pwm <= pyvcp.spindle-pwm-i
+#net spindle-pwm => pyvcp.spindle-pwm-view
+
+#net din03 and2.0.in0
+#net din04 and2.0.in1
+#net din4not rpi-spi-cpld.din.04-not or2.0.in0
+#net tp2 and2.0.out or2.0.in1
+#net probe-in or2.0.out => pyvcp.probe
+
+#helps for debugging
+#loadusr halmeter
+
+# start 
+start
+
+# wait for pyvcp to close before ending hal session
+#waitusr iotest
