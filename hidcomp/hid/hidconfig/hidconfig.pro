@@ -25,9 +25,9 @@ win32:INCLUDEPATH += ../libusb-win32-device-bin-0.1.12.1/include
 unix:INCLUDEPATH += ../libusb-1.0.2/libusb ../utility ../usbhid ../hid ../include ../qtcommon
 
 CONFIG(debug,debug|release) {    
-    LIBS += -L../hid/debug -lhid -L../usbhid/debug -lusbhid -L../utility/debug -lutility -L../libusb-1.0.2/libusb/.libs -l:libusb-1.0.a -L../qtcommon/debug -lqtcommon
+    LIBS += -L../hid/debug -lhid -L../usbhid/debug -lusbhid -L../utility/debug -lutility -L../libusb-1.0.2/libusb/.libs -l:libusb-1.0.a -L../qtcommon/debug -lqtcommon -ludev
 } else {    
-    LIBS += -L../hid/release -lhid -L../usbhid/release -lusbhid -L../utility/release -lutility -L../libusb-1.0.2/libusb/.libs -l:libusb-1.0.a -L../qtcommon/release -lqtcommon
+    LIBS += -L../hid/release -lhid -L../usbhid/release -lusbhid -L../utility/release -lutility -L../libusb-1.0.2/libusb/.libs -l:libusb-1.0.a -L../qtcommon/release -lqtcommon -ludev
 }
 
 CONFIG(debug,debug|release) {

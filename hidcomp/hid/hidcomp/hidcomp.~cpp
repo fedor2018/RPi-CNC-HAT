@@ -28,7 +28,6 @@
 #include "emchiddevice.h"
 #include "emcinterface.h"
 
-#include "hal_.h"
 
 EmcInterface *emcIFace;
 
