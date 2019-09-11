@@ -1,0 +1,54 @@
+hidcomp (1.7) release; urgency=low
+
+  * Update and rebuild to work with emc2 release 2.6.7
+  * Fix bug not initialising select timeout value correctly
+  * Stop crash on exit, where USB callbacks active after shutdown
+
+ -- Frank Tkalcevic <ftkalcevic@franksworkshop.com.au>  Fri, 3 Apr 2015 10:30:19 +1100
+
+hidcomp (1.6) release; urgency=low
+
+  * Update and rebuild to work with emc2 release 2.5
+
+ -- Frank Tkalcevic <ftkalcevic@franksworkshop.com.au>  Wed, 11 Apr 2012 00:04:13 +1000
+
+hidcomp (1.5) release; urgency=low
+
+  * Update and rebuild to work with emc2 release 2.4.6
+  * Add some checking to make sure version mismatches are detected
+
+ -- Frank Tkalcevic <ftkalcevic@franksworkshop.com.au>  Wed, 26 Jan 2011 08:24:32 +1100
+
+hidcomp (1.4) release; urgency=low
+
+  * Fix bug with reverse axis not working
+
+ -- Frank Tkalcevic <ftkalcevic@franksworkshop.com.au>  Sun, 01 Nov 2009 12:54:32 +1100
+
+hidcomp (1.3) release; urgency=low
+
+  * Support advanced colour LCDs
+  * Add external TCP port to access LCDs dynamically
+
+ -- Frank Tkalcevic <ftkalcevic@franksworkshop.com.au>  Tue, 20 Oct 2009 10:06:46 +1000
+
+hidcomp (1.2) release; urgency=low
+
+  * Added User Fonts to LCD devices
+  * Proper support for multiple LCD devices.
+  * Updated to reflect release of GenericHID
+
+ -- Frank Tkalcevic <ftkalcevic@franksworkshop.com.au>  Sun, 27 Sep 2009 14:06:46 +1000
+
+hidcomp (1.1) release; urgency=low
+
+  * Remove the need to add lines to the emc.nml file when the USB HID device
+    doesn't use an LCD device (and hence the need to interface to the EMC
+    messaging
+
+ -- Frank Tkalcevic <ftkalcevic@franksworkshop.com.au>  Fri, 07 Aug 2009 16:54:35 +1000
+
+hidcomp (1.0) release; urgency=low
+
+  * Made Debian package.
+ -- Frank Tkalcevic <ftkalcevic@franksworkshop.com.au>  Thu, 30 Jul 2009 18:47:50 +1000

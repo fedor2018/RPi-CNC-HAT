@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?fileVersion 1.0.0?>
+<framework-data>
+  <options>
+    <option id="com.atmel.avr32.sf.uc3b.driver.option.ssc" value="false"/>
+    <option id="com.atmel.avr32.sf.uc3b.driver.option.wdt" value="false"/>
+    <option id="com.atmel.avr32.sf.uc3b.driver.option.flashc" value="true"/>
+    <option id="com.atmel.avr32.sf.uc3b.driver.option.pdca" value="false"/>
+    <option id="com.atmel.avr32.sf.uc3b.service.option.newlibaddon" value="no optimisation"/>
+    <option id="com.atmel.avr32.sf.uc3b.component.option.joystick" value="false"/>
+    <option id="com.atmel.avr32.sf.uc3b.component.option.accelerometer" value="false"/>
+    <option id="com.atmel.avr32.sf.uc3b.component.option.sdmmc" value="false"/>
+    <option id="com.atmel.avr32.sf.uc3b.component.option.nand_gpio" value="false"/>
+    <option id="com.atmel.avr32.sf.uc3b.driver.option.adc" value="false"/>
+    <option id="com.atmel.avr32.sf.uc3b.driver.option.usart" value="false"/>
+    <option id="com.atmel.avr32.sf.uc3b.service.option.delay" value="true"/>
+    <option id="com.atmel.avr32.sf.uc3b.driver.option.eic" value="false"/>
+    <option id="com.atmel.avr32.sf.uc3b.component.option.audio.tlv320aic23b" value="false"/>
+    <option id="com.atmel.avr32.sf.uc3b.driver.option.cpu.cc" value="true"/>
+    <option id="com.atmel.avr32.sf.uc3b.dsplib" value="none"/>
+    <option id="com.atmel.avr32.sf.uc3b.service.option.debug.dsplib" value="false"/>
+    <option id="com.atmel.avr32.sf.uc3b.component.option.audio.tpa6130a2" value="false"/>
+    <option id="com.atmel.avr32.sf.uc3b.driver.option.usbb" value="false"/>
+    <option id="com.atmel.avr32.sf.uc3b.driver.option.gpio" value="true"/>
+    <option id="com.atmel.avr32.sf.uc3b.driver.option.rtc" value="false"/>
+    <option id="com.atmel.avr32.sf.uc3b.component.option.touch.qt1081" value="false"/>
+    <option id="com.atmel.avr32.sf.uc3b.service.option.freertos" value="false"/>
+    <option id="com.atmel.avr32.sf.uc3b.service.option.usbb" value="None"/>
+    <option id="com.atmel.avr32.sf.uc3b.driver.option.spi" value="true"/>
+    <option id="com.atmel.avr32.sf.uc3b.driver.option.twi" value="false"/>
+    <option id="com.atmel.avr32.sf.uc3b.service.option.memory" value="false"/>
+    <option id="com.atmel.avr32.sf.uc3b.service.option.xyssl" value="false"/>
+    <option id="com.atmel.avr32.sf.uc3b.driver.option.tc" value="false"/>
+    <option id="com.atmel.avr32.sf.uc3b.driver.option.pm" value="true"/>
+    <option id="com.atmel.avr32.sf.uc3b.service.option.memory.ecchamming" value="false"/>
+    <option id="com.atmel.avr32.sf.uc3b.service.option.fat" value="false"/>
+    <option id="com.atmel.avr32.sf.uc3b.driver.option.intc" value="true"/>
+    <option id="com.atmel.avr32.sf.uc3b.component.option.touch.qt60168" value="false"/>
+    <option id="com.atmel.avr32.sf.uc3b.driver.option.pwm" value="false"/>
+    <option id="com.atmel.avr32.sf.uc3b.driver.option.cpu.mpu" value="false"/>
+    <option id="com.atmel.avr32.sf.uc3b.component.option.dataflash" value="false"/>
+    <option id="com.atmel.avr32.sf.uc3b.component.option.display" value="false"/>
+    <option id="com.atmel.avr32.sf.uc3b.service.option.debug" value="false"/>
+  </options>
+  <files>
+    <file path="src/SOFTWARE_FRAMEWORK/DRIVERS/SPI/spi.c" framework="com.atmel.avr32.sf.uc3b" version="1.4.0" source="DRIVERS/SPI/spi.c" changed="false"/>
+    <file path="src/SOFTWARE_FRAMEWORK/DRIVERS/INTC/intc.h" framework="com.atmel.avr32.sf.uc3b" version="1.4.0" source="DRIVERS/INTC/intc.h" changed="false"/>
+    <file path="src/SOFTWARE_FRAMEWORK/DRIVERS/INTC/exception.x" framework="com.atmel.avr32.sf.uc3b" version="1.4.0" source="DRIVERS/INTC/exception.S" changed="false"/>
+    <file path="src/SOFTWARE_FRAMEWORK/DRIVERS/SPI/spi.h" framework="com.atmel.avr32.sf.uc3b" version="1.4.0" source="DRIVERS/SPI/spi.h" changed="false"/>
+    <file path="src/SOFTWARE_FRAMEWORK/DRIVERS/INTC/intc.c" framework="com.atmel.avr32.sf.uc3b" version="1.4.0" source="DRIVERS/INTC/intc.c" changed="false"/>
+  </files>
+</framework-data>

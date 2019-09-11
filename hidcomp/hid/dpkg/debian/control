@@ -1,0 +1,18 @@
+Source: hidcomp
+Section: misc
+Priority: extra
+Maintainer: Frank Tkalcevic <ftkalcevic@franksworkshop.com.au>
+
+Package: hidcomp
+Architecture: i386
+Depends: ${shlibs:Depends}
+Recommends: 
+Enhances: linuxcnc
+Suggests: 
+Conflicts:
+Replaces: 
+Provides: 
+Description: USB HID (Human Interface Device) interface component for LinuxCNC
+ USB HID (Human Interface Device) interface component for LinuxCNC.  Supports 
+ standard axis and buttons.  Also supports encoder inputs, LED outputs and 
+ LCD outputs.
