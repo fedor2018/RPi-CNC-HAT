@@ -1,0 +1,25 @@
+<RCC>
+    <qresource prefix="/GenericHID" >
+        <file alias="ApplicationIcon" >resources/applicationicon.png</file>
+        <file>resources/rotate.png</file>
+        <file>resources/wire.png</file>
+        <file alias="Cursor" >resources/cursor.png</file>
+        <file>resources/mirror.png</file>
+        <file alias="greenlight" >resources/greenlight.png</file>
+        <file alias="redlight" >resources/redlight.png</file>
+        <file alias="MirrorCursor" >resources/mirror cursor.png</file>
+        <file alias="RotateCursor" >resources/rotate cursor.png</file>
+        <file alias="WireCursor" >resources/wire cursor.png</file>
+        <file alias="MirrorCursorOff" >resources/mirror cursor off.png</file>
+        <file alias="RotateCursorOff" >resources/rotate cursor off.png</file>
+        <file alias="WireCursorOff" >resources/wire cursor off.png</file>
+        <file alias="WireCursorNot" >resources/wire cursor not.png</file>
+        <file alias="FileSave" >resources/save.png</file>
+        <file alias="FileNew" >resources/new.png</file>
+        <file alias="FileOpen" >resources/open.png</file>
+        <file alias="HatDotHi" >resources/hatdothi.bmp</file>
+        <file alias="HatArrow" >resources/hatarrow.bmp</file>
+        <file alias="HatArrowHi" >resources/hatarrowhi.bmp</file>
+        <file alias="HatDot" >resources/hatdot.bmp</file>
+    </qresource>
+</RCC>
