@@ -15,34 +15,29 @@
 <part id="2"/>
 <part id="3"/>
 <part id="4"/>
-<part id="5"/>
 </presentation>
 </folder>
 </info>
 </editorArea>
-<editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="main.c" partName="main.c" path="Z:/_SYNC_/PROJECTs/CNC/openxhc/firmware/src/main.c" title="main.c" tooltip="Z:/_SYNC_/PROJECTs/CNC/openxhc/firmware/src/main.c" workbook="DefaultEditorWorkbook">
-<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/openxhc/USER/main.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="5" selectionOffset="3269" selectionTopPixel="1830"/>
-</editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="hw_config.c" partName="hw_config.c" path="Z:/_SYNC_/PROJECTs/CNC/openxhc/firmware/src/hw_config.c" title="hw_config.c" tooltip="Z:/_SYNC_/PROJECTs/CNC/openxhc/firmware/src/hw_config.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/openxhc/USER/hw_config.c"/>
 <editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="0" selectionTopPixel="1575"/>
 </editor>
-<editor id="org.eclipse.cdt.ui.editor.CEditor" name="hw_config.h" partName="hw_config.h" title="hw_config.h" tooltip="Z:\_SYNC_\PROJECTs\CNC\openxhc\firmware\src\hw_config.h" workbook="DefaultEditorWorkbook">
-<input factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" uri="file:/Z:/_SYNC_/PROJECTs/CNC/openxhc/firmware/src/hw_config.h"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="0" selectionTopPixel="315"/>
-</editor>
-<editor id="org.eclipse.cdt.ui.editor.CEditor" name="xhc_dev.h" partName="xhc_dev.h" title="xhc_dev.h" tooltip="Z:\_SYNC_\PROJECTs\CNC\openxhc\firmware\src\xhc_dev.h" workbook="DefaultEditorWorkbook">
-<input factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" uri="file:/Z:/_SYNC_/PROJECTs/CNC/openxhc/firmware/src/xhc_dev.h"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="415" selectionTopPixel="1650"/>
-</editor>
-<editor id="org.eclipse.cdt.ui.editor.CEditor" name="nokia_lcd.c" partName="nokia_lcd.c" path="Z:/_SYNC_/PROJECTs/CNC/openxhc/firmware/src/nokia_lcd.c" title="nokia_lcd.c" tooltip="Z:/_SYNC_/PROJECTs/CNC/openxhc/firmware/src/nokia_lcd.c" workbook="DefaultEditorWorkbook">
-<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/openxhc/USER/DRIVERS/LCD/nokia_lcd.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="10" selectionOffset="5084" selectionTopPixel="3630"/>
-</editor>
-<editor id="org.eclipse.cdt.ui.editor.CEditor" name="io_input.c" partName="io_input.c" path="Z:/_SYNC_/PROJECTs/CNC/openxhc/firmware/src/io_input.c" title="io_input.c" tooltip="Z:/_SYNC_/PROJECTs/CNC/openxhc/firmware/src/io_input.c" workbook="DefaultEditorWorkbook">
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="io_input.c" partName="io_input.c" path="D:/PROJECT/RPi-CNC-HAT/pendant/openxhc/firmware/src/io_input.c" title="io_input.c" tooltip="D:/PROJECT/RPi-CNC-HAT/pendant/openxhc/firmware/src/io_input.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/openxhc/USER/DRIVERS/io_input.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="1086" selectionTopPixel="1035"/>
+<editorState selectionHorizontalPixel="0" selectionLength="2" selectionOffset="1085" selectionTopPixel="0"/>
+</editor>
+<editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="hd44780.c" partName="hd44780.c" path="D:/PROJECT/RPi-CNC-HAT/pendant/openxhc/firmware/src/hd44780.c" title="hd44780.c" tooltip="D:/PROJECT/RPi-CNC-HAT/pendant/openxhc/firmware/src/hd44780.c" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/openxhc/USER/DRIVERS/LCD/hd44780.c"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="5280" selectionTopPixel="3645"/>
+</editor>
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="kbd_driver.c" partName="kbd_driver.c" path="D:/PROJECT/RPi-CNC-HAT/pendant/openxhc/firmware/src/kbd_driver.c" title="kbd_driver.c" tooltip="D:/PROJECT/RPi-CNC-HAT/pendant/openxhc/firmware/src/kbd_driver.c" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/openxhc/USER/DRIVERS/kbd_driver.c"/>
+<editorState selectionHorizontalPixel="0" selectionLength="279" selectionOffset="927" selectionTopPixel="315"/>
+</editor>
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="main.c" partName="main.c" path="D:/PROJECT/RPi-CNC-HAT/pendant/openxhc/firmware/src/main.c" title="main.c" tooltip="D:/PROJECT/RPi-CNC-HAT/pendant/openxhc/firmware/src/main.c" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/openxhc/USER/main.c"/>
+<editorState selectionHorizontalPixel="0" selectionLength="10" selectionOffset="3597" selectionTopPixel="1972"/>
 </editor>
 </editors>
 <views>
@@ -53,17 +48,24 @@
 <element path="/openxhc/USER"/>
 <element path="/openxhc/USER/DRIVERS"/>
 <element path="/openxhc/USER/DRIVERS/LCD"/>
+<element path="/openxhc/USER/USB_STUFF"/>
 </expanded>
 <selection>
-<element path="/openxhc/USER/DRIVERS/LCD/nokia_lcd.c"/>
+<element path="/openxhc/USER/DRIVERS/LCD/hd44780.c"/>
 </selection>
 </viewState>
 </view>
-<view id="org.eclipse.ui.console.ConsoleView" partName="Console">
-<viewState/>
+<view id="org.eclipse.search.ui.views.SearchView" partName="Search">
+<viewState isPinned="false">
+<view IMemento.internal.id="org.eclipse.search.text.FileSearchResultPage" org.eclipse.search.lastActivation="1" org.eclipse.search.resultpage.layout="2" org.eclipse.search.resultpage.limit="1000" org.eclipse.search.resultpage.sorting="2"/>
+<view IMemento.internal.id="" org.eclipse.search.lastActivation="0"/>
+</viewState>
 </view>
 <view id="org.eclipse.ui.views.ContentOutline" partName="Outline">
 <viewState/>
+</view>
+<view id="org.coocox.coassistant.view.CoAssistantView" partName="Peripherals">
+<viewState horizontalPosition="0" verticalPosition="0"/>
 </view>
 </views>
 <perspectives activePart="org.eclipse.cdt.ui.editor.CEditor" activePerspective="org.coocox.builder.perspective.CoBuilder">
@@ -98,7 +100,8 @@
 <hide_toolbar_item_id id="org.eclipse.debug.ui.commands.TerminateAndRelaunch"/>
 <view id="org.coocox.builder.ui.views.ProjectView"/>
 <view id="org.eclipse.ui.views.ContentOutline"/>
-<view id="org.eclipse.ui.console.ConsoleView"/>
+<view id="org.coocox.coassistant.view.CoAssistantView"/>
+<view id="org.eclipse.search.ui.views.SearchView"/>
 <fastViewBars/>
 <layout>
 <mainWindow>
@@ -117,9 +120,10 @@
 <page content="org.eclipse.ui.internal.introview" label="LabelNotFound"/>
 </folder>
 </info>
-<info folder="true" part="org.eclipse.ui.internal.ViewStack@18cf6a0" ratio="0.6991342" ratioLeft="646" ratioRight="278" relationship="4" relative="org.eclipse.ui.internal.ViewStack@36dd62">
-<folder activePageID="org.eclipse.ui.console.ConsoleView" appearance="2" expanded="2">
-<page content="org.eclipse.ui.console.ConsoleView" label="Console"/>
+<info folder="true" part="org.eclipse.ui.internal.ViewStack@18cf6a0" ratio="0.714467" ratioLeft="563" ratioRight="225" relationship="4" relative="org.eclipse.ui.internal.ViewStack@36dd62">
+<folder activePageID="org.eclipse.search.ui.views.SearchView" appearance="2" expanded="2">
+<page content="org.eclipse.search.ui.views.SearchView" label="Search"/>
+<page content="org.eclipse.ui.console.ConsoleView" label="LabelNotFound"/>
 <page content="org.coocox.component.ui.ComponentView" label="LabelNotFound"/>
 <presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
 <part id="0"/>
@@ -130,10 +134,12 @@
 <info folder="true" part="org.eclipse.ui.internal.ViewStack@5d73" ratio="0.71983916" ratioLeft="1074" ratioRight="418" relationship="2" relative="org.eclipse.ui.editorss">
 <folder activePageID="org.eclipse.ui.views.ContentOutline" appearance="2" expanded="2">
 <page content="org.eclipse.ui.views.ContentOutline" label="Outline"/>
+<page content="org.coocox.coassistant.view.CoAssistantView" label="Peripherals"/>
 <page content="org.eclipse.debug.ui.BreakpointView" label="LabelNotFound"/>
-<page content="org.coocox.coassistant.view.CoAssistantView" label="LabelNotFound"/>
+<page content="org.eclipse.cdt.ui.callHierarchy" label="LabelNotFound"/>
 <presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
 <part id="0"/>
+<part id="1"/>
 </presentation>
 </folder>
 </info>
@@ -145,38 +151,33 @@
 <navigationHistory>
 <editors>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/openxhc/USER/main.c"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/openxhc/USER/hw_config.c"/>
-<editor factoryID="org.coocox.builder.ui.persistent.PersistentElementFactory" id="org.coocox.builder.ui.editors.ConfigEditor">
-<org.coocox.builder.ui.editors.ConfigEditor/>
-</editor>
-<editor factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" uri="file:/Z:/_SYNC_/PROJECTs/CNC/openxhc/firmware/src/hw_config.h"/>
 <editor factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" uri="file:/Z:/_SYNC_/PROJECTs/CNC/openxhc/firmware/src/xhc_dev.h"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/openxhc/USER/DRIVERS/LCD/nokia_lcd.c"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/openxhc/USER/DRIVERS/io_input.c"/>
+<editor factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" uri="file:/Z:/_SYNC_/PROJECTs/CNC/openxhc/firmware/src/hw_config.h"/>
+<editor factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" uri="file:/Z:/_SYNC_/PROJECTs/CNC/openxhc/firmware/src/xhc_dev.h"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/openxhc/USER/DRIVERS/LCD/nokia_lcd.c"/>
+<editor factoryID="org.coocox.builder.ui.persistent.PersistentElementFactory" id="org.coocox.builder.ui.editors.ConfigEditor">
+<org.coocox.builder.ui.editors.ConfigEditor/>
+</editor>
+<editor factoryID="org.coocox.builder.ui.persistent.PersistentElementFactory" id="org.coocox.builder.ui.editors.ConfigEditor">
+<org.coocox.builder.ui.editors.ConfigEditor/>
+</editor>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/openxhc/USER/DRIVERS/io_input.c"/>
+<editor factoryID="org.coocox.builder.ui.persistent.PersistentElementFactory" id="org.coocox.builder.ui.editors.ConfigEditor">
+<org.coocox.builder.ui.editors.ConfigEditor/>
+</editor>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/openxhc/USER/DRIVERS/LCD/hd44780.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/openxhc/USER/DRIVERS/kbd_driver.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/openxhc/USER/main.c"/>
 </editors>
 <item historyLabel="main.c" index="0">
-<position info="not_deleted" x="0" y="0"/>
-</item>
-<item historyLabel="hw_config.c" index="1">
-<position info="not_deleted" x="0" y="0"/>
-</item>
-<item historyLabel="main.c" index="0">
-<position info="not_deleted" x="0" y="0"/>
-</item>
-<item historyLabel="Configuration" index="2"/>
-<item historyLabel="main.c" index="0">
 <position info="not_deleted" x="468" y="0"/>
 </item>
-<item historyLabel="hw_config.h" index="3">
-<position info="not_deleted" x="0" y="0"/>
-</item>
-<item historyLabel="main.c" index="0">
-<position info="not_deleted" x="468" y="0"/>
-</item>
-<item historyLabel="xhc_dev.h" index="4">
+<item historyLabel="xhc_dev.h" index="1">
 <position info="not_deleted" x="415" y="0"/>
 </item>
-<item historyLabel="nokia_lcd.c" index="5">
+<item historyLabel="nokia_lcd.c" index="2">
 <position info="not_deleted" x="0" y="0"/>
 </item>
 <item historyLabel="main.c" index="0">
@@ -185,7 +186,7 @@
 <item historyLabel="main.c" index="0">
 <position info="not_deleted" x="3455" y="10"/>
 </item>
-<item historyLabel="nokia_lcd.c" index="5">
+<item historyLabel="nokia_lcd.c" index="2">
 <position info="not_deleted" x="5084" y="10"/>
 </item>
 <item historyLabel="main.c" index="0">
@@ -194,38 +195,123 @@
 <item historyLabel="main.c" index="0">
 <position info="not_deleted" x="3239" y="9"/>
 </item>
-<item historyLabel="io_input.c" index="6">
+<item historyLabel="io_input.c" index="3">
 <position info="not_deleted" x="4292" y="9"/>
 </item>
-<item historyLabel="io_input.c" index="6">
+<item historyLabel="io_input.c" index="3">
 <position info="not_deleted" x="2480" y="12"/>
 </item>
 <item historyLabel="main.c" index="0">
 <position info="not_deleted" x="3239" y="9"/>
 </item>
-<item historyLabel="io_input.c" index="6">
+<item historyLabel="io_input.c" index="3">
 <position info="not_deleted" x="2480" y="12"/>
 </item>
-<item historyLabel="io_input.c" index="6">
+<item historyLabel="io_input.c" index="3">
 <position info="not_deleted" x="1410" y="12"/>
 </item>
 <item historyLabel="main.c" index="0">
 <position info="not_deleted" x="3239" y="9"/>
 </item>
-<item historyLabel="io_input.c" index="6">
+<item historyLabel="io_input.c" index="3">
 <position info="not_deleted" x="1410" y="12"/>
 </item>
-<item historyLabel="io_input.c" index="6">
+<item historyLabel="io_input.c" index="3">
 <position info="not_deleted" x="4292" y="9"/>
 </item>
-<item historyLabel="io_input.c" index="6">
+<item historyLabel="io_input.c" index="3">
 <position info="not_deleted" x="3020" y="9"/>
 </item>
-<item historyLabel="io_input.c" index="6">
+<item historyLabel="io_input.c" index="3">
 <position info="not_deleted" x="1086" y="0"/>
 </item>
-<item active="true" historyLabel="main.c" index="0">
-<position info="not_deleted" x="3239" y="9"/>
+<item historyLabel="main.c" index="0">
+<position info="not_deleted" x="3269" y="5"/>
+</item>
+<item historyLabel="hw_config.h" index="4">
+<position info="not_deleted" x="0" y="0"/>
+</item>
+<item historyLabel="xhc_dev.h" index="5">
+<position info="not_deleted" x="415" y="0"/>
+</item>
+<item historyLabel="nokia_lcd.c" index="6">
+<position info="not_deleted" x="5084" y="10"/>
+</item>
+<item historyLabel="Configuration" index="7"/>
+<item historyLabel="Configuration" index="8"/>
+<item historyLabel="Configuration" index="7"/>
+<item historyLabel="nokia_lcd.c" index="6">
+<position info="not_deleted" x="5084" y="10"/>
+</item>
+<item historyLabel="xhc_dev.h" index="5">
+<position info="not_deleted" x="127" y="5"/>
+</item>
+<item historyLabel="hw_config.h" index="4">
+<position info="not_deleted" x="1245" y="0"/>
+</item>
+<item historyLabel="xhc_dev.h" index="5">
+<position info="not_deleted" x="127" y="5"/>
+</item>
+<item historyLabel="hw_config.h" index="4">
+<position info="not_deleted" x="1245" y="0"/>
+</item>
+<item historyLabel="nokia_lcd.c" index="6">
+<position info="not_deleted" x="5084" y="10"/>
+</item>
+<item historyLabel="io_input.c" index="9">
+<position info="not_deleted" x="1085" y="2"/>
+</item>
+<item historyLabel="Configuration" index="10"/>
+<item historyLabel="io_input.c" index="9">
+<position info="not_deleted" x="1085" y="2"/>
+</item>
+<item historyLabel="nokia_lcd.c" index="6">
+<position info="not_deleted" x="5084" y="10"/>
+</item>
+<item historyLabel="hd44780.c" index="11">
+<position info="not_deleted" x="698" y="127"/>
+</item>
+<item historyLabel="kbd_driver.c" index="12">
+<position info="not_deleted" x="0" y="0"/>
+</item>
+<item historyLabel="kbd_driver.c" index="12">
+<position info="not_deleted" x="567" y="0"/>
+</item>
+<item historyLabel="kbd_driver.c" index="12">
+<position info="not_deleted" x="927" y="279"/>
+</item>
+<item historyLabel="main.c" index="13">
+<position info="not_deleted" x="0" y="0"/>
+</item>
+<item historyLabel="main.c" index="13">
+<position info="not_deleted" x="3184" y="4"/>
+</item>
+<item historyLabel="main.c" index="13">
+<position info="not_deleted" x="5141" y="8"/>
+</item>
+<item historyLabel="main.c" index="13">
+<position info="not_deleted" x="1120" y="8"/>
+</item>
+<item historyLabel="hd44780.c" index="11">
+<position info="not_deleted" x="698" y="127"/>
+</item>
+<item historyLabel="hd44780.c" index="11">
+<position info="not_deleted" x="917" y="0"/>
+</item>
+<item historyLabel="hd44780.c" index="11">
+<position info="not_deleted" x="2794" y="14"/>
+</item>
+<item historyLabel="main.c" index="13">
+<position info="not_deleted" x="3597" y="10"/>
+</item>
+<item historyLabel="hd44780.c" index="11">
+<position info="not_deleted" x="6524" y="10"/>
+</item>
+<item historyLabel="hd44780.c" index="11">
+<position info="not_deleted" x="6603" y="21"/>
+</item>
+<item active="true" historyLabel="hd44780.c" index="11">
+<position info="not_deleted" x="5057" y="21"/>
 </item>
 </navigationHistory>
 <input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>
@@ -234,6 +320,20 @@
 <actionBarAdvisor/>
 </window>
 <mruList>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="main.c" tooltip="openxhc/USER/main.c">
+<persistable path="/openxhc/USER/main.c"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="kbd_driver.c" tooltip="openxhc/USER/DRIVERS/kbd_driver.c">
+<persistable path="/openxhc/USER/DRIVERS/kbd_driver.c"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="hd44780.c" tooltip="openxhc/USER/DRIVERS/LCD/hd44780.c">
+<persistable path="/openxhc/USER/DRIVERS/LCD/hd44780.c"/>
+</file>
+<file factoryID="org.coocox.builder.ui.persistent.PersistentElementFactory" id="org.coocox.builder.ui.editors.ConfigEditor" name="" tooltip="">
+<persistable>
+<org.coocox.builder.ui.editors.ConfigEditor/>
+</persistable>
+</file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="io_input.c" tooltip="openxhc/USER/DRIVERS/io_input.c">
 <persistable path="/openxhc/USER/DRIVERS/io_input.c"/>
 </file>
@@ -249,9 +349,6 @@
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="hw_config.c" tooltip="openxhc/USER/hw_config.c">
 <persistable path="/openxhc/USER/hw_config.c"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="main.c" tooltip="openxhc/USER/main.c">
-<persistable path="/openxhc/USER/main.c"/>
-</file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="protocol.c" tooltip="3D-GLCD/src/protocol.c">
 <persistable path="/3D-GLCD/src/protocol.c"/>
 </file>
@@ -266,15 +363,6 @@
 </file>
 <file factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="org.eclipse.ui.systemExternalEditor" name="3D-GLCD.coproj" tooltip="C:\Users\su04759\Desktop\3D-GLCD-COIDE\3D-GLCD.coproj">
 <persistable uri="file:/C:/Users/su04759/Desktop/3D-GLCD-COIDE/3D-GLCD.coproj"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="main.c" tooltip="openxhc/main.c">
-<persistable path="/openxhc/main.c"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="string_utils.c" tooltip="test_m3/string_utils.c">
-<persistable path="/test_m3/string_utils.c"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="main.c" tooltip="test_m3/main.c">
-<persistable path="/test_m3/main.c"/>
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="main.c" tooltip="openxhc/main.c">
 <persistable path="/openxhc/main.c"/>
