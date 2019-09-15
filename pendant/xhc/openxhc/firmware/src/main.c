@@ -42,7 +42,7 @@ void EP1_IN_Callback(void)
 
 void xhc_send( void )
 {
-//  kbd_driver.read( &in_report.btn_1, &in_report.btn_2 );
+  kbd_driver.read( &in_report.btn_1, &in_report.btn_2 );
   
   in_report.xor_day = day ^ in_report.btn_1;
   in_report.wheel = encoder_val;

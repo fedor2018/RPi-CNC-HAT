@@ -18,6 +18,7 @@
 #include "st7735_regs.h"
 #include "openxhc_logo.c"
 #include "font5x8.c"
+//#include "font6x10.c"
 
 /*  
   DRIVER: ST7735R
@@ -42,8 +43,9 @@
 #define LCD_CS          A, 4, SPEED_50MHz
 #define LCD_RS          A, 3, SPEED_50MHz
 
-#define LCD_W 128u
-#define LCD_H 160u
+#define LCD_W 160u //128u
+#define LCD_H 128u //160u
+#define Y_OFF 34
 
 /* 565 color */
 static uint16_t font_color = 0x07E0;
@@ -158,7 +160,7 @@ static void init_st7735r( void )
   /* memory access control (directions) */
   st7735_write_cmd(ST7735_MADCTL);
   /* row address/col address, bottom to top refresh */
-  st7735_write_data(0xC8);
+  st7735_write_data(ST77XX_MADCTL_MX|ST77XX_MADCTL_MV);//0xC8);
   //madctl = 0xC8;
   
   /* color mode */
@@ -281,8 +283,8 @@ static void st7735_write_char( char c, uint8_t x, uint8_t y )
   c-= 32;
   for (n=0; n<5; n++)
   {
-    d = font5x8[c][n];
-    st7735_set_addr_window( x, y, x, y+7 );
+    d = font5x8/*font_6x10*/[c][n];
+    st7735_set_addr_window( x, y, x, y+/*7*/ 10 );
     ++x;
     i = 8;
     while( i-- )
@@ -296,7 +298,7 @@ static void st7735_write_char( char c, uint8_t x, uint8_t y )
 static void st7735_write_string( char *s, int x, int y )
 {
   /* correct column address like other display do */
-  y=(y*8)+76;
+  y=(y*8);//+76;
   while (*s) 
   {
     st7735_write_char( *s, x, y );
@@ -310,7 +312,7 @@ static void st7735_clear_line( int y )
 {
   uint16_t n = 128*8;
   y=(y*8)+76;
-  st7735_set_addr_window( 0, y, 127, y+7 );
+  st7735_set_addr_window( 0, y, /*127*/LCD_W-1, y+7 );
   while( n-- )
   {
     st7735_write_data16( 0 );
@@ -415,7 +417,7 @@ static void st7735_render_screen( void *p, uint8_t mode, uint8_t mode_ex )
   
   if( only_once )
   {
-    st7735_draw_logo();
+    //st7735_draw_logo();
     lcd_driver.draw_text( "WC", 35, 4 );
     lcd_driver.draw_text( "MC", 95, 4 );
     only_once = 0;
