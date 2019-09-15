@@ -365,7 +365,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER,STM32F10X_MD</Define>
               <Undefine></Undefine>
-              <IncludePath>..\src;..\STM32_USB-FS-Device_Driver\inc;..\STM32F10x_StdPeriph_Driver\inc;..\CMIS\Device\STM32F10x\Include</IncludePath>
+              <IncludePath>..\src;..\STM32_USB-FS-Device_Driver\inc;..\STM32F10x_StdPeriph_Driver\inc;..\CMIS\Device\STM32F10x\Include;st7735</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -542,6 +542,16 @@
               <FileName>string_utils.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\src\string_utils.c</FilePath>
+            </File>
+            <File>
+              <FileName>fonts.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\st7735\fonts.c</FilePath>
+            </File>
+            <File>
+              <FileName>st7735.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\st7735\st7735.c</FilePath>
             </File>
           </Files>
         </Group>
