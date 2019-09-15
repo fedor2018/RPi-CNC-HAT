@@ -4,6 +4,7 @@
  * This file is part of OpenXHC project                              *
  *                             WTFPL LICENSE v2                      *
 \*********************************************************************/
+//#define SMALL_FONT
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -17,9 +18,15 @@
 
 #include "st7735_regs.h"
 #include "openxhc_logo.c"
+#ifdef SMALL_FONT
 #include "font5x8.c"
-//#include "font6x10.c"
-
+#define F_W 5
+#define F_H 8
+#else
+#include "font7x10.c"
+#define F_W 7
+#define F_H 10
+#endif
 /*  
   DRIVER: ST7735R
   MODE: 4 wires SPI ( SPI_MODE_0 )
@@ -275,16 +282,14 @@ static void st7735_hw_init( void )
   
   init_st7735r();
 }
-
-static void st7735_write_char( char c, uint8_t x, uint8_t y )
-{
+#ifdef SMALL_FONT
+static void font5x8out(char c, uint8_t x, uint8_t y){
   char n, i;
   uint8_t d;
-  c-= 32;
   for (n=0; n<5; n++)
   {
-    d = font5x8/*font_6x10*/[c][n];
-    st7735_set_addr_window( x, y, x, y+/*7*/ 10 );
+    d = font5x8[c][n];
+    st7735_set_addr_window( x, y, x, y+8-1 );
     ++x;
     i = 8;
     while( i-- )
@@ -294,25 +299,51 @@ static void st7735_write_char( char c, uint8_t x, uint8_t y )
     }
   }
 }
+#else
+static void font7x10out(char c, uint8_t x, uint8_t y){
+    uint32_t i, b, j;
+
+    st7735_set_addr_window(x, y, x+7-1, y+10-1);
+    for(i = 0; i < 7; i++) {
+        b = Font7x10[c * 10 + i];
+        for(j = 0; j < 10; j++) {
+            if((b << j) & 0x8000)  {
+								st7735_write_data16(font_color);
+            } else {
+								st7735_write_data16( 0 );
+            }
+        }
+    }
+}
+#endif
+static void st7735_write_char( char c, uint8_t x, uint8_t y )
+{
+  c-= 32;
+#ifdef SMALL_FONT
+	font5x8out(c, x, y);
+#else
+	font7x10out(c, x, y);
+#endif
+}
 
 static void st7735_write_string( char *s, int x, int y )
 {
   /* correct column address like other display do */
-  y=(y*8);//+76;
+  y=(y*F_H);//+76;
   while (*s) 
   {
     st7735_write_char( *s, x, y );
     /* for 5 dots font w */
-    x+=5;
+    x+=F_W;
     s++;
   }
 }
 
 static void st7735_clear_line( int y )
 {
-  uint16_t n = 128*8;
-  y=(y*8)+76;
-  st7735_set_addr_window( 0, y, /*127*/LCD_W-1, y+7 );
+  uint16_t n = LCD_W*F_H;//128*8;
+  y=(y*F_H);//+76;
+  st7735_set_addr_window( 0, y, /*127*/LCD_W-1, y+F_W );
   while( n-- )
   {
     st7735_write_data16( 0 );
