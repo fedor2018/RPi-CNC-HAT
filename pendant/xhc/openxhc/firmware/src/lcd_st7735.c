@@ -366,10 +366,6 @@ static void st7735_lcd_clear( void )
   PIN_HI( LCD_CS );
 }
 
-static char axis_name[] = "XYZ";
-/* convert step multiplier */
-static uint16_t mul2val[] = { 0, 1, 5, 10, 20, 30, 40, 50, 100, 500, 1000, 0, 0, 0, 0, 0 };
-
 static char mode2char( uint8_t mode )
 {
   switch( mode )
@@ -393,6 +389,10 @@ static char mode2char( uint8_t mode )
   return 'N';
 }
 
+static char axis_name[] = "XYZ";
+/* convert step multiplier */
+static uint16_t mul2val[] = { 0, 1, 5, 10, 20, 30, 40, 50, 100, 500, 1000, 0, 0, 0, 0, 0 };
+
 static void st7735_render_screen( void *p, uint8_t mode, uint8_t mode_ex )
 {
   char tmp[32];
@@ -406,41 +406,20 @@ static void st7735_render_screen( void *p, uint8_t mode, uint8_t mode_ex )
   sprintf( tmp, "POS: %c  ", mode2char( mode ) );
   lcd_driver.draw_text( tmp, 0, 1 );
 
-  sprintf( tmp, "MPG: x" );
-  string2uint( mul2val[out->step_mul&0x0F], 4, &tmp[6] );
+  sprintf( tmp, "MPG: %c.%03d",  (out->step_mul&0x0F)==10?'1':'0',
+		(out->step_mul&0x0F)<10?mul2val[out->step_mul&0x0F]:0);
   lcd_driver.draw_text( tmp, 75, 1 ); 
   
 	sprintf(tmp, "S: % 5d   F: % 5d", out->sspeed, out->feedrate);
-/*  tmp[0] = 'S';
-  tmp[1] = ':';
-  tmp[2] = ' ';
-  string2uint( out->sspeed, 5, &tmp[3] );
-  tmp[8] = ' ';
-  tmp[9] = ' ';
-  tmp[10] = 'F';
-  tmp[11] = ':';
-  tmp[12] = ' ';
-  string2uint( out->feedrate, 5, &tmp[13] );*/
   lcd_driver.draw_text( tmp, 0, 2 );
   
   if( (mode == 0x14) || (mode == 0x15) )
   {
 		sprintf(tmp, "O: % 5d   O: % 5d", out->sspeed_ovr, out->feedrate_ovr);
- /*   tmp[0] = 'O';
-    tmp[1] = ':';
-    tmp[2] = ' ';
-    string2uint( out->sspeed_ovr, 5, &tmp[3] );
-    tmp[8] = ' ';
-    tmp[9] = ' ';
-    tmp[10] = 'O';
-    tmp[11] = ':';
-    tmp[12] = ' ';
-    string2uint( out->feedrate_ovr, 5, &tmp[13] );*/
   }
   else
   {
     sprintf(tmp, "                    ");
-		//st7735_clear_line( 3 );
   }
     lcd_driver.draw_text( tmp, 0, 3 );
   
@@ -464,11 +443,6 @@ static void st7735_render_screen( void *p, uint8_t mode, uint8_t mode_ex )
 			(out->pos[i].p_frac&0x8000)?'-':' ', out->pos[i].p_int, (out->pos[i].p_frac&0x7fff)/10,
 			(out->pos[i+3].p_frac&0x8000)?'-':' ', out->pos[i+3].p_int, (out->pos[i+3].p_frac&0x7fff)/10
 			);
-//    tmp[0] = axis_name[i];
-//    tmp[1] = ' ';
-//    xhc2string( out->pos[i].p_int, out->pos[i].p_frac, 5, 4, &tmp[2] );
-//    tmp[13] = ' ';
-//    xhc2string( out->pos[i+3].p_int, out->pos[i+3].p_frac, 5, 4, &tmp[14] );
     lcd_driver.draw_text( tmp, 0, i+6 );// line
   }
 }
