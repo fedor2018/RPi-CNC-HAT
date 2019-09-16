@@ -230,7 +230,7 @@
             <RoSelD>3</RoSelD>
             <RwSelD>3</RwSelD>
             <CodeSel>0</CodeSel>
-            <OptFeed>1</OptFeed>
+            <OptFeed>0</OptFeed>
             <NoZi1>0</NoZi1>
             <NoZi2>0</NoZi2>
             <NoZi3>0</NoZi3>
@@ -365,7 +365,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER,STM32F10X_MD</Define>
               <Undefine></Undefine>
-              <IncludePath>..\src;..\STM32_USB-FS-Device_Driver\inc;..\STM32F10x_StdPeriph_Driver\inc;..\CMIS\Device\STM32F10x\Include;st7735</IncludePath>
+              <IncludePath>..\src;..\STM32_USB-FS-Device_Driver\inc;..\STM32F10x_StdPeriph_Driver\inc;..\CMIS\Device\STM32F10x\Include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -546,12 +546,7 @@
             <File>
               <FileName>fonts.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\src\st7735\fonts.c</FilePath>
-            </File>
-            <File>
-              <FileName>st7735.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\src\st7735\st7735.c</FilePath>
+              <FilePath>..\src\fonts.c</FilePath>
             </File>
           </Files>
         </Group>
