@@ -129,7 +129,7 @@ int main(void)
   io_driver.init();
   /* used for delays */
   timer_driver.init();
-  g_hw_type = DEV_WHB04; //io_driver.hw_is_xhb04() ? DEV_WHB04:DEV_WHB03;
+  g_hw_type = io_driver.hw_is_xhb04() ? DEV_WHB04:DEV_WHB03;
   
   /* init usb stuff */
   USB_Interrupts_Config();

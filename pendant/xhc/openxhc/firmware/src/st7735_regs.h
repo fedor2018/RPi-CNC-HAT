@@ -21,10 +21,10 @@
 
 #define ST7735_COLMOD   0x3A
 #define ST7735_MADCTL   0x36
-#define ST77XX_MADCTL_MY  0x80
-#define ST77XX_MADCTL_MX  0x40
-#define ST77XX_MADCTL_MV  0x20
-#define ST77XX_MADCTL_ML  0x10
+#define ST7735_MADCTL_MY  0x80
+#define ST7735_MADCTL_MX  0x40
+#define ST7735_MADCTL_MV  0x20
+#define ST7735_MADCTL_ML  0x10
 
 #define ST7735_FRMCTR1  0xB1
 #define ST7735_FRMCTR2  0xB2
@@ -48,3 +48,14 @@
 
 #define ST7735_GMCTRP1  0xE0
 #define ST7735_GMCTRN1  0xE1
+
+// Color definitions
+#define	ST7735_BLACK   0x0000
+#define	ST7735_BLUE    0x001F
+#define	ST7735_RED     0xF800
+#define	ST7735_GREEN   0x07E0
+#define ST7735_CYAN    0x07FF
+#define ST7735_MAGENTA 0xF81F
+#define ST7735_YELLOW  0xFFE0
+#define ST7735_WHITE   0xFFFF
+#define ST7735_COLOR565(r, g, b) (((r & 0xF8) << 8) | ((g & 0xFC) << 3) | ((b & 0xF8) >> 3))
