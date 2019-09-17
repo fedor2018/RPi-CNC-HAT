@@ -143,8 +143,9 @@ int main(void)
   lcd_driver.init();
   lcd_driver.clear_screen();
   
-  lcd_driver.draw_text( (g_hw_type == DEV_WHB03) ? "XHC HB03":"XHC HB04", 0, 1 );
-   
+  lcd_driver.draw_text( (g_hw_type == DEV_WHB03) ? "XHC HB03":"XHC HB04", 50, 1 );
+  lcd_driver.draw_bmp(); 
+	
   switch_old_val = io_driver.pos_is_wc();
   io_poll_tmr = 500;
   for (;;)

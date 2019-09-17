@@ -3,7 +3,6 @@ openxhc HW connection:
   PA2 - E
   PA3 - RS
   GND - R/W
-  GND - D0, D1, D2, D3
   PA4 - D4
   PA5 - D5
   PA6 - D6
@@ -14,14 +13,14 @@ openxhc HW connection:
 	PA4 PP LCD CS
 	PA5 AF PP LCD CLOCK
 	PA6 INPUT LCD MISO
-	PA7 AF PP LCD MOSI
-	PB0 AF PP/PP LCD LED PWM [TIM3_CH3]/[OPTIONAL]
+	*PA7 AF PP LCD MOSI
+	*PB0 AF PP/PP LCD LED PWM [TIM3_CH3]/[OPTIONAL]
 
 +QUADRATURE ENCODER INTERFACE
 	PA0 INPUT PU ENCODER A
 	PA1 INPUT PU ENCODER B
-	PC13 INPUT PU ENCODER BTN [OPTIONAL]
-	HARDWARE EMULATION SELECTOR
+	*PC13 INPUT PU ENCODER BTN [OPTIONAL]
+	*HARDWARE EMULATION SELECTOR
 	PB2 INPUT PU SELECT HD03/HB04 DEVICE [BOOT1]
 
 +MATRIX KEYBOARD 5x4
@@ -29,7 +28,7 @@ openxhc HW connection:
 	PB6 INPUT PU MATRIX KBD COL2
 	PB7 INPUT PU MATRIX KBD COL3
 	PB8 INPUT PU MATRIX KBD COL4
-	PB9 INPUT PU MATRIX KBD COL5
+	*PB9 INPUT PU MATRIX KBD COL5
 	PB12 INPUT PU MATRIX KBD ROW1P
 	B13 INPUT PU MATRIX KBD ROW2
 	PB14 INPUT PU MATRIX KBD ROW3
@@ -44,14 +43,22 @@ openxhc HW connection:
 	PB1 INPUT PU ROTARY SWITCH POS 6
 
 +POSITION SWITCH
-	PC13 INPUT PD WC MC POSITION SWITCH
+	*PC13 INPUT PD WC MC POSITION SWITCH
+* NOT USED
 
 - keyboard:
-  reset,  stop, m1, m2
-  GoZero, start/pause, rewind, Probe-Z
-  Spind, =1/2, =0, Safe-Z
-  Home, Step+, MPG mode, M3
+  reset   stop         m1      m2
+  GoZero start/pause rewind Probe-Z
+  Spind  =1/2        =0     Safe-Z
+  Home   Step+     MPG mode M3
   not used
+
+- default keymap:
+	RESET
+	Stop           Pause/Run     Rewind       ProbeZ
+	GotoZ          X/2           Y/2          Go SafeZ
+	ZeroX[X=0]     ZeroY[Y=0]    ZeroZ[Z=0]   Go Home
+	Jog inc[Step]  Jog/MPG[Mode] Spin On/Off
 
 
 01234567890123456789
@@ -71,3 +78,5 @@ S 99999 <= 99999
 
 M W H MC STEP WC Run/Pause/Idle
 X -9999.99 -9999.99
+
+
