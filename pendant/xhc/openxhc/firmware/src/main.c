@@ -147,7 +147,7 @@ int main(void)
   lcd_driver.draw_bmp(); 
 	
   switch_old_val = io_driver.pos_is_wc();
-  io_poll_tmr = 500;
+  io_poll_tmr = 1000;
   for (;;)
   {
     static uint8_t nkeys = 0, c1, c2;

@@ -281,7 +281,7 @@ static void ST7735_WriteChar(uint16_t x, uint16_t y, char ch, FontDef font, uint
     uint32_t i, b, j;
 
 		st7735_set_addr_window( x, y, x+font.width-1, y+font.height-1 );
-
+		ch-=32;
     for(i = 0; i < font.height; i++) {
         b = font.data[(ch * font.height) + i];
         for(j = 0; j < font.width; j++) {
@@ -382,8 +382,15 @@ static void st7735_render_screen( void *p, uint8_t mode, uint8_t mode_ex )
   struct whb04_out_data *out = (struct whb04_out_data *)p;
   static uint16_t roll=0;
 	
-	sprintf(tmp, "%c", (roll++&0xf)+0x20);//hb
-  lcd_driver.draw_text( tmp , 75, row );//0
+  if( only_once )
+  {
+    st7735_lcd_clear();
+    lcd_driver.draw_text( "MC", 35, 5 );//5 old wc 
+    lcd_driver.draw_text( "WC", 95, 5 );//5 old mc
+    only_once = 0;
+  }
+	sprintf(tmp, "%c", (roll++&0x7)+0x30);//hb
+  lcd_driver.draw_text( tmp , 140, row );//0
 
 	sprintf( tmp, "STATUS: %X  ", out->state );
   lcd_driver.draw_text( tmp , 0, row++ );//0
@@ -414,14 +421,7 @@ static void st7735_render_screen( void *p, uint8_t mode, uint8_t mode_ex )
   else
     axis_name[0] = 'X';
   
-  if( only_once )
-  {
-    //st7735_draw_logo();
-    lcd_driver.draw_text( "MC", 35, row );//5 old wc 
-    lcd_driver.draw_text( "WC", 95, row++ );//5 old mc
-    only_once = 0;
-  }
-	row++;
+	row+=2;
   for( int i = 0; i < 3; i++ )
   {
 		sprintf(tmp, "%c %c% 4d.%03d %c% 4d.%03d", 
