@@ -89,3 +89,11 @@ Y - 999.99 - 999.99
 X - 999.99 - 999.99
 ```
 
+## my keys
+```
+RST      Stop       Start/Pause  ...
+SafeZ    probeZ     probeLen     ...
+X=0      Y=0        Z=0          Home
+Step     ...        Spindel      ...
+```
+
