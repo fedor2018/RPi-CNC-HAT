@@ -31,7 +31,7 @@ struct whb03_out_data
 	uint16_t	sspeed;
 
 	uint8_t    step_mul;
-	uint8_t    state;
+	uint8_t    state;//linuxcnc not use
 
 };
 

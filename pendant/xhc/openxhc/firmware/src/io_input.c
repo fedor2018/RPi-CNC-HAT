@@ -31,8 +31,7 @@
 #define SELECT_HW       B, 2
 
 /* POSITION STATUS WC or MC */
-#define SELECT_POS      B, 1
-//C, 13
+#define SELECT_POS      C, 13
 
 /* if you change it you need to rewrite timer init code too */
 #define ENCODER_A       A, 0

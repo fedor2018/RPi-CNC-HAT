@@ -17,8 +17,7 @@
 
 #include "st7735_regs.h"
 #include "openxhc_logo.c"
-#include "font5x8.c"
-//#include "font6x10.c"
+#include "fonts.h"
 
 /*  
   DRIVER: ST7735R
@@ -43,12 +42,14 @@
 #define LCD_CS          A, 4, SPEED_50MHz
 #define LCD_RS          A, 3, SPEED_50MHz
 
-#define LCD_W 160u //128u
-#define LCD_H 128u //160u
-#define Y_OFF 34
+#define LCD_W 160u
+#define LCD_H 128u
+FontDef *font=&Font_7x10;
 
 /* 565 color */
-static uint16_t font_color = 0x07E0;
+//static uint16_t 
+#define	FONT_COLOR ST7735_GREEN
+#define BG_COLOR  ST7735_BLACK
 
 static void delay_ms( uint16_t ms )
 {
@@ -160,7 +161,7 @@ static void init_st7735r( void )
   /* memory access control (directions) */
   st7735_write_cmd(ST7735_MADCTL);
   /* row address/col address, bottom to top refresh */
-  st7735_write_data(ST77XX_MADCTL_MX|ST77XX_MADCTL_MV);//0xC8);
+  st7735_write_data(ST7735_MADCTL_MX | ST7735_MADCTL_MV );//rotate left
   //madctl = 0xC8;
   
   /* color mode */
@@ -248,7 +249,7 @@ static void st7735_draw_logo( void )
 {
   uint16_t logo_size = sizeof( logo_12856_4bit );
   const uint8_t  *logo_ptr = logo_12856_4bit;
-  st7735_set_addr_window( 0, 0, 127, 55 );
+  st7735_set_addr_window( 10, 20, 127+10, 55+20 );
   while( logo_size-- )
   {
     uint8_t index = *logo_ptr;
@@ -276,46 +277,54 @@ static void st7735_hw_init( void )
   init_st7735r();
 }
 
+static void ST7735_WriteChar(uint16_t x, uint16_t y, char ch, FontDef font, uint16_t color, uint16_t bgcolor) {
+    uint32_t i, b, j;
+
+		st7735_set_addr_window( x, y, x+font.width-1, y+font.height-1 );
+		ch-=32;
+    for(i = 0; i < font.height; i++) {
+        b = font.data[(ch * font.height) + i];
+        for(j = 0; j < font.width; j++) {
+						st7735_write_data16( ((b << j) & 0x8000)? color : bgcolor);
+        }
+    }
+}
+
 static void st7735_write_char( char c, uint8_t x, uint8_t y )
 {
-  char n, i;
+	char n, i;
   uint8_t d;
   c-= 32;
-  for (n=0; n<5; n++)
-  {
-    d = font5x8/*font_6x10*/[c][n];
-    st7735_set_addr_window( x, y, x, y+/*7*/ 10 );
-    ++x;
-    i = 8;
-    while( i-- )
-    {
-      st7735_write_data16( (d&0x01)?font_color:0 );
-      d >>= 1;
-    }
-  }
+	if(font->height==5){
+		for (n=0; n<5; n++)
+		{
+			d = font->data[c*font->width+n];//font5x8[c][n];
+			st7735_set_addr_window( x, y, x, y+font->height-1/*7*/ );
+			++x;
+			i = font->height/*8*/;
+			while( i-- )
+			{
+				st7735_write_data16( (d&0x01)?FONT_COLOR:BG_COLOR );
+				d >>= 1;
+			}
+		}
+	}else{
+		ST7735_WriteChar(x, y, c, *font, FONT_COLOR, BG_COLOR);
+	}
 }
 
 static void st7735_write_string( char *s, int x, int y )
 {
   /* correct column address like other display do */
-  y=(y*8);//+76;
+  y=(y*font->height);
   while (*s) 
   {
-    st7735_write_char( *s, x, y );
-    /* for 5 dots font w */
-    x+=5;
+    if(font->width == 5)
+			st7735_write_char( *s, x, y );
+		else
+			ST7735_WriteChar( x, y, *s, *font, FONT_COLOR, BG_COLOR);
+    x+=font->width;
     s++;
-  }
-}
-
-static void st7735_clear_line( int y )
-{
-  uint16_t n = 128*8;
-  y=(y*8)+76;
-  st7735_set_addr_window( 0, y, /*127*/LCD_W-1, y+7 );
-  while( n-- )
-  {
-    st7735_write_data16( 0 );
   }
 }
 
@@ -338,9 +347,6 @@ static void st7735_lcd_clear( void )
   PIN_HI( LCD_CS );
 }
 
-static char axis_name[] = "XYZ";
-/* convert step multiplier */
-static uint16_t mul2val[] = { 0, 1, 5, 10, 20, 30, 40, 50, 100, 500, 1000, 0, 0, 0, 0, 0 };
 static char mode2char( uint8_t mode )
 {
   switch( mode )
@@ -364,73 +370,66 @@ static char mode2char( uint8_t mode )
   return 'N';
 }
 
+static char axis_name[] = "XYZ";
+/* convert step multiplier */
+static uint16_t mul2val[] = { 0, 1, 5, 10, 20, 30, 40, 50, 100, 500, 1000, 0, 0, 0, 0, 0 };
+
 static void st7735_render_screen( void *p, uint8_t mode, uint8_t mode_ex )
 {
   char tmp[32];
   static char only_once = 1;
-  char i;
+  char row=0;
   struct whb04_out_data *out = (struct whb04_out_data *)p;
-  
-  lcd_driver.draw_text( "STATUS: TODO", 0, 0 );
-  
-  sprintf( tmp, "POS: %c  ", mode2char( mode ) );
-  lcd_driver.draw_text( tmp, 0, 1 );
-  sprintf( tmp, "MPG: " );
-  string2uint( mul2val[out->step_mul&0x0F], 4, &tmp[5] );
-  lcd_driver.draw_text( tmp, 75, 1 ); 
-  
-  tmp[0] = 'S';
-  tmp[1] = ':';
-  tmp[2] = ' ';
-  string2uint( out->sspeed, 5, &tmp[3] );
-  tmp[8] = ' ';
-  tmp[9] = ' ';
-  tmp[10] = 'F';
-  tmp[11] = ':';
-  tmp[12] = ' ';
-  string2uint( out->feedrate, 5, &tmp[13] );
-  lcd_driver.draw_text( tmp, 0, 2 );
-  
-  if( (mode == 0x14) || (mode == 0x15) )
+  static uint16_t roll=0;
+	
+  if( only_once )
   {
-    tmp[0] = 'O';
-    tmp[1] = ':';
-    tmp[2] = ' ';
-    string2uint( out->sspeed_ovr, 5, &tmp[3] );
-    tmp[8] = ' ';
-    tmp[9] = ' ';
-    tmp[10] = 'O';
-    tmp[11] = ':';
-    tmp[12] = ' ';
-    string2uint( out->feedrate_ovr, 5, &tmp[13] );
-    lcd_driver.draw_text( tmp, 0, 3 );
+    st7735_lcd_clear();
+    lcd_driver.draw_text( "MC", 35, 5 );//5 old wc 
+    lcd_driver.draw_text( "WC", 95, 5 );//5 old mc
+    only_once = 0;
+  }
+	sprintf(tmp, "%c", (roll++&0x7)+0x30);//hb
+  lcd_driver.draw_text( tmp , 140, row );//0
+
+	sprintf( tmp, "STATUS: %X  ", out->state );
+  lcd_driver.draw_text( tmp , 0, row++ );//0
+  
+	
+  sprintf( tmp, "POS: %c  ", mode2char( mode ) );
+  lcd_driver.draw_text( tmp, 0, row );//1
+
+  sprintf( tmp, "MPG: %c.%03d",  (out->step_mul&0x0F)==10?'1':'0',
+		(out->step_mul&0x0F)<10?mul2val[out->step_mul&0x0F]:0);
+  lcd_driver.draw_text( tmp, 75, row++ ); //1
+  
+	sprintf(tmp, "S: % 5d   F: % 5d", out->sspeed, out->feedrate);
+  lcd_driver.draw_text( tmp, 0, row++ );//2
+  
+  if( (mode == 0x14) || (mode == 0x15) ) //Speed || Feed
+  {
+		sprintf(tmp, "O: % 5d   O: % 5d", out->sspeed_ovr, out->feedrate_ovr);
   }
   else
   {
-    st7735_clear_line( 3 );
+    sprintf(tmp, "                    ");//clear line
   }
+    lcd_driver.draw_text( tmp, 0, row++ );//3
   
   if( (g_hw_type == DEV_WHB04) && (mode == 0x18 ) )
     axis_name[0] = 'A';
   else
     axis_name[0] = 'X';
   
-  if( only_once )
+	row+=2;
+  for( int i = 0; i < 3; i++ )
   {
-    //st7735_draw_logo();
-    lcd_driver.draw_text( "WC", 35, 4 );
-    lcd_driver.draw_text( "MC", 95, 4 );
-    only_once = 0;
-  }
-
-  for( i = 0; i < 3; i++ )
-  {
-    tmp[0] = axis_name[i];
-    tmp[1] = ' ';
-    xhc2string( out->pos[i].p_int, out->pos[i].p_frac, 5, 4, &tmp[2] );
-    tmp[13] = ' ';
-    xhc2string( out->pos[i+3].p_int, out->pos[i+3].p_frac, 5, 4, &tmp[14] );
-    lcd_driver.draw_text( tmp, 0, i+5 );
+		sprintf(tmp, "%c %c% 4d.%03d %c% 4d.%03d", 
+			axis_name[i], 
+			(out->pos[i+3].p_frac&0x8000)?'-':' ', out->pos[i+3].p_int, (out->pos[i+3].p_frac&0x7fff)/10,
+			(out->pos[i].p_frac&0x8000)?'-':' ',   out->pos[i].p_int, (out->pos[i].p_frac&0x7fff)/10
+			);
+    lcd_driver.draw_text( tmp, 0, row++ );// line
   }
 }
 
@@ -441,6 +440,6 @@ const struct t_lcd_driver lcd_driver =
   .exit = 0,
   .render_screen = st7735_render_screen,
   .clear_screen = st7735_lcd_clear,
-  .draw_bmp = 0,
+  .draw_bmp = st7735_draw_logo,
   .draw_text = st7735_write_string,
 };

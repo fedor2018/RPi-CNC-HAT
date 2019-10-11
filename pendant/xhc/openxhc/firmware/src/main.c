@@ -129,7 +129,7 @@ int main(void)
   io_driver.init();
   /* used for delays */
   timer_driver.init();
-  g_hw_type = DEV_WHB04; //io_driver.hw_is_xhb04() ? DEV_WHB04:DEV_WHB03;
+  g_hw_type = io_driver.hw_is_xhb04() ? DEV_WHB04:DEV_WHB03;
   
   /* init usb stuff */
   USB_Interrupts_Config();
@@ -143,10 +143,11 @@ int main(void)
   lcd_driver.init();
   lcd_driver.clear_screen();
   
-  lcd_driver.draw_text( (g_hw_type == DEV_WHB03) ? "XHC HB03":"XHC HB04", 0, 1 );
-   
+  lcd_driver.draw_text( (g_hw_type == DEV_WHB03) ? "XHC HB03":"XHC HB04", 50, 1 );
+  lcd_driver.draw_bmp(); 
+	
   switch_old_val = io_driver.pos_is_wc();
-  io_poll_tmr = 500;
+  io_poll_tmr = 1000;
   for (;;)
   {
     static uint8_t nkeys = 0, c1, c2;
