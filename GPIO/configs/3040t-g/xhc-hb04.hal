@@ -79,5 +79,7 @@ net spd_on xhc-hb04.button-spindle halui.spindle.start
 net cur_feed motion.current-vel => xhc-hb04.feed-value
 
 setp xhc-hb04.inch-icon 1
+setp halui.machine.on 1
+net mo halui.machine.is-on => xhc-hb04.40-icon
 
 

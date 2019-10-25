@@ -389,12 +389,22 @@ static void st7735_render_screen( void *p, uint8_t mode, uint8_t mode_ex )
     lcd_driver.draw_text( "WC", 95, 5 );//5 old mc
     only_once = 0;
   }
-	sprintf(tmp, "%c", (roll++&0x7)+0x30);//hb
-  lcd_driver.draw_text( tmp , 140, row );//0
+//	sprintf(tmp, "%c", (roll++&0x7)+0x30);//hb
+//  lcd_driver.draw_text( tmp , 140, row );//0
 
-	sprintf( tmp, "STATUS: %X  ", out->state );
+//	sprintf( tmp, "STATUS: %X  ", out->state );
+//  lcd_driver.draw_text( tmp , 0, row++ );//0
+	sprintf(tmp,"%s %s %s %s %s %s %s %s",
+		(out->state & DISPLAY_UNKNOWN_40)?"ON ":"OFF",
+		(out->state & DISPLAY_HOME_ICON)?"H":" ",
+		(out->state & DISPLAY_HEIGHT_SETTING_ICON)?"HS":"  ",
+		(out->state & DISPLAY_INCH_ICON)?"IN":"MM",
+		(out->state & DISPLAY_RUN_ICON)?"RUN":"   ",
+		(out->state & DISPLAY_PAUSE_ICON)?"PAUSE":"     ",
+		(out->state & DISPLAY_UNKNOWN_04)?" ":" ",
+		(out->state & DISPLAY_UNKNOWN_08)?" ":" "
+	);
   lcd_driver.draw_text( tmp , 0, row++ );//0
-  
 	
   sprintf( tmp, "POS: %c  ", mode2char( mode ) );
   lcd_driver.draw_text( tmp, 0, row );//1
