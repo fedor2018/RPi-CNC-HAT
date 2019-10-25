@@ -1,0 +1,83 @@
+
+loadusr -W xhc-hb04 -I xhc-hb04-layout1.ini -H -x
+
+# Home button
+net home halui.home-all <= xhc-hb04.button-home
+
+# Absolute position LCD
+net pos-x halui.axis.0.pos-feedback => xhc-hb04.x.pos-absolute
+net pos-y halui.axis.1.pos-feedback => xhc-hb04.y.pos-absolute
+net pos-z halui.axis.2.pos-feedback => xhc-hb04.z.pos-absolute
+
+# Relative position LCD
+net pos-rel-x halui.axis.0.pos-relative => xhc-hb04.x.pos-relative
+net pos-rel-y halui.axis.1.pos-relative => xhc-hb04.y.pos-relative
+net pos-rel-z halui.axis.2.pos-relative => xhc-hb04.z.pos-relative
+
+# Jog wheel and axis selection button
+net jog-x axis.0.jog-enable <= xhc-hb04.jog.enable-x
+net jog-y axis.1.jog-enable <= xhc-hb04.jog.enable-y
+net jog-z axis.2.jog-enable <= xhc-hb04.jog.enable-z
+
+# Jog wheel for world mode
+setp halui.max-velocity.scale 0.1
+net jog-max-velocity halui.max-velocity.value => xhc-hb04.jog.max-velocity
+net jog-speed xhc-hb04.jog.velocity => halui.jog-speed
+net jog-plus-x xhc-hb04.jog.plus-x => halui.jog.0.plus
+net jog-minus-x xhc-hb04.jog.minus-x => halui.jog.0.minus
+net jog-plus-y xhc-hb04.jog.plus-y => halui.jog.1.plus
+net jog-minus-y xhc-hb04.jog.minus-y => halui.jog.1.minus
+net jog-plus-z xhc-hb04.jog.plus-z => halui.jog.2.plus
+net jog-minus-z xhc-hb04.jog.minus-z => halui.jog.2.minus
+
+#net jog-speed halui.jog-speed <= halui.max-velocity.value
+
+# Wheel for feedrate
+setp halui.feed-override.scale 0.1
+
+##net jog-speed halui.jog-speed <= halui.max-velocity.value
+net jog-scale xhc-hb04.jog.scale => axis.0.jog-scale axis.1.jog-scale axis.2.jog-scale
+net jog-counts-neg xhc-hb04.jog.counts-neg => axis.2.jog-counts
+net jog-counts xhc-hb04.jog.counts => axis.0.jog-counts axis.1.jog-counts
+net jog-counts => halui.feed-override.counts
+net jog-feed halui.feed-override.count-enable <= xhc-hb04.jog.enable-feed-override
+net jog-feed2 halui.feed-override.value => xhc-hb04.feed-override
+
+# Wheel for  spindle
+setp halui.spindle-override.scale 0.1
+net jog-counts => halui.spindle-override.counts
+net jog-spindle halui.spindle-override.count-enable <= xhc-hb04.jog.enable-spindle-override
+net jog-spindle2 halui.spindle-override.value => xhc-hb04.spindle-override
+net spindle-rps motion.spindle-speed-out-abs => xhc-hb04.spindle-rps
+
+# RESET/ESTOP button
+net estop xhc-hb04.button-reset => halui.estop.activate
+
+# Program control
+
+# Start and stop buttons handles in gmoccapy_postgui.hal
+
+net step xhc-hb04.button-rewind => halui.program.step
+
+net stepsize-up xhc-hb04.button-step => xhc-hb04.stepsize-up
+
+# X=0, Y=0, Z=0 
+net x0 halui.mdi-command-00 <= xhc-hb04.button-x0
+net y0 halui.mdi-command-01 <= xhc-hb04.button-y0
+net z0 halui.mdi-command-02 <= xhc-hb04.button-z0
+# wc x=0 y=0 z=max
+net origin halui.mdi-command-03 xhc-hb04.button-goto-zero
+# z=max
+net safe-z halui.mdi-command-04 xhc-hb04.button-safe-z
+#
+net park    halui.mdi-command-05 xhc-hb04.button-m3
+net probe-z halui.mdi-command-06 xhc-hb04.button-probe-z
+net probe-l halui.mdi-command-07 xhc-hb04.button-probe-l
+#net touch-off xhc-hb04.button-probe-z
+
+net spd_on xhc-hb04.button-spindle halui.spindle.start
+net cur_feed motion.current-vel => xhc-hb04.feed-value
+
+setp xhc-hb04.inch-icon 1
+
+

@@ -1,0 +1,38 @@
+O<set-length> sub
+
+#<metric> = #<_metric>
+#<absolute> = #<_absolute>
+#<feed> = #<_feed>
+#<x_saved> = #5420
+#<y_saved> = #5421
+#<z_saved> = #5422
+#<probe_h> = #<_ini[AXIS_2]PROBE_HEIGHT>
+
+(PRINT, Set length: #<probe_h> H=#5063 X=#5420 Y=#5421 Z=#5422 U=#<metric> A=#<absolute> F=#<feed>)
+G49 (length off)
+G40 (tool off)
+o<goto-safe-z>call
+G53 G0 X0 Y0
+G10 L20 P1 Z #<_ini[AXIS_2]safe_position>
+G91 (relative)
+(PRINT, Set probe: #<probe_h> H=#5063 X=#5420 Y=#5421 Z=#5422 U=#<metric> A=#<absolute> F=#<feed>)
+G38.3 Z-50 F250 (to contact)
+(PRINT, ret = #5070 #5063)
+o123 if[#5070 NE 0]
+        G38.5 Z5  F30 (from contact)
+        G38.2 Z-1 F30  (to contact)
+	(PRINT, Set z offset: #5063 )
+        G92 Z #5063 (z offset)
+	(G10 L20 P1 Z0)
+o123 else
+        (MSG, set-length Error!)
+o123 endif
+
+o<goto-safe-z>call
+G90 (abs)
+G0 X #<x_saved> Y #<y_saved> F600
+(G0 Z #<z_saved>)
+O<restore> call [#<metric>] [#<absolute>] [#<feed>]
+
+O<set-length> endsub [1]
+M2

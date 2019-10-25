@@ -1,0 +1,26 @@
+o<_camcenter4> sub
+
+O99 if[#3999 EQ 4]
+  #<ok> = 0
+
+  O100 if[[#<_CamX1> EQ #<_CamX2>] AND [#<_CamY3> EQ #<_CamY4>]]
+    G0 X[[#<_CamX3> + #<_CamX4>]/2] Y[[#<_CamY1> + #<_CamY2>]/2]
+    #<ok>= 1
+  O100 endif
+
+  O101 if[[#<_CamX3> EQ #<_CamX4>] AND [#<_CamY1> EQ #<_CamY2>]]
+    G0 X[[#<_CamX1> + #<_CamX2>]/2] Y[[#<_CamY3> + #<_CamY4>]/2]
+    #<ok>= 1
+  O101 endif
+
+  O200 if[#<ok> EQ 1]
+    (MSG,Centered)
+  O200 else
+  (MSG,Nonsense coordinates!)
+    O200 endif
+  #3999 = 0
+O99 else
+  (MSG,Must have 4 points saved!)
+O99 endif
+o<_camcenter4> endsub
+M2

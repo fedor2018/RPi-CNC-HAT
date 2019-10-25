@@ -1,0 +1,14 @@
+o<_camoff> sub
+
+(move to safe Z position)
+g90 g53 g0 Z #<_ini[change_position]z>
+
+(variables should be precalculated)
+g43 h99 g91 g0 x[-#<_CamOfsX>] y-[#<_CamOfsY>]
+g90 g49
+
+(cam offset off - old way with fixed offset) 
+(g43 h99 g91 g0 x-1.75 y-63.531)
+(g90 g49)
+o<_camoff> endsub
+M2

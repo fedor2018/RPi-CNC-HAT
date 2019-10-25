@@ -1,0 +1,5 @@
+o<tool_report> sub
+M68 E #<_ini[pins]currlen> Q #1001
+M68 E #<_ini[pins]tooloffset_z> Q [#1001-#1000]
+o<tool_report> endsub [1]
+m2

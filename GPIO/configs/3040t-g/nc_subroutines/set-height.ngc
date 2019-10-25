@@ -1,0 +1,33 @@
+O<set-height> sub
+
+#<metric> = #<_metric>
+#<absolute> = #<_absolute>
+#<feed> = #<_feed>
+#<z_saved> = #5422
+#<probe_h> = #<_ini[AXIS_2]PROBE_HEIGHT>
+
+G49
+G40
+o<goto-safe-z>call
+G10 L20 P1 Z #<_ini[AXIS_2]safe_position>
+G91
+(PRINT, Set probe: #<probe_h> H=#5063 Z=#5422 U=#<metric> A=#<absolute> F=#<feed>)
+G38.3 Z-50 F150 (to contact)
+(PRINT, ret = #5070 G10 )
+o123 if[#5070 NE 0]
+        G38.5 Z5  F30 (from contact)
+        G38.2 Z-6 F30  (to contact)
+	#<h> = [#5063 - #<probe_h>]
+	(PRINT, Set height: #5063 => #<h>)
+        (G92 Z[#<h>])
+	G10 L20 P1 Z0
+o123 else
+        (MSG, set-height Error!)
+o123 endif
+
+o<goto-safe-z>call
+
+O<restore> call [#<metric>] [#<absolute>] [#<feed>]
+
+O<set-height> endsub [1]
+M2

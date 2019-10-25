@@ -1,0 +1,66 @@
+o<m60> sub
+    (AXIS,hide)
+    
+	(save current machine state)
+
+	#<_saved_metric> = #<_metric>
+	#<_saved_absolute> = #<_absolute>
+	#<_saved_feed> = #<_feed>
+	#<_saved_rpm> = #<_rpm>
+	#<_saved_mist> = #<_mist>
+	#<_saved_flood> = #<_flood>
+	#<_saved_spindle_on> = #<_spindle_on>
+	#<_saved_spindle_cw> = #<_spindle_cw>
+	#<_saved_x> = #<_x>
+	#<_saved_y> = #<_y>
+	
+	(put axis Z on safe position and switch off spindle/coolant)
+
+	M5
+	M9
+	o<park> call
+
+	(calling native M60 to pause program)
+	M60
+
+	(here we restart from previous pause state)
+	(restore previous machine state)
+	
+	G0 X#<_saved_x>
+	G0 Y#<_saved_y>
+	
+	O100    if [#<_saved_metric>]
+        	G21
+	O100    else
+        	G20
+	O100    endif
+
+	O200    if [#<_saved_absolute>]
+        	G90
+	O200    else
+        	G91
+	O200    endif
+	
+	O300    if [#<_saved_mist>]
+        	M7
+	O300    endif
+	
+	O500    if [#<_saved_flood>]
+        	M8
+	O500    endif	
+	
+	O400    if [#<_saved_spindle_on>]
+		O410    if [#<_saved_spindle_cw>]
+        	M3
+        O410 	else
+        	M4
+		O410    endif
+	O400    endif
+	
+	F#<_saved_feed>
+	S#<_saved_rpm>
+	
+	(go back to normal program execution)
+    (AXIS,show)
+o<m60> endsub
+m2

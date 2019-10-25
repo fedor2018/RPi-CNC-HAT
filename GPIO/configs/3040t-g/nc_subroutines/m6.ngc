@@ -1,0 +1,35 @@
+O<m6> sub
+
+( 0 если датчик лежит на жертвенном столе )
+#<substrate> = [0]
+#<detail_hight> = [0]
+#<probe_hight> = [19.2]
+#<probe_x> = [0]
+#<probe_y> = [300] 
+#<safe_z> = [80]
+ 
+G28.1
+#<x_copy> = [#5161]
+#<y_copy> = [#5162]
+G53 G00 Z[#<safe_z>]
+M6 T[#1]
+G53 G0 X[#<probe_x>] Y[#<probe_y>]
+G49
+G40
+G91
+G38.3 Z-1 F250
+o123 if[#5070 NE 0]
+        G38.5 Z-80
+        G38.2 Z80 F30
+        #<z_new> = [#<probe_hight> - #<detail_hight> - #<substrate>]
+        G92 Z[#<z_new>]
+o123 else
+        ( M100 P0 )
+        (MSG, Ошибка!)
+o123 endif
+G90
+G53 G0 Z[#<safe_z>]
+G53 G0 X[#<x_copy>] Y[#<y_copy>]
+O<m6> endsub
+O<m6> CALL [100]
+M2

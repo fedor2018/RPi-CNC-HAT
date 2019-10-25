@@ -1,0 +1,29 @@
+; caveat - this changes feed and abs/relative mode
+; Parameters : offset plate-thickness
+
+O<touch-off-x> SUB
+
+#<_Probe_Speed>=20
+#<_Probe_Retract>=-2
+#<_Probe_Distance>=10
+#<_Offset>=#1
+#<_Plate_Thickness>=#2
+#<_Probe_System>=#5220
+
+G49                 ( clear tool length compensation)
+G91                 ( relative mode for probing)
+
+G38.3 X#<_Probe_Distance> F#<_Probe_Speed>
+O<xresult> if [#5070]
+   (MSG, probe succeeded)
+   G10 L20 P#<_Probe_System> X[0 - #<_Plate_Thickness> - #5410 / 2 + #<_Offset>]
+   G0 X#<_Probe_Retract>
+O<xresult> else
+   (MSG,probe failed)
+   G0 X[0 - #<_Probe_Distance>]
+O<xresult> endif
+
+G90                 ( absolute mode)
+
+O<touch-off-x> endsub [#5070]
+M2

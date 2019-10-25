@@ -1,0 +1,26 @@
+; manual toolchange with automatic tool length probe 
+
+o<goto-tool-change-position> sub
+
+(we change feed, metric/in and potentially G90)
+(so record current modal state)
+(M73 is not useful here because it reverts G43 on return too)
+#<metric> = #<_metric>
+#<absolute> = #<_absolute>
+#<feed> = #<_feed>
+
+M5
+
+G21 (TLO and toolchange position is in mm as per ini)
+G90 (absolute)
+
+; move to toolchange position: z, then xy
+g53 g0 Z #<_ini[change_position]z>
+g53 g0 Y #<_ini[change_position]y>
+g53 g0 X #<_ini[change_position]x>
+
+O<restore> call [#<metric>] [#<absolute>] [#<feed>]
+
+; succeed by returning a positive value
+o<goto-tool-change-position> endsub [1]
+m2

@@ -1,0 +1,47 @@
+o<_camstore> sub
+g92 x0 y0 z0
+g92.2
+
+#3999=[#3999+1]	;next parameter
+
+O100 if[#3999 EQ 1]
+#<_CamX1> = #5211
+#<_CamY1> = #5212
+O100 endif
+
+O101 if[#3999 EQ 2]
+#<_CamX2> = #<_CamX1>
+#<_CamY2> = #<_CamY1>
+#<_CamX1> = #5211
+#<_CamY1> = #5212
+O101 endif
+
+O102 if[#3999 EQ 3]
+#<_CamX3> = #<_CamX2>
+#<_CamY3> = #<_CamY2>
+#<_CamX2> = #<_CamX1>
+#<_CamY2> = #<_CamY1>
+#<_CamX1> = #5211
+#<_CamY1> = #5212
+O102 endif
+
+O103 if[#3999 GE 4]
+#<_CamX4> = #<_CamX3>
+#<_CamY4> = #<_CamY3>
+#<_CamX3> = #<_CamX2>
+#<_CamY3> = #<_CamY2>
+#<_CamX2> = #<_CamX1>
+#<_CamY2> = #<_CamY1>
+#<_CamX1> = #5211
+#<_CamY1> = #5212
+#3999=4
+O103 endif
+
+(LOGAPPEND,_CAMlog)
+;(LOG, X=#5211, Y=#5212, Z=#5213)
+(LOG, X=#5211, Y=#5212)
+(LOGCLOSE)
+g92.1
+(MSG, CAM position stored.)
+o<_camstore> endsub
+M2

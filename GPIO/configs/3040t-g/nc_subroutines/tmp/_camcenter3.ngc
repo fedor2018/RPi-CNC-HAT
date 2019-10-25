@@ -1,0 +1,37 @@
+o<_camcenter3> sub
+
+O99 if[#3999 GE 3]
+  #<ok> = 0
+  #<m1>=[#<_Camy2> - #<_Camy1>]
+  O100 if[#<m1> EQ 0]
+    #<m1>=1
+    #<ok>=1
+  O100 endif
+  #<m2>=[#<_Camy3> - #<_Camy2>]
+  O101 if[#<m2> EQ 0]
+    #<m2>=1
+    #<ok>=1
+  O101 endif
+  #<m1> =[[#<_CamX1> - #<_CamX2>] / #<m1>]
+  #<m2> =[[#<_CamX2> - #<_CamX3>] / #<m2>]
+  #<ix> =[#<m1> - #<m2>]
+  O102 if[#<ix> EQ 0]
+    #<ix>=1
+    #<ok>=1
+  O102 endif
+  #<b1> =[[[#<_CamY1> + #<_CamY2>] / 2] - [#<m1> * [#<_CamX1> + #<_CamX2>] /2]]
+  #<b2> =[[[#<_CamY2> + #<_CamY3>] / 2] - [#<m2> * [#<_CamX2> + #<_CamX3>] /2]]
+  #<ix>=[[#<b2> - #<b1>] / #<ix>]
+  #<iy>=[#<m1> * #<ix> + #<b1>]
+  O200 if[#<ok> EQ 0]
+    G0 X[#<ix>] Y[#<iy>]  
+    (MSG,Centered)
+  O200 else
+    (MSG,Nonsense coordinates!)
+  O200 endif
+  #3999 = 0
+O99 else
+  (MSG,Must have 3 points saved!)
+O99 endif
+o<_camcenter3> endsub
+M2

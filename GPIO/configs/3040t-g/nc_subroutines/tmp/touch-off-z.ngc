@@ -1,0 +1,37 @@
+; caveat - this changes feed and abs/relative mode
+; Parameters : offset plate-thickness
+
+O<touch-off-z> SUB
+
+#<_Probe_Speed>=20
+#<_Probe_Retract>=-2
+#<_Probe_Distance>=10
+#<_Offset>=#1
+#<_Plate_Thickness>=#2
+#<_Probe_System>=#5220
+
+G49                 ( clear tool length compensation)
+G91                 ( relative mode for probing)
+
+; We are probing Z, so the current tool is the reference
+#1000=#1001
+o<tool_report> call
+G49
+
+;For Z, we move in the opposite direction
+#<_Probe_Distance>=[0 - #<_Probe_Distance>]
+#<_Probe_Retract>=[0 - #<_Probe_Retract>]
+G38.3 z#<_Probe_Distance> F#<_Probe_Speed>
+O<zresult> if [#5070]
+   (MSG, probe succeeded)
+   G10 L20 P#<_Probe_System> Z[#<_Plate_Thickness> + #<_Offset>]
+   G0 z#<_Probe_Retract>
+O<zresult> else
+   (MSG,probe failed)
+   G0 z[0 - #<_Probe_Distance>]
+O<zresult> endif
+
+G90                 ( absolute mode)
+
+O<touch-off-z> endsub [#5070]
+M2

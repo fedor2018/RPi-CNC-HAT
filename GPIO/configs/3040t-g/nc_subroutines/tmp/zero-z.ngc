@@ -1,0 +1,16 @@
+; Parameters : offset
+
+O<zero-z> SUB
+
+#<_Offset>=#1
+#<_Probe_System>=#5220
+
+G49                 ( clear tool length compensation)
+
+; We are zero-ing Z, so the current tool is the reference
+#1000=#1001
+o<tool_report> call
+G10 L20 P#<_Probe_System> Z[#<_Offset>]
+
+O<zero-z> endsub [#5070]
+M2
