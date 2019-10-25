@@ -124,7 +124,14 @@ struct whb04_out_data
 };
 #endif
 
-
+#define DISPLAY_HOME_ICON           0x10
+#define DISPLAY_HEIGHT_SETTING_ICON 0x20
+#define DISPLAY_UNKNOWN_40          0x40
+#define DISPLAY_INCH_ICON           0x80
+#define DISPLAY_RUN_ICON            0x01
+#define DISPLAY_PAUSE_ICON          0x02
+#define DISPLAY_UNKNOWN_04          0x04
+#define DISPLAY_UNKNOWN_08          0x08
 
 struct whb0x_in_data
 {

@@ -5,7 +5,7 @@ loadrt [EMCMOT]EMCMOT base_period_nsec=[EMCMOT]BASE_PERIOD servo_period_nsec=[EM
 loadrt or2
 loadrt and2
 loadrt timedelay
-loadrt not
+loadrt not count=3
 setp timedelay.0.on-delay 5
 setp timedelay.0.off-delay 1
 
@@ -20,63 +20,61 @@ loadrt stepgen step_type=0,0,0
 # 0 1 0 0 1 0 0 0 1 1 0 0 0 0 1 1 1 0 0 0 0 1 1 0 0 0 dir (0-in, 1-out)
 # 0 0 0 0 0 1 0 1 0 0 0 0 1 1 0 0 0 1 1 1 0 0 0 0 1 1 exc (0-use, 1-exc)
 loadrt hal_gpio dir=19074584 exclude=1323459
-show pin hal_gpio
+#show pin hal_gpio
 
 addf stepgen.make-pulses base-thread
 addf stepgen.capture-position 	servo-thread
 addf stepgen.update-freq 	servo-thread
 addf pwmgen.update servo-thread
 addf pwmgen.make-pulses base-thread
+addf hal_gpio.read  		base-thread
+addf hal_gpio.write 		base-thread
+
 
 addf motion-command-handler servo-thread
 addf motion-controller servo-thread
+addf and2.0 servo-thread
+addf or2.0 servo-thread
+addf timedelay.0 servo-thread
+addf not.0 servo-thread
+addf not.1 servo-thread
+addf not.2 servo-thread
+# Set the spindle's top speed in RPM
+setp pwmgen.0.scale 10000
 
 #net estop-out       => hal_gpio.pin-18-out
-net xstep           => hal_gpio.pin-23-out
-net xdir            => hal_gpio.pin-29-out
-net ystep           => hal_gpio.pin-31-out
-net ydir            => hal_gpio.pin-33-out
-net zstep           => hal_gpio.pin-35-out
-net zdir            => hal_gpio.pin-37-out
+net xstep           => hal_gpio.pin-29-out
+net xdir            => hal_gpio.pin-23-out
+net ystep           => hal_gpio.pin-33-out
+net ydir            => hal_gpio.pin-31-out
+net zstep           => hal_gpio.pin-37-out
+net zdir            => hal_gpio.pin-35-out
 
 net spindle-on       => hal_gpio.pin-32-out
 net spindle-pwm-out  => hal_gpio.pin-12-out
-net estop-ext        <= hal_gpio.pin-18-in
+net estop-ext   <= hal_gpio.pin-18-in => not.1.in
 net both-home-x      <= hal_gpio.pin-07-in
 net both-home-y      <= hal_gpio.pin-11-in
 net max-home-z       <= hal_gpio.pin-13-in
 
 net probe-in         <= hal_gpio.pin-36-in
-net tp_in and2.0.in0 <= hal_gpio.pin-15-in
-net tp_on and2.0.in1 <= hal_gpio.pin-22-in
+net tp_in  hal_gpio.pin-15-in => and2.0.in0
+net tp_on  hal_gpio.pin-22-in => and2.0.in1 not.0.in
 net buzzer-on        => hal_gpio.pin-16-out
-
-addf and2.0 servo-thread
-addf or2.0 servo-thread
-addf timedelay.0 servo-thread
-addf not.0 servo-thread
-# Set the spindle's top speed in RPM
-setp pwmgen.0.scale 10000
-
-net tp_not tp_on => not.0.in
-net tp_on_not not.0.out => or2.0.in0
-net tp2 and2.0.out => or2.0.in1
-net probe-in or2.0.out => motion.probe-input
-
-addf hal_gpio.read  		base-thread
-addf hal_gpio.write 		base-thread
+#net tp_on0 tp_on => and2.0.in1 
+#net tp_not tp_on => not.0.in
+net tp_not not.0.out => or2.0.in0
+net tp_or and2.0.out => or2.0.in1
+net probe-in-out or2.0.out => motion.probe-input
 
 net spindle-speed-cmd motion.spindle-speed-out => pwmgen.0.value
 net spindle-on motion.spindle-on => pwmgen.0.enable
-net spindle-pwm pwmgen.0.pwm => spindle-pwm-out
+net spindle-pwm-out <= pwmgen.0.pwm
+#=> spindle-pwm-out
 net spindle-on => timedelay.0.in
 net spindle-at-speed timedelay.0.out => motion.spindle-at-speed
 
 setp stepgen.0.position-scale [AXIS_0]SCALE
-setp stepgen.0.steplen 25000
-setp stepgen.0.stepspace 0
-setp stepgen.0.dirhold 35000
-setp stepgen.0.dirsetup 35000
 setp stepgen.0.maxaccel [AXIS_0]STEPGEN_MAXACCEL
 net xpos-cmd axis.0.motor-pos-cmd => stepgen.0.position-cmd
 net xpos-fb stepgen.0.position-fb => axis.0.motor-pos-fb
@@ -88,25 +86,18 @@ net both-home-x => axis.0.neg-lim-sw-in
 net both-home-x => axis.0.pos-lim-sw-in
 
 setp stepgen.1.position-scale [AXIS_1]SCALE
-setp stepgen.1.steplen 25000
-setp stepgen.1.stepspace 0
-setp stepgen.1.dirhold 35000
-setp stepgen.1.dirsetup 35000
 setp stepgen.1.maxaccel [AXIS_1]STEPGEN_MAXACCEL
 net ypos-cmd axis.1.motor-pos-cmd => stepgen.1.position-cmd
-net ypos-fb stepgen.1.position-fb => axis.2.motor-pos-fb
+net ypos-fb stepgen.1.position-fb => axis.1.motor-pos-fb
 net ystep <= stepgen.1.step
-net ydir <= stepgen.1.dir
+net ydir-not stepgen.1.dir => not.2.in
+net ydir <= not.2.out
 net yenable axis.1.amp-enable-out => stepgen.1.enable
 net both-home-y => axis.1.home-sw-in
 net both-home-y => axis.1.neg-lim-sw-in
 net both-home-y => axis.1.pos-lim-sw-in
 
 setp stepgen.2.position-scale [AXIS_2]SCALE
-setp stepgen.3.steplen 25000
-setp stepgen.2.stepspace 0
-setp stepgen.2.dirhold 35000
-setp stepgen.2.dirsetup 35000
 setp stepgen.2.maxaccel [AXIS_2]STEPGEN_MAXACCEL
 net zpos-cmd axis.2.motor-pos-cmd => stepgen.2.position-cmd
 net zpos-fb stepgen.2.position-fb => axis.2.motor-pos-fb
@@ -118,6 +109,8 @@ net max-home-z => axis.2.home-sw-in
 net max-home-z => axis.2.pos-lim-sw-in
 
 net estop-out <= iocontrol.0.user-enable-out
-net estop-ext => iocontrol.0.emc-enable-in
+net estop-ext-out not.1.out => iocontrol.0.emc-enable-in
 
 show
+
+#loadusr halmeter
